@@ -118,9 +118,9 @@ public final class VZGP1ProtocolDecoderTest {
 
     @Test
     public void checksumShouldBeCalculated() {
-        byte[] givenBytes = {0x56, 0x5A, 0x02, 0x00, 0x00, (byte) 0x80, 0x2B};
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a020000802b"));
 
-        int actual = decoder.calculateChecksum(givenBytes);
+        int actual = decoder.calculateChecksum(givenByteBuf);
         int expected = 0x802B;
         assertEquals(expected, actual);
 

@@ -49,7 +49,7 @@ public final class TextProtocolDecoderTest {
         }
 
         @Override
-        protected int calculateChecksum(byte[] bytes) {
+        protected int calculateChecksum(ByteBuf byteBuf) {
             throw new UnsupportedOperationException();
         }
     }

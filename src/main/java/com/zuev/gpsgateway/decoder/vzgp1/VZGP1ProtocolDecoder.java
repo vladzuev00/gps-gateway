@@ -47,7 +47,11 @@ public final class VZGP1ProtocolDecoder extends BinaryProtocolDecoder {
     }
 
     @Override
-    protected int calculateChecksum(byte[] bytes) {
-        return CRC16Util.calculate(bytes, PACKAGE_PREFIX_LENGTH, bytes.length - CHECKSUM_LENGTH);
+    protected int calculateChecksum(ByteBuf byteBuf) {
+        return CRC16Util.calculate(
+                byteBuf,
+                byteBuf.readerIndex() + PACKAGE_PREFIX_LENGTH,
+                byteBuf.writerIndex() - CHECKSUM_LENGTH
+        );
     }
 }

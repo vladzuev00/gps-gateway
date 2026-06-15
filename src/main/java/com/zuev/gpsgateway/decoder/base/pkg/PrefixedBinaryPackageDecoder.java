@@ -2,6 +2,7 @@ package com.zuev.gpsgateway.decoder.base.pkg;
 
 import io.netty.buffer.ByteBuf;
 
+//TODO remove
 public abstract class PrefixedBinaryPackageDecoder<PREFIX> extends PrefixedPackageDecoder<ByteBuf, PREFIX> {
 
     public PrefixedBinaryPackageDecoder(PREFIX prefix) {
