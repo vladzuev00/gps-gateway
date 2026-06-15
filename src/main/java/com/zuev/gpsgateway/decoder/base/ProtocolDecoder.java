@@ -38,17 +38,15 @@ public abstract class ProtocolDecoder<PKG_SRC> extends ByteToMessageDecoder {
 
     protected abstract OptionalInt getChecksum(ByteBuf byteBuf);
 
-    protected abstract int calculateChecksum(byte[] bytes);
+    protected abstract int calculateChecksum(ByteBuf byteBuf);
 
     private void validateChecksum(ByteBuf byteBuf) {
         getChecksum(byteBuf)
                 .ifPresent(
-                        checksum -> {
-                            byte[] bytes = new byte[byteBuf.readableBytes()];
-                            byteBuf.getBytes(byteBuf.readerIndex(), bytes);
-                            int calculated = calculateChecksum(bytes);
-                            if (checksum != calculated) {
-                                throw new InvalidChecksumException("Checksum validation failed");
+                        received -> {
+                            int calculated = calculateChecksum(byteBuf);
+                            if (received != calculated) {
+                                throw new InvalidChecksumException();
                             }
                         }
                 );

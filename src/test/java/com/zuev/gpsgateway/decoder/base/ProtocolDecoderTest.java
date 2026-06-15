@@ -48,7 +48,7 @@ public final class ProtocolDecoderTest {
     }
 
     @Test
-    public void packageShouldBeDecoded() {
+    public void completePackageShouldBeDecoded() {
         ByteBuf givenByteBuf = wrappedBuffer(
                 new byte[]{
                         'f', 'i', 'r', 's', 't', '-', 'p', 'a', 'c', 'k', 0x03, (byte) 0xF4, '\n',
@@ -73,7 +73,7 @@ public final class ProtocolDecoderTest {
 
     @Test
     public void incompletePackageShouldNotBeDecoded() {
-        ByteBuf givenByteBuf = wrappedBuffer("first-package".getBytes(UTF_8));
+        var givenByteBuf = wrappedBuffer(new byte[]{'f', 'i', 'r', 's', 't', '-', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
 
         assertFalse(channel.writeInbound(givenByteBuf));
         assertEquals(0, givenByteBuf.readerIndex());
@@ -82,7 +82,7 @@ public final class ProtocolDecoderTest {
     }
 
     @Test
-    public void packageShouldNotBeDecodedBecauseOfNoSuitableDecoder() {
+    public void completePackageShouldNotBeDecodedBecauseOfNoSuitableDecoder() {
         ByteBuf givenByteBuf = wrappedBuffer(
                 new byte[]{
                         'f', 'i', 'r', 's', 't', '-', 'p', 'a', 'c', 'k', 0x03, (byte) 0xF4, '\n',
@@ -104,7 +104,7 @@ public final class ProtocolDecoderTest {
     }
 
     @Test
-    public void packageShouldNotBeDecodedBecauseOfNotValidChecksum() {
+    public void completePackageShouldNotBeDecodedBecauseOfNotValidChecksum() {
         ByteBuf givenByteBuf = wrappedBuffer(
                 new byte[]{
                         'f', 'i', 'r', 's', 't', '-', 'p', 'a', 'c', 'k', 0x03, (byte) 0xF5, '\n',
@@ -151,10 +151,10 @@ public final class ProtocolDecoderTest {
         }
 
         @Override
-        protected int calculateChecksum(byte[] bytes) {
+        protected int calculateChecksum(ByteBuf byteBuf) {
             int sum = 0;
-            for (int i = 0; i < bytes.length - CHECKSUM_LENGTH - PACKAGE_END_LENGTH; i++) {
-                sum += bytes[i] & 0xFF;
+            for (int i = byteBuf.readerIndex(); i < byteBuf.writerIndex() - CHECKSUM_LENGTH - PACKAGE_END_LENGTH; i++) {
+                sum += byteBuf.getByte(i) & 0xFF;
             }
             return sum & 0xFFFF;
         }
