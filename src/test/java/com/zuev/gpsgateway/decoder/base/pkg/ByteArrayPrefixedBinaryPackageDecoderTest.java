@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test;
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class ByteArrayPrefixedBinaryPackageDecoderTest {
     private final TestByteArrayPrefixedBinaryPackageDecoder decoder = new TestByteArrayPrefixedBinaryPackageDecoder();
 
     @Test
-    public void prefixShouldBeRead() {
+    public void prefixShouldBeGot() {
         ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
+        int givenLength = 3;
 
-        byte[] actual = decoder.readPrefix(givenByteBuf, 3);
+        byte[] actual = decoder.getPrefix(givenByteBuf, givenLength);
         byte[] expected = {0x56, 0x5A, 0x01};
         assertArrayEquals(expected, actual);
-        assertEquals(3, givenByteBuf.readerIndex());
+        assertEquals(0, givenByteBuf.readerIndex());
     }
 
     @Test

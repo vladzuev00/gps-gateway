@@ -11,9 +11,9 @@ public abstract class ByteArrayPrefixedBinaryPackageDecoder extends PrefixedBina
     }
 
     @Override
-    protected final byte[] readPrefix(ByteBuf byteBuf, int length) {
+    protected final byte[] getPrefix(ByteBuf byteBuf, int length) {
         byte[] bytes = new byte[length];
-        byteBuf.readBytes(bytes);
+        byteBuf.getBytes(byteBuf.readerIndex(), bytes);
         return bytes;
     }
 
