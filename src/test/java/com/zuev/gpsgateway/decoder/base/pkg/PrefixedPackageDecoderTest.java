@@ -1,7 +1,6 @@
 package com.zuev.gpsgateway.decoder.base.pkg;
 
 import io.netty.buffer.ByteBuf;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -9,7 +8,7 @@ import java.util.Objects;
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class PrefixedPackageDecoderTest {
     private final TestPrefixedPackageDecoder decoder = new TestPrefixedPackageDecoder();
@@ -18,7 +17,7 @@ public final class PrefixedPackageDecoderTest {
     public void decoderShouldBeAbleToDecodeSource() {
         ByteBuf givenSource = wrappedBuffer(decodeHexDump("090000000574657374206d657373616765"));
 
-        Assertions.assertTrue(decoder.isAbleDecode(givenSource));
+        assertTrue(decoder.isAbleDecode(givenSource));
         assertEquals(0, givenSource.readerIndex());
     }
 
@@ -26,7 +25,7 @@ public final class PrefixedPackageDecoderTest {
     public void decoderShouldNotBeAbleToDecodeSource() {
         ByteBuf givenSource = wrappedBuffer(decodeHexDump("080000000574657374206d657373616765"));
 
-        Assertions.assertFalse(decoder.isAbleDecode(givenSource));
+        assertFalse(decoder.isAbleDecode(givenSource));
         assertEquals(0, givenSource.readerIndex());
     }
 
