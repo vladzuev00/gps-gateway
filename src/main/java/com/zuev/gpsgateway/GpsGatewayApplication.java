@@ -1,12 +1,13 @@
 package com.zuev.gpsgateway;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import static org.springframework.boot.SpringApplication.run;
 
 @SpringBootApplication
 public class GpsGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GpsGatewayApplication.class, args);
+        run(GpsGatewayApplication.class, args);
     }
 }
