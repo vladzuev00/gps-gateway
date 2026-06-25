@@ -140,8 +140,8 @@ public final class ProtocolDecoderTest {
         }
 
         @Override
-        protected String toLogString(String text) {
-            return text;
+        protected String toLogString(String packageSource) {
+            return packageSource;
         }
 
         @Override
