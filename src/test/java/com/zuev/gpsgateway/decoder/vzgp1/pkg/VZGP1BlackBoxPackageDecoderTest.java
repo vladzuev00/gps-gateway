@@ -33,13 +33,13 @@ public final class VZGP1BlackBoxPackageDecoderTest {
 
     @Test
     public void payloadShouldBeDecoded() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("0002"));
+        ByteBuf givenPayload = wrappedBuffer(decodeHexDump("0002"));
 
         VZGP1Data givenFirstData = mock(VZGP1Data.class);
         VZGP1Data givenSecondData = mock(VZGP1Data.class);
-        when(mockedDataDecoder.read(same(givenByteBuf))).thenReturn(givenFirstData).thenReturn(givenSecondData);
+        when(mockedDataDecoder.read(same(givenPayload))).thenReturn(givenFirstData).thenReturn(givenSecondData);
 
-        VZGP1BlackBoxPackage actual = decoder.decodePayload(givenByteBuf);
+        VZGP1BlackBoxPackage actual = decoder.decodePayload(givenPayload);
         VZGP1BlackBoxPackage expected = new VZGP1BlackBoxPackage(List.of(givenFirstData, givenSecondData));
         assertEquals(expected, actual);
     }

@@ -20,10 +20,10 @@ public final class VZGP1BlackBoxPackageDecoder extends VZGP1PackageDecoder {
     }
 
     @Override
-    protected VZGP1BlackBoxPackage decodePayload(ByteBuf byteBuf) {
-        int dataCount = byteBuf.readUnsignedShort();
+    protected VZGP1BlackBoxPackage decodePayload(ByteBuf payload) {
+        int dataCount = payload.readUnsignedShort();
         return range(0, dataCount)
-                .mapToObj(i -> dataDecoder.read(byteBuf))
+                .mapToObj(i -> dataDecoder.read(payload))
                 .collect(collectingAndThen(toList(), VZGP1BlackBoxPackage::new));
     }
 }
