@@ -24,12 +24,12 @@ public final class BinaryProtocolDecoderTest {
 
     @Test
     public void logStringShouldBeCreated() {
-        ByteBuf givenByteBuf = wrappedBuffer(new byte[]{0x09, 0x00, 0x00, 0x00, 0x05, 0x74, 0x65, 0x73, 0x74, 0x20});
+        var givenPackageSource = wrappedBuffer(new byte[]{0x09, 0x00, 0x00, 0x00, 0x05, 0x74, 0x65, 0x73, 0x74, 0x20});
 
-        String actual = decoder.toLogString(givenByteBuf);
+        String actual = decoder.toLogString(givenPackageSource);
         String expected = "09000000057465737420";
         assertEquals(expected, actual);
-        assertEquals(0, givenByteBuf.readerIndex());
+        assertEquals(0, givenPackageSource.readerIndex());
     }
 
     private static final class TestBinaryProtocolDecoder extends BinaryProtocolDecoder {

@@ -19,7 +19,7 @@ public abstract class BinaryProtocolDecoder extends ProtocolDecoder<ByteBuf> {
     }
 
     @Override
-    protected final String toLogString(ByteBuf byteBuf) {
-        return hexDump(byteBuf);
+    protected final String toLogString(ByteBuf packageSource) {
+        return hexDump(packageSource);
     }
 }
