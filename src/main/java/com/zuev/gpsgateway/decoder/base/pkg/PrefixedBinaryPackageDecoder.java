@@ -9,7 +9,7 @@ public abstract class PrefixedBinaryPackageDecoder<PREFIX> extends PrefixedPacka
     }
 
     @Override
-    protected final ByteBuf skip(ByteBuf byteBuf, int length) {
-        return byteBuf.skipBytes(length);
+    protected final ByteBuf skip(ByteBuf source, int length) {
+        return source.skipBytes(length);
     }
 }

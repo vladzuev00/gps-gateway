@@ -13,11 +13,11 @@ public final class PrefixedBinaryPackageDecoderTest {
 
     @Test
     public void byteBufShouldBeSkipped() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("2354455354232323"));
+        ByteBuf givenSource = wrappedBuffer(decodeHexDump("2354455354232323"));
         int givenLength = 6;
 
-        ByteBuf actual = decoder.skip(givenByteBuf, givenLength);
-        assertSame(givenByteBuf, actual);
+        ByteBuf actual = decoder.skip(givenSource, givenLength);
+        assertSame(givenSource, actual);
         assertEquals(6, actual.readerIndex());
     }
 
@@ -34,17 +34,17 @@ public final class PrefixedBinaryPackageDecoderTest {
         }
 
         @Override
-        protected String getPrefix(ByteBuf byteBuf, int length) {
+        protected String getPrefix(ByteBuf source, int length) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        protected boolean equals(String first, String second) {
+        protected boolean equals(String firstPrefix, String secondPrefix) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        protected Object decodeBody(ByteBuf byteBuf) {
+        protected Object decodeBody(ByteBuf body) {
             throw new UnsupportedOperationException();
         }
     }
