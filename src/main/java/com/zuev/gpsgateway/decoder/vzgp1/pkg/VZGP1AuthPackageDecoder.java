@@ -16,10 +16,10 @@ public final class VZGP1AuthPackageDecoder extends VZGP1PackageDecoder {
     }
 
     @Override
-    protected VZGP1AuthPackage decodePayload(ByteBuf byteBuf) {
-        String imei = byteBuf.readString(IMEI_LENGTH, UTF_8);
-        int passwordLength = byteBuf.readUnsignedByte();
-        String password = byteBuf.readString(passwordLength, UTF_8);
+    protected VZGP1AuthPackage decodePayload(ByteBuf payload) {
+        String imei = payload.readString(IMEI_LENGTH, UTF_8);
+        int passwordLength = payload.readUnsignedByte();
+        String password = payload.readString(passwordLength, UTF_8);
         return new VZGP1AuthPackage(imei, password);
     }
 }

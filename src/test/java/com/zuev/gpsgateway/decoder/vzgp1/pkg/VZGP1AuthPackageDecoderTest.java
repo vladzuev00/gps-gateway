@@ -13,11 +13,11 @@ public final class VZGP1AuthPackageDecoderTest {
 
     @Test
     public void payloadShouldBeDecoded() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("3535353535353535353535353535350474657374"));
+        ByteBuf givenPayload = wrappedBuffer(decodeHexDump("3535353535353535353535353535350474657374"));
 
-        VZGP1AuthPackage actual = decoder.decodePayload(givenByteBuf);
+        VZGP1AuthPackage actual = decoder.decodePayload(givenPayload);
         VZGP1AuthPackage expected = new VZGP1AuthPackage("555555555555555", "test");
         assertEquals(expected, actual);
-        assertEquals(0, givenByteBuf.readableBytes());
+        assertEquals(0, givenPayload.readableBytes());
     }
 }
