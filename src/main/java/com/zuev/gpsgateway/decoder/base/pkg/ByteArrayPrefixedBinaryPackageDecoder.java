@@ -18,8 +18,8 @@ public abstract class ByteArrayPrefixedBinaryPackageDecoder extends PrefixedBina
     }
 
     @Override
-    protected final int getLength(byte[] bytes) {
-        return bytes.length;
+    protected final int getLength(byte[] prefix) {
+        return prefix.length;
     }
 
     @Override

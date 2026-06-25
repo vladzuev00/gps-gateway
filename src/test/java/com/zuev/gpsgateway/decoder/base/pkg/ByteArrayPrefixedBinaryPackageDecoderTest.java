@@ -23,9 +23,9 @@ public final class ByteArrayPrefixedBinaryPackageDecoderTest {
 
     @Test
     public void prefixLengthShouldBeGot() {
-        byte[] givenBytes = {0x56, 0x5A, 0x01};
+        byte[] givenPrefix = {0x56, 0x5A, 0x01};
 
-        int actual = decoder.getLength(givenBytes);
+        int actual = decoder.getLength(givenPrefix);
         int expected = 3;
         assertEquals(expected, actual);
     }
