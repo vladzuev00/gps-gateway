@@ -18,36 +18,36 @@ public final class PrefixedTextPackageDecoderTest {
 
     @Test
     public void prefixShouldBeGot() {
-        String givenText = "#TEST#155;43";
+        String givenSource = "#TEST#155;43";
         int givenLength = 6;
 
-        String actual = decoder.getPrefix(givenText, givenLength);
+        String actual = decoder.getPrefix(givenSource, givenLength);
         String expected = "#TEST#";
         assertEquals(expected, actual);
     }
 
     @Test
     public void prefixesShouldBeEqual() {
-        String givenFirst = "#FIRST#";
-        String givenSecond = "#FIRST#";
+        String givenFirstPrefix = "#FIRST#";
+        String givenSecondPrefix = "#FIRST#";
 
-        assertTrue(decoder.equals(givenFirst, givenSecond));
+        assertTrue(decoder.equals(givenFirstPrefix, givenSecondPrefix));
     }
 
     @Test
     public void prefixesShouldNotBeEqual() {
-        String givenFirst = "#FIRST#";
-        String givenSecond = "#SECOND#";
+        String givenFirstPrefix = "#FIRST#";
+        String givenSecondPrefix = "#SECOND#";
 
-        assertFalse(decoder.equals(givenFirst, givenSecond));
+        assertFalse(decoder.equals(givenFirstPrefix, givenSecondPrefix));
     }
 
     @Test
     public void charsShouldBeSkipped() {
-        String givenText = "#TEST#155;43";
+        String givenSource = "#TEST#155;43";
         int givenLength = 6;
 
-        String actual = decoder.skip(givenText, givenLength);
+        String actual = decoder.skip(givenSource, givenLength);
         String expected = "155;43";
         assertEquals(expected, actual);
     }
@@ -60,7 +60,7 @@ public final class PrefixedTextPackageDecoderTest {
         }
 
         @Override
-        protected Object decodeBody(String text) {
+        protected Object decodeBody(String body) {
             throw new UnsupportedOperationException();
         }
     }

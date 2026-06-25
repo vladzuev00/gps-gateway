@@ -14,17 +14,17 @@ public abstract class PrefixedTextPackageDecoder extends PrefixedPackageDecoder<
     }
 
     @Override
-    protected final String getPrefix(String text, int length) {
-        return text.substring(0, length);
+    protected final String getPrefix(String source, int length) {
+        return source.substring(0, length);
     }
 
     @Override
-    protected final boolean equals(String first, String second) {
-        return Objects.equals(first, second);
+    protected final boolean equals(String firstPrefix, String secondPrefix) {
+        return Objects.equals(firstPrefix, secondPrefix);
     }
 
     @Override
-    protected final String skip(String text, int length) {
-        return text.substring(length);
+    protected final String skip(String source, int length) {
+        return source.substring(length);
     }
 }
