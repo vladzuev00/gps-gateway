@@ -26,10 +26,10 @@ public final class TextProtocolDecoderTest {
 
     @Test
     public void logStringShouldBeCreated() {
-        String givenText = "test text";
+        String givenPackageSource = "test text";
 
-        String actual = decoder.toLogString(givenText);
-        assertSame(givenText, actual);
+        String actual = decoder.toLogString(givenPackageSource);
+        assertSame(givenPackageSource, actual);
     }
 
     private static final class TestTextProtocolDecoder extends TextProtocolDecoder {

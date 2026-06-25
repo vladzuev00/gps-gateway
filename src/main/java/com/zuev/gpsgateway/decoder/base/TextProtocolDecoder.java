@@ -20,7 +20,7 @@ public abstract class TextProtocolDecoder extends ProtocolDecoder<String> {
     }
 
     @Override
-    protected final String toLogString(String text) {
-        return text;
+    protected final String toLogString(String packageSource) {
+        return packageSource;
     }
 }
