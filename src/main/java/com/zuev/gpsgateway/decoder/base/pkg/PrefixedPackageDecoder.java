@@ -24,9 +24,9 @@ public abstract class PrefixedPackageDecoder<PKG_SRC, PREFIX> implements Package
 
     protected abstract PREFIX getPrefix(PKG_SRC source, int length);
 
-    protected abstract boolean equals(PREFIX first, PREFIX second);
+    protected abstract boolean equals(PREFIX firstPrefix, PREFIX secondPrefix);
 
     protected abstract PKG_SRC skip(PKG_SRC source, int length);
 
-    protected abstract Object decodeBody(PKG_SRC source);
+    protected abstract Object decodeBody(PKG_SRC body);
 }

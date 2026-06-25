@@ -59,8 +59,8 @@ public final class PrefixedPackageDecoderTest {
         }
 
         @Override
-        protected boolean equals(Byte first, Byte second) {
-            return Objects.equals(first, second);
+        protected boolean equals(Byte firstPrefix, Byte secondPrefix) {
+            return Objects.equals(firstPrefix, secondPrefix);
         }
 
         @Override
@@ -69,9 +69,9 @@ public final class PrefixedPackageDecoderTest {
         }
 
         @Override
-        protected TestPackage decodeBody(ByteBuf source) {
-            int number = source.readInt();
-            String message = source.toString(UTF_8);
+        protected TestPackage decodeBody(ByteBuf body) {
+            int number = body.readInt();
+            String message = body.toString(UTF_8);
             return new TestPackage(number, message);
         }
     }
