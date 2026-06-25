@@ -12,13 +12,13 @@ public final class ByteArrayPrefixedBinaryPackageDecoderTest {
 
     @Test
     public void prefixShouldBeGot() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
+        ByteBuf givenSource = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
         int givenLength = 3;
 
-        byte[] actual = decoder.getPrefix(givenByteBuf, givenLength);
+        byte[] actual = decoder.getPrefix(givenSource, givenLength);
         byte[] expected = {0x56, 0x5A, 0x01};
         assertArrayEquals(expected, actual);
-        assertEquals(0, givenByteBuf.readerIndex());
+        assertEquals(0, givenSource.readerIndex());
     }
 
     @Test
@@ -32,18 +32,18 @@ public final class ByteArrayPrefixedBinaryPackageDecoderTest {
 
     @Test
     public void prefixesShouldBeEqual() {
-        byte[] givenFirst = {0x56, 0x5A, 0x01};
-        byte[] givenSecond = {0x56, 0x5A, 0x01};
+        byte[] givenFirstPrefix = {0x56, 0x5A, 0x01};
+        byte[] givenSecondPrefix = {0x56, 0x5A, 0x01};
 
-        assertTrue(decoder.equals(givenFirst, givenSecond));
+        assertTrue(decoder.equals(givenFirstPrefix, givenSecondPrefix));
     }
 
     @Test
     public void prefixesShouldNotBeEqual() {
-        byte[] givenFirst = {0x56, 0x5A, 0x01};
-        byte[] givenSecond = {0x56, 0x5A, 0x02};
+        byte[] givenFirstPrefix = {0x56, 0x5A, 0x01};
+        byte[] givenSecondPrefix = {0x56, 0x5A, 0x02};
 
-        assertFalse(decoder.equals(givenFirst, givenSecond));
+        assertFalse(decoder.equals(givenFirstPrefix, givenSecondPrefix));
     }
 
     private static final class TestByteArrayPrefixedBinaryPackageDecoder extends ByteArrayPrefixedBinaryPackageDecoder {
@@ -53,7 +53,7 @@ public final class ByteArrayPrefixedBinaryPackageDecoderTest {
         }
 
         @Override
-        protected Object decodeBody(ByteBuf byteBuf) {
+        protected Object decodeBody(ByteBuf body) {
             throw new UnsupportedOperationException();
         }
     }
