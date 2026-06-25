@@ -28,15 +28,15 @@ public final class VZGP1DataPackageDecoderTest {
 
     @Test
     public void payloadShouldBeDecoded() {
-        ByteBuf givenByteBuf = mock(ByteBuf.class);
+        ByteBuf givenPayload = mock(ByteBuf.class);
 
         VZGP1Data givenData = mock(VZGP1Data.class);
-        when(mockedDataDecoder.read(same(givenByteBuf))).thenReturn(givenData);
+        when(mockedDataDecoder.read(same(givenPayload))).thenReturn(givenData);
 
-        VZGP1DataPackage actual = decoder.decodePayload(givenByteBuf);
+        VZGP1DataPackage actual = decoder.decodePayload(givenPayload);
         VZGP1DataPackage expected = new VZGP1DataPackage(givenData);
         assertEquals(expected, actual);
 
-        verifyNoInteractions(givenByteBuf);
+        verifyNoInteractions(givenPayload);
     }
 }

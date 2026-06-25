@@ -17,8 +17,8 @@ public final class VZGP1DataPackageDecoder extends VZGP1PackageDecoder {
     }
 
     @Override
-    protected VZGP1DataPackage decodePayload(ByteBuf byteBuf) {
-        VZGP1Data data = dataDecoder.read(byteBuf);
+    protected VZGP1DataPackage decodePayload(ByteBuf payload) {
+        VZGP1Data data = dataDecoder.read(payload);
         return new VZGP1DataPackage(data);
     }
 }
