@@ -13,12 +13,12 @@ public final class VZGP1PackageDecoderTest {
 
     @Test
     public void bodyShouldBeDecoded() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("00090000002a68656c6c6f0000"));
+        ByteBuf givenBody = wrappedBuffer(decodeHexDump("00090000002a68656c6c6f0000"));
 
-        Object actual = decoder.decodeBody(givenByteBuf);
+        Object actual = decoder.decodeBody(givenBody);
         TestPackage expected = new TestPackage(42, "hello");
         assertEquals(expected, actual);
-        assertEquals(0, givenByteBuf.readableBytes());
+        assertEquals(0, givenBody.readableBytes());
     }
 
     private record TestPackage(int number, String message) {
@@ -32,9 +32,9 @@ public final class VZGP1PackageDecoderTest {
         }
 
         @Override
-        protected Object decodePayload(ByteBuf byteBuf) {
-            int number = byteBuf.readInt();
-            String message = byteBuf.toString(UTF_8);
+        protected Object decodePayload(ByteBuf payload) {
+            int number = payload.readInt();
+            String message = payload.toString(UTF_8);
             return new TestPackage(number, message);
         }
     }

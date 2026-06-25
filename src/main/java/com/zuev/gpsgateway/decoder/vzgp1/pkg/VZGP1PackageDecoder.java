@@ -11,12 +11,12 @@ public abstract class VZGP1PackageDecoder extends ByteArrayPrefixedBinaryPackage
     }
 
     @Override
-    protected final Object decodeBody(ByteBuf byteBuf) {
-        int payloadLength = byteBuf.readUnsignedShort();
-        ByteBuf payloadSlice = byteBuf.readSlice(payloadLength);
-        byteBuf.skipBytes(CHECKSUM_LENGTH);
-        return decodePayload(payloadSlice);
+    protected final Object decodeBody(ByteBuf body) {
+        int payloadLength = body.readUnsignedShort();
+        ByteBuf payload = body.readSlice(payloadLength);
+        body.skipBytes(CHECKSUM_LENGTH);
+        return decodePayload(payload);
     }
 
-    protected abstract Object decodePayload(ByteBuf byteBuf);
+    protected abstract Object decodePayload(ByteBuf payload);
 }
