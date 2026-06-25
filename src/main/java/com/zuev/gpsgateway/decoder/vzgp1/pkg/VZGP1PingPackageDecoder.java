@@ -13,7 +13,7 @@ public final class VZGP1PingPackageDecoder extends VZGP1PackageDecoder {
     }
 
     @Override
-    protected VZGP1PingPackage decodePayload(ByteBuf byteBuf) {
+    protected VZGP1PingPackage decodePayload(ByteBuf payload) {
         return new VZGP1PingPackage();
     }
 }

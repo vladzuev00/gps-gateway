@@ -13,12 +13,12 @@ public final class VZGP1PingPackageDecoderTest {
 
     @Test
     public void payloadShouldBeDecoded() {
-        ByteBuf givenByteBuf = mock(ByteBuf.class);
+        ByteBuf givenPayload = mock(ByteBuf.class);
 
-        VZGP1PingPackage actual = decoder.decodePayload(givenByteBuf);
+        VZGP1PingPackage actual = decoder.decodePayload(givenPayload);
         VZGP1PingPackage expected = new VZGP1PingPackage();
         assertEquals(expected, actual);
 
-        verifyNoInteractions(givenByteBuf);
+        verifyNoInteractions(givenPayload);
     }
 }
