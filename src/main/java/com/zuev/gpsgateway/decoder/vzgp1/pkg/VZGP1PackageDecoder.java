@@ -1,12 +1,12 @@
 package com.zuev.gpsgateway.decoder.vzgp1.pkg;
 
-import com.zuev.gpsgateway.decoder.base.pkg.ByteArrayPrefixedBinaryPackageDecoder;
+import com.zuev.gpsgateway.decoder.base.pkg.ByteBufPrefixedBinaryPackageDecoder;
 import io.netty.buffer.ByteBuf;
 
-public abstract class VZGP1PackageDecoder extends ByteArrayPrefixedBinaryPackageDecoder {
+public abstract class VZGP1PackageDecoder extends ByteBufPrefixedBinaryPackageDecoder {
     private static final int CHECKSUM_LENGTH = 2;
 
-    public VZGP1PackageDecoder(byte[] prefix) {
+    public VZGP1PackageDecoder(ByteBuf prefix) {
         super(prefix);
     }
 

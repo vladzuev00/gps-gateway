@@ -25,7 +25,7 @@ public final class VZGP1PackageDecoderTest {
     }
 
     private static final class TestVZGP1PackageDecoder extends VZGP1PackageDecoder {
-        private static final byte[] PREFIX = {0x56, 0x5A, 0x09};
+        private static final ByteBuf PREFIX = wrappedBuffer(new byte[]{0x56, 0x5A, 0x09});
 
         public TestVZGP1PackageDecoder() {
             super(PREFIX);
