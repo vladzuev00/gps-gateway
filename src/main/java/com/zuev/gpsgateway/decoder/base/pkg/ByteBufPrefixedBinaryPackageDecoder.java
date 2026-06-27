@@ -2,6 +2,8 @@ package com.zuev.gpsgateway.decoder.base.pkg;
 
 import io.netty.buffer.ByteBuf;
 
+import java.util.Objects;
+
 public abstract class ByteBufPrefixedBinaryPackageDecoder extends PrefixedBinaryPackageDecoder<ByteBuf> {
 
     public ByteBufPrefixedBinaryPackageDecoder(ByteBuf prefix) {
@@ -20,6 +22,6 @@ public abstract class ByteBufPrefixedBinaryPackageDecoder extends PrefixedBinary
 
     @Override
     protected final boolean equals(ByteBuf firstPrefix, ByteBuf secondPrefix) {
-        return firstPrefix.equals(secondPrefix);
+        return Objects.equals(firstPrefix, secondPrefix);
     }
 }
