@@ -4,11 +4,12 @@ import com.zuev.gpsgateway.model.vzgp1.VZGP1AuthPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
+import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public final class VZGP1AuthPackageDecoder extends VZGP1PackageDecoder {
-    private static final byte[] PREFIX = {0x56, 0x5A, 0x01};
+    private static final ByteBuf PREFIX = wrappedBuffer(new byte[]{0x56, 0x5A, 0x01});
     private static final int IMEI_LENGTH = 15;
 
     public VZGP1AuthPackageDecoder() {
