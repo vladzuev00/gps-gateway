@@ -5,9 +5,11 @@ import com.zuev.gpsgateway.model.vzgp1.VZGP1DataPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
+import static io.netty.buffer.Unpooled.wrappedBuffer;
+
 @Component
 public final class VZGP1DataPackageDecoder extends VZGP1PackageDecoder {
-    private static final byte[] PREFIX = {0x56, 0x5A, 0x03};
+    private static final ByteBuf PREFIX = wrappedBuffer(new byte[]{0x56, 0x5A, 0x03});
 
     private final VZGP1DataDecoder dataDecoder;
 
