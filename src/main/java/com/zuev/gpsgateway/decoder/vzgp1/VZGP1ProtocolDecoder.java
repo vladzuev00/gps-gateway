@@ -7,12 +7,10 @@ import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1DataPackageDecoder;
 import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1PingPackageDecoder;
 import com.zuev.gpsgateway.util.CRC16Util;
 import io.netty.buffer.ByteBuf;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.OptionalInt;
 
-@Component
 public final class VZGP1ProtocolDecoder extends BinaryProtocolDecoder {
     private static final int PACKAGE_PREFIX_LENGTH = 2;
     private static final int PACKAGE_TYPE_LENGTH = 1;
