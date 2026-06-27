@@ -16,7 +16,7 @@ public final class CRC16UtilTest {
         int givenToIndex = 10;
 
         int actual = CRC16Util.calculate(givenByteBuf, givenFromIndex, givenToIndex);
-        int expected = 49093;
+        int expected = 0xBFC5;
         assertEquals(expected, actual);
     }
 }
