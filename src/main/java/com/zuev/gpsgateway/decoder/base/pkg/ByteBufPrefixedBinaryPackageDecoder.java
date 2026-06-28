@@ -1,13 +1,17 @@
 package com.zuev.gpsgateway.decoder.base.pkg;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 
-import java.util.Objects;
-
-public abstract class ByteBufPrefixedBinaryPackageDecoder extends PrefixedBinaryPackageDecoder<ByteBuf> {
+public abstract class ByteBufPrefixedBinaryPackageDecoder extends PrefixedPackageDecoder<ByteBuf, ByteBuf> {
 
     public ByteBufPrefixedBinaryPackageDecoder(ByteBuf prefix) {
         super(prefix);
+    }
+
+    @Override
+    protected final boolean startsWithPrefix(ByteBuf source, ByteBuf prefix) {
+        return ByteBufUtil.equals(source, source.readerIndex(), prefix, prefix.readerIndex(), prefix.readableBytes());
     }
 
     @Override
@@ -16,12 +20,7 @@ public abstract class ByteBufPrefixedBinaryPackageDecoder extends PrefixedBinary
     }
 
     @Override
-    protected final ByteBuf getPrefix(ByteBuf source, int length) {
-        return source.slice(source.readerIndex(), length);
-    }
-
-    @Override
-    protected final boolean equals(ByteBuf firstPrefix, ByteBuf secondPrefix) {
-        return Objects.equals(firstPrefix, secondPrefix);
+    protected final ByteBuf skip(ByteBuf source, int length) {
+        return source.skipBytes(length);
     }
 }

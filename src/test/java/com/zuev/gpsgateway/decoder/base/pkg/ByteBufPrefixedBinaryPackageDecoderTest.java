@@ -12,6 +12,26 @@ public final class ByteBufPrefixedBinaryPackageDecoderTest {
     private final TestByteBufPrefixedBinaryPackageDecoder decoder = new TestByteBufPrefixedBinaryPackageDecoder();
 
     @Test
+    public void sourceShouldStartWithPrefix() {
+        ByteBuf givenSource = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
+        ByteBuf givenPrefix = wrappedBuffer(decodeHexDump("565a01"));
+
+        assertTrue(decoder.startsWithPrefix(givenSource, givenPrefix));
+        assertEquals(0, givenSource.readerIndex());
+        assertEquals(0, givenPrefix.readerIndex());
+    }
+
+    @Test
+    public void sourceShouldNotStartWithPrefix() {
+        ByteBuf givenSource = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
+        ByteBuf givenPrefix = wrappedBuffer(decodeHexDump("565a02"));
+
+        assertFalse(decoder.startsWithPrefix(givenSource, givenPrefix));
+        assertEquals(0, givenSource.readerIndex());
+        assertEquals(0, givenPrefix.readerIndex());
+    }
+
+    @Test
     public void prefixLengthShouldBeGot() {
         ByteBuf givenPrefix = wrappedBuffer(decodeHexDump("565a01"));
 
@@ -22,34 +42,13 @@ public final class ByteBufPrefixedBinaryPackageDecoderTest {
     }
 
     @Test
-    public void prefixShouldBeGot() {
+    public void sourceShouldBeSkipped() {
         ByteBuf givenSource = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
         int givenLength = 3;
 
-        ByteBuf actual = decoder.getPrefix(givenSource, givenLength);
-        ByteBuf expected = wrappedBuffer(decodeHexDump("565a01"));
-        assertEquals(expected, actual);
-        assertEquals(0, givenSource.readerIndex());
-    }
-
-    @Test
-    public void prefixesShouldBeEqual() {
-        ByteBuf givenFirstPrefix = wrappedBuffer(decodeHexDump("565a01"));
-        ByteBuf givenSecondPrefix = wrappedBuffer(decodeHexDump("565a01"));
-
-        assertTrue(decoder.equals(givenFirstPrefix, givenSecondPrefix));
-        assertEquals(0, givenFirstPrefix.readerIndex());
-        assertEquals(0, givenSecondPrefix.readerIndex());
-    }
-
-    @Test
-    public void prefixesShouldNotBeEqual() {
-        ByteBuf givenFirstPrefix = wrappedBuffer(decodeHexDump("565a01"));
-        ByteBuf givenSecondPrefix = wrappedBuffer(decodeHexDump("565a02"));
-
-        assertFalse(decoder.equals(givenFirstPrefix, givenSecondPrefix));
-        assertEquals(0, givenFirstPrefix.readerIndex());
-        assertEquals(0, givenSecondPrefix.readerIndex());
+        ByteBuf actual = decoder.skip(givenSource, givenLength);
+        assertSame(givenSource, actual);
+        assertEquals(3, actual.readerIndex());
     }
 
     private static final class TestByteBufPrefixedBinaryPackageDecoder extends ByteBufPrefixedBinaryPackageDecoder {
