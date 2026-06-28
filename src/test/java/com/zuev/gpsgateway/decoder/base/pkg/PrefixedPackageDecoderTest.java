@@ -3,8 +3,6 @@ package com.zuev.gpsgateway.decoder.base.pkg;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
-
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -49,18 +47,13 @@ public final class PrefixedPackageDecoderTest {
         }
 
         @Override
+        protected boolean startsWithPrefix(ByteBuf source, Byte prefix) {
+            return source.getByte(source.readerIndex()) == prefix;
+        }
+
+        @Override
         protected int getLength(Byte prefix) {
             return Byte.BYTES;
-        }
-
-        @Override
-        protected Byte getPrefix(ByteBuf source, int length) {
-            return source.getByte(source.readerIndex());
-        }
-
-        @Override
-        protected boolean equals(Byte firstPrefix, Byte secondPrefix) {
-            return Objects.equals(firstPrefix, secondPrefix);
         }
 
         @Override
@@ -69,10 +62,11 @@ public final class PrefixedPackageDecoderTest {
         }
 
         @Override
-        protected TestPackage decodeBody(ByteBuf body) {
+        protected Object decodeBody(ByteBuf body) {
             int number = body.readInt();
             String message = body.toString(UTF_8);
             return new TestPackage(number, message);
+
         }
     }
 }

@@ -8,9 +8,7 @@ public abstract class PrefixedPackageDecoder<PKG_SRC, PREFIX> implements Package
 
     @Override
     public final boolean isAbleDecode(PKG_SRC source) {
-        int prefixLength = getLength(prefix);
-        PREFIX sourcePrefix = getPrefix(source, prefixLength);
-        return equals(sourcePrefix, prefix);
+        return startsWithPrefix(source, prefix);
     }
 
     @Override
@@ -20,11 +18,9 @@ public abstract class PrefixedPackageDecoder<PKG_SRC, PREFIX> implements Package
         return decodeBody(body);
     }
 
+    protected abstract boolean startsWithPrefix(PKG_SRC source, PREFIX prefix);
+
     protected abstract int getLength(PREFIX prefix);
-
-    protected abstract PREFIX getPrefix(PKG_SRC source, int length);
-
-    protected abstract boolean equals(PREFIX firstPrefix, PREFIX secondPrefix);
 
     protected abstract PKG_SRC skip(PKG_SRC source, int length);
 
