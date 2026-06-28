@@ -66,7 +66,6 @@ public final class PrefixedPackageDecoderTest {
             int number = body.readInt();
             String message = body.toString(UTF_8);
             return new TestPackage(number, message);
-
         }
     }
 }
