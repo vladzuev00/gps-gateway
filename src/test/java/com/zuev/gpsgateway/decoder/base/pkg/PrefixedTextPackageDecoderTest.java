@@ -8,6 +8,22 @@ public final class PrefixedTextPackageDecoderTest {
     private final TestPrefixedTextPackageDecoder decoder = new TestPrefixedTextPackageDecoder();
 
     @Test
+    public void sourceShouldStartWithPrefix() {
+        String givenSource = "#TEST#155;43";
+        String prefix = "#TEST#";
+
+        assertTrue(decoder.startsWithPrefix(givenSource, prefix));
+    }
+
+    @Test
+    public void sourceShouldNotStartWithPrefix() {
+        String givenSource = "#TEST#155;43";
+        String prefix = "#TEST2#";
+
+        assertFalse(decoder.startsWithPrefix(givenSource, prefix));
+    }
+
+    @Test
     public void prefixLengthShouldBeGot() {
         String givenPrefix = "#TEST#";
 
@@ -17,33 +33,7 @@ public final class PrefixedTextPackageDecoderTest {
     }
 
     @Test
-    public void prefixShouldBeGot() {
-        String givenSource = "#TEST#155;43";
-        int givenLength = 6;
-
-        String actual = decoder.getPrefix(givenSource, givenLength);
-        String expected = "#TEST#";
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void prefixesShouldBeEqual() {
-        String givenFirstPrefix = "#FIRST#";
-        String givenSecondPrefix = "#FIRST#";
-
-        assertTrue(decoder.equals(givenFirstPrefix, givenSecondPrefix));
-    }
-
-    @Test
-    public void prefixesShouldNotBeEqual() {
-        String givenFirstPrefix = "#FIRST#";
-        String givenSecondPrefix = "#SECOND#";
-
-        assertFalse(decoder.equals(givenFirstPrefix, givenSecondPrefix));
-    }
-
-    @Test
-    public void charsShouldBeSkipped() {
+    public void sourceShouldBeSkipped() {
         String givenSource = "#TEST#155;43";
         int givenLength = 6;
 
