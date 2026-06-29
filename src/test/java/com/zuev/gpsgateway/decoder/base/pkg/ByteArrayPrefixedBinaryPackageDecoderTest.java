@@ -8,8 +8,8 @@ import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class ByteBufPrefixedBinaryPackageDecoderTest {
-    private final TestByteBufPrefixedBinaryPackageDecoder decoder = new TestByteBufPrefixedBinaryPackageDecoder();
+public final class ByteArrayPrefixedBinaryPackageDecoderTest {
+    private final TestByteArrayPrefixedBinaryPackageDecoder decoder = new TestByteArrayPrefixedBinaryPackageDecoder();
 
     @Test
     public void sourceShouldStartWithPrefix() {
@@ -51,9 +51,9 @@ public final class ByteBufPrefixedBinaryPackageDecoderTest {
         assertEquals(3, actual.readerIndex());
     }
 
-    private static final class TestByteBufPrefixedBinaryPackageDecoder extends ByteBufPrefixedBinaryPackageDecoder {
+    private static final class TestByteArrayPrefixedBinaryPackageDecoder extends ByteArrayPrefixedBinaryPackageDecoder {
 
-        public TestByteBufPrefixedBinaryPackageDecoder() {
+        public TestByteArrayPrefixedBinaryPackageDecoder() {
             super(EMPTY_BUFFER);
         }
 
