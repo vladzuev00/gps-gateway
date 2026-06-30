@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
-import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,31 +13,28 @@ public final class ByteArrayPrefixedBinaryPackageDecoderTest {
     @Test
     public void sourceShouldStartWithPrefix() {
         ByteBuf givenSource = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
-        ByteBuf givenPrefix = wrappedBuffer(decodeHexDump("565a01"));
+        byte[] givenPrefix = {0x56, 0x5a, 0x01};
 
         assertTrue(decoder.startsWithPrefix(givenSource, givenPrefix));
         assertEquals(0, givenSource.readerIndex());
-        assertEquals(0, givenPrefix.readerIndex());
     }
 
     @Test
     public void sourceShouldNotStartWithPrefix() {
         ByteBuf givenSource = wrappedBuffer(decodeHexDump("565a0100143535353535353535"));
-        ByteBuf givenPrefix = wrappedBuffer(decodeHexDump("565a02"));
+        byte[] givenPrefix = {0x56, 0x5a, 0x02};
 
         assertFalse(decoder.startsWithPrefix(givenSource, givenPrefix));
         assertEquals(0, givenSource.readerIndex());
-        assertEquals(0, givenPrefix.readerIndex());
     }
 
     @Test
     public void prefixLengthShouldBeGot() {
-        ByteBuf givenPrefix = wrappedBuffer(decodeHexDump("565a01"));
+        byte[] givenPrefix = {0x56, 0x5a, 0x01};
 
         int actual = decoder.getLength(givenPrefix);
         int expected = 3;
         assertEquals(expected, actual);
-        assertEquals(0, givenPrefix.readerIndex());
     }
 
     @Test
@@ -54,7 +50,7 @@ public final class ByteArrayPrefixedBinaryPackageDecoderTest {
     private static final class TestByteArrayPrefixedBinaryPackageDecoder extends ByteArrayPrefixedBinaryPackageDecoder {
 
         public TestByteArrayPrefixedBinaryPackageDecoder() {
-            super(EMPTY_BUFFER);
+            super(new byte[]{});
         }
 
         @Override
