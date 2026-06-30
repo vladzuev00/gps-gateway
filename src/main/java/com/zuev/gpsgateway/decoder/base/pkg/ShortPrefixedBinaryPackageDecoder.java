@@ -1,13 +1,11 @@
 package com.zuev.gpsgateway.decoder.base.pkg;
 
 import io.netty.buffer.ByteBuf;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public abstract class ShortPrefixedBinaryPackageDecoder implements PackageDecoder<ByteBuf> {
     private final short prefix;
-
-    public ShortPrefixedBinaryPackageDecoder(short prefix) {
-        this.prefix = prefix;
-    }
 
     @Override
     public final boolean isAbleDecode(ByteBuf source) {
