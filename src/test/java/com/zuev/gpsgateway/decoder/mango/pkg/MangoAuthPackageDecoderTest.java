@@ -1,6 +1,6 @@
-package com.zuev.gpsgateway.decoder.vzgp1.pkg;
+package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.model.vzgp1.VZGP1AuthPackage;
+import com.zuev.gpsgateway.model.mango.MangoAuthPackage;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 
@@ -8,15 +8,15 @@ import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class VZGP1AuthPackageDecoderTest {
-    private final VZGP1AuthPackageDecoder decoder = new VZGP1AuthPackageDecoder();
+public final class MangoAuthPackageDecoderTest {
+    private final MangoAuthPackageDecoder decoder = new MangoAuthPackageDecoder();
 
     @Test
     public void payloadShouldBeDecoded() {
         ByteBuf givenPayload = wrappedBuffer(decodeHexDump("3535353535353535353535353535350474657374"));
 
-        VZGP1AuthPackage actual = decoder.decodePayload(givenPayload);
-        VZGP1AuthPackage expected = new VZGP1AuthPackage("555555555555555", "test");
+        MangoAuthPackage actual = decoder.decodePayload(givenPayload);
+        MangoAuthPackage expected = new MangoAuthPackage("555555555555555", "test");
         assertEquals(expected, actual);
         assertEquals(0, givenPayload.readableBytes());
     }

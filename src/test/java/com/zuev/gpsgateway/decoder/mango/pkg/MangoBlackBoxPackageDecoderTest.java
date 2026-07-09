@@ -1,7 +1,7 @@
-package com.zuev.gpsgateway.decoder.vzgp1.pkg;
+package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.model.vzgp1.VZGP1BlackBoxPackage;
-import com.zuev.gpsgateway.model.vzgp1.VZGP1Data;
+import com.zuev.gpsgateway.model.mango.MangoBlackBoxPackage;
+import com.zuev.gpsgateway.model.mango.MangoData;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,28 +19,28 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class VZGP1BlackBoxPackageDecoderTest {
+public final class MangoBlackBoxPackageDecoderTest {
 
     @Mock
-    private VZGP1DataDecoder mockedDataDecoder;
+    private MangoDataDecoder mockedDataDecoder;
 
-    private VZGP1BlackBoxPackageDecoder decoder;
+    private MangoBlackBoxPackageDecoder decoder;
 
     @BeforeEach
     public void initializeDecoder() {
-        decoder = new VZGP1BlackBoxPackageDecoder(mockedDataDecoder);
+        decoder = new MangoBlackBoxPackageDecoder(mockedDataDecoder);
     }
 
     @Test
     public void payloadShouldBeDecoded() {
         ByteBuf givenPayload = wrappedBuffer(decodeHexDump("0002"));
 
-        VZGP1Data givenFirstData = mock(VZGP1Data.class);
-        VZGP1Data givenSecondData = mock(VZGP1Data.class);
+        MangoData givenFirstData = mock(MangoData.class);
+        MangoData givenSecondData = mock(MangoData.class);
         when(mockedDataDecoder.read(same(givenPayload))).thenReturn(givenFirstData).thenReturn(givenSecondData);
 
-        VZGP1BlackBoxPackage actual = decoder.decodePayload(givenPayload);
-        VZGP1BlackBoxPackage expected = new VZGP1BlackBoxPackage(List.of(givenFirstData, givenSecondData));
+        MangoBlackBoxPackage actual = decoder.decodePayload(givenPayload);
+        MangoBlackBoxPackage expected = new MangoBlackBoxPackage(List.of(givenFirstData, givenSecondData));
         assertEquals(expected, actual);
     }
 }

@@ -1,17 +1,17 @@
-package com.zuev.gpsgateway.decoder.vzgp1;
+package com.zuev.gpsgateway.decoder.mango;
 
 import com.zuev.gpsgateway.decoder.base.BinaryProtocolDecoder;
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1AuthPackageDecoder;
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1BlackBoxPackageDecoder;
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1DataPackageDecoder;
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1PingPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoAuthPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoBlackBoxPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoDataPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoPingPackageDecoder;
 import com.zuev.gpsgateway.util.CRC16Util;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 import java.util.OptionalInt;
 
-public final class VZGP1ProtocolDecoder extends BinaryProtocolDecoder {
+public final class MangoProtocolDecoder extends BinaryProtocolDecoder {
     private static final int PACKAGE_PREFIX_LENGTH = 2;
     private static final int PACKAGE_TYPE_LENGTH = 1;
     private static final int PAYLOAD_LENGTH_LENGTH = 2;
@@ -19,10 +19,10 @@ public final class VZGP1ProtocolDecoder extends BinaryProtocolDecoder {
     private static final int EMPTY_PACKAGE_LENGTH = PACKAGE_PREFIX_LENGTH + PACKAGE_TYPE_LENGTH + PAYLOAD_LENGTH_LENGTH
             + CHECKSUM_LENGTH;
 
-    public VZGP1ProtocolDecoder(VZGP1AuthPackageDecoder authPackageDecoder,
-                                VZGP1PingPackageDecoder pingPackageDecoder,
-                                VZGP1DataPackageDecoder dataPackageDecoder,
-                                VZGP1BlackBoxPackageDecoder blackBoxPackageDecoder) {
+    public MangoProtocolDecoder(MangoAuthPackageDecoder authPackageDecoder,
+                                MangoPingPackageDecoder pingPackageDecoder,
+                                MangoDataPackageDecoder dataPackageDecoder,
+                                MangoBlackBoxPackageDecoder blackBoxPackageDecoder) {
         super(List.of(authPackageDecoder, pingPackageDecoder, dataPackageDecoder, blackBoxPackageDecoder));
     }
 

@@ -1,9 +1,9 @@
-package com.zuev.gpsgateway.decoder.vzgp1;
+package com.zuev.gpsgateway.decoder.mango;
 
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1AuthPackageDecoder;
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1BlackBoxPackageDecoder;
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1DataPackageDecoder;
-import com.zuev.gpsgateway.decoder.vzgp1.pkg.VZGP1PingPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoAuthPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoBlackBoxPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoDataPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoPingPackageDecoder;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,25 +20,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
-public final class VZGP1ProtocolDecoderTest {
+public final class MangoProtocolDecoderTest {
 
     @Mock
-    private VZGP1AuthPackageDecoder mockedAuthPackageDecoder;
+    private MangoAuthPackageDecoder mockedAuthPackageDecoder;
 
     @Mock
-    private VZGP1PingPackageDecoder mockedPingPackageDecoder;
+    private MangoPingPackageDecoder mockedPingPackageDecoder;
 
     @Mock
-    private VZGP1DataPackageDecoder mockedDataPackageDecoder;
+    private MangoDataPackageDecoder mockedDataPackageDecoder;
 
     @Mock
-    private VZGP1BlackBoxPackageDecoder mockedBlackBoxPackageDecoder;
+    private MangoBlackBoxPackageDecoder mockedBlackBoxPackageDecoder;
 
-    private VZGP1ProtocolDecoder decoder;
+    private MangoProtocolDecoder decoder;
 
     @BeforeEach
     public void initializeDecoder() {
-        decoder = new VZGP1ProtocolDecoder(
+        decoder = new MangoProtocolDecoder(
                 mockedAuthPackageDecoder,
                 mockedPingPackageDecoder,
                 mockedDataPackageDecoder,

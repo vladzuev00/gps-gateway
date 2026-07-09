@@ -1,7 +1,7 @@
-package com.zuev.gpsgateway.decoder.vzgp1.pkg;
+package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.model.vzgp1.VZGP1Data;
-import com.zuev.gpsgateway.model.vzgp1.VZGP1DataPackage;
+import com.zuev.gpsgateway.model.mango.MangoData;
+import com.zuev.gpsgateway.model.mango.MangoDataPackage;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,27 +14,27 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public final class VZGP1DataPackageDecoderTest {
+public final class MangoDataPackageDecoderTest {
 
     @Mock
-    private VZGP1DataDecoder mockedDataDecoder;
+    private MangoDataDecoder mockedDataDecoder;
 
-    private VZGP1DataPackageDecoder decoder;
+    private MangoDataPackageDecoder decoder;
 
     @BeforeEach
     public void initializeDecoder() {
-        decoder = new VZGP1DataPackageDecoder(mockedDataDecoder);
+        decoder = new MangoDataPackageDecoder(mockedDataDecoder);
     }
 
     @Test
     public void payloadShouldBeDecoded() {
         ByteBuf givenPayload = mock(ByteBuf.class);
 
-        VZGP1Data givenData = mock(VZGP1Data.class);
+        MangoData givenData = mock(MangoData.class);
         when(mockedDataDecoder.read(same(givenPayload))).thenReturn(givenData);
 
-        VZGP1DataPackage actual = decoder.decodePayload(givenPayload);
-        VZGP1DataPackage expected = new VZGP1DataPackage(givenData);
+        MangoDataPackage actual = decoder.decodePayload(givenPayload);
+        MangoDataPackage expected = new MangoDataPackage(givenData);
         assertEquals(expected, actual);
 
         verifyNoInteractions(givenPayload);

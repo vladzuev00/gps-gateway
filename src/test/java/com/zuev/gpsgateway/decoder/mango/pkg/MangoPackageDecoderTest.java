@@ -1,4 +1,4 @@
-package com.zuev.gpsgateway.decoder.vzgp1.pkg;
+package com.zuev.gpsgateway.decoder.mango.pkg;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
@@ -8,8 +8,8 @@ import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class VZGP1PackageDecoderTest {
-    private final TestVZGP1PackageDecoder decoder = new TestVZGP1PackageDecoder();
+public final class MangoPackageDecoderTest {
+    private final TestMangoPackageDecoder decoder = new TestMangoPackageDecoder();
 
     @Test
     public void bodyShouldBeDecoded() {
@@ -24,10 +24,10 @@ public final class VZGP1PackageDecoderTest {
     private record TestPackage(int number, String message) {
     }
 
-    private static final class TestVZGP1PackageDecoder extends VZGP1PackageDecoder {
+    private static final class TestMangoPackageDecoder extends MangoPackageDecoder {
         private static final byte[] PREFIX = {0x56, 0x5A, 0x09};
 
-        public TestVZGP1PackageDecoder() {
+        public TestMangoPackageDecoder() {
             super(PREFIX);
         }
 

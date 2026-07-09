@@ -1,11 +1,11 @@
-package com.zuev.gpsgateway.decoder.vzgp1.pkg;
+package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.model.vzgp1.VZGP1Data;
+import com.zuev.gpsgateway.model.mango.MangoData;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class VZGP1DataDecoder {
+public final class MangoDataDecoder {
     private static final int SPEED_PRESENT_BIT = 0x01;
     private static final int COURSE_PRESENT_BIT = 0x02;
     private static final int ALTITUDE_PRESENT_BIT = 0x04;
@@ -14,7 +14,7 @@ public final class VZGP1DataDecoder {
     private static final int IGNITION_PRESENT_BIT = 0x20;
     private static final int BATTERY_PRESENT_BIT = 0x40;
 
-    public VZGP1Data read(ByteBuf byteBuf) {
+    public MangoData read(ByteBuf byteBuf) {
         long epochMillis = byteBuf.readLong();
         double latitude = byteBuf.readDouble();
         double longitude = byteBuf.readDouble();
@@ -26,7 +26,7 @@ public final class VZGP1DataDecoder {
         Float hdop = isPresent(bitMask, HDOP_PRESENT_BIT) ? byteBuf.readFloat() : null;
         Byte ignition = isPresent(bitMask, IGNITION_PRESENT_BIT) ? byteBuf.readByte() : null;
         Byte battery = isPresent(bitMask, BATTERY_PRESENT_BIT) ? byteBuf.readByte() : null;
-        return new VZGP1Data(
+        return new MangoData(
                 epochMillis,
                 latitude,
                 longitude,

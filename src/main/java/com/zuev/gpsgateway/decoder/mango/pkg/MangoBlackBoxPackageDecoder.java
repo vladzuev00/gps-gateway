@@ -1,6 +1,6 @@
-package com.zuev.gpsgateway.decoder.vzgp1.pkg;
+package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.model.vzgp1.VZGP1BlackBoxPackage;
+import com.zuev.gpsgateway.model.mango.MangoBlackBoxPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
@@ -9,21 +9,21 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
 @Component
-public final class VZGP1BlackBoxPackageDecoder extends VZGP1PackageDecoder {
+public final class MangoBlackBoxPackageDecoder extends MangoPackageDecoder {
     private static final byte[] PREFIX = {0x56, 0x5A, 0x04};
 
-    private final VZGP1DataDecoder dataDecoder;
+    private final MangoDataDecoder dataDecoder;
 
-    public VZGP1BlackBoxPackageDecoder(VZGP1DataDecoder dataDecoder) {
+    public MangoBlackBoxPackageDecoder(MangoDataDecoder dataDecoder) {
         super(PREFIX);
         this.dataDecoder = dataDecoder;
     }
 
     @Override
-    protected VZGP1BlackBoxPackage decodePayload(ByteBuf payload) {
+    protected MangoBlackBoxPackage decodePayload(ByteBuf payload) {
         int dataCount = payload.readUnsignedShort();
         return range(0, dataCount)
                 .mapToObj(i -> dataDecoder.read(payload))
-                .collect(collectingAndThen(toList(), VZGP1BlackBoxPackage::new));
+                .collect(collectingAndThen(toList(), MangoBlackBoxPackage::new));
     }
 }
