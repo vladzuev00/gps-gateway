@@ -1,6 +1,6 @@
-package com.zuev.gpsgateway.model.vzgp1;
+package com.zuev.gpsgateway.model.mango;
 
-public record VZGP1Data(long epochMillis,
+public record MangoData(long epochMillis,
                         double latitude,
                         double longitude,
                         Short speed,
