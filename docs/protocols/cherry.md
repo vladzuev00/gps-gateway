@@ -20,7 +20,7 @@ Cherry is a text-based GPS tracker protocol.
 - **Algorithm:** sum of the unsigned byte values of the package, from the first byte of
   `@TYPE@` up to and including the last `;` before the checksum field (the checksum
   digits and the terminator are excluded from the sum).
-- **Representation:** decimal digits (ASCII), e.g. `1978`.
+- **Representation:** decimal digits, e.g. `1978`.
 - **Presence:** required for `@AUTH@`, `@DATA@`, `@BLACKBOX@`. **Not present** for
   `@PING@` — a ping package ends immediately with the terminator, no checksum field.
 
