@@ -48,8 +48,6 @@ Example:
 @PING@\0
 ```
 
-No fields, no checksum.
-
 ### `@DATA@` — single location point
 
 ```
@@ -70,10 +68,10 @@ No fields, no checksum.
 | `ignition` | byte | yes |
 | `battery` | byte | yes |
 
-`date`/`time` are UTC, zero-padded, no separators within each field.
+`date`/`time` are UTC, no separators within each field.
 Optional fields that are not present are encoded as an empty string.
 
-Example (2023-11-14 22:13:20 UTC):
+Example:
 ```
 @DATA@141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;3037\0
 ```
@@ -92,7 +90,7 @@ Each point contributes the same 11 fields as `@DATA@` (`date` through `battery`)
 the total field count is `1 + 11 * count`. The whole package is still a single flat
 `;`-separated list — there is no additional nesting delimiter between points.
 
-Example (2 points, second point has only the mandatory fields):
+Example (2 points):
 ```
 @BLACKBOX@2;141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;141123;221325;55.76;37.63;;;;;;;;5216\0
 ```
