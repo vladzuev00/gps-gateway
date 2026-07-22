@@ -11,7 +11,7 @@ Mango is a binary GPS tracker protocol.
 | Part | Description |
 |---|---|
 | `prefix` | Fixed 2-byte protocol prefix: `56 5A` |
-| `type` | 1-byte package type, e.g. `01` (AUTH), `02` (PING), `03` (DATA), `04` (BLACKBOX) |
+| `type` | 1-byte package type |
 | `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes |
 | `payload` | Type-specific fields |
 | `checksum` | CRC16 of `type` + `payload length` + `payload` |
