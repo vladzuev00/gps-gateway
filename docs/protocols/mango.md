@@ -27,7 +27,7 @@ Mango is a binary GPS tracker protocol.
 
 ## Package types
 
-### AUTH (`56 5A 01`) — authentication
+### `56 5A 01` — authentication
 
 | Field | Type | Length |
 |---|---|---|
@@ -35,12 +35,12 @@ Mango is a binary GPS tracker protocol.
 | `passwordLength` | unsigned byte | 1 byte |
 | `password` | ASCII string | `passwordLength` bytes |
 
-Example (`imei` = `555555555555555`, `password` = `test`):
+Example (`imei` = `555555555555555`, `password` = `pass`):
 ```
-56 5a 01 0014 353535353535353535353535353535 04 74657374 04f4
+56 5a 01 0014 353535353535353535353535353535 04 70617373 04eb
 ```
 
-### PING (`56 5A 02`) — keep-alive
+### `56 5A 02` — keep-alive
 
 Empty payload.
 
@@ -49,7 +49,7 @@ Example:
 56 5a 02 0000 0002
 ```
 
-### DATA (`56 5A 03`) — single location point
+### `56 5A 03` — single location point
 
 Payload is a single data point (see [Data point](#data-point) below).
 
@@ -58,7 +58,7 @@ Example:
 56 5a 03 0028 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0d14
 ```
 
-### BLACKBOX (`56 5A 04`) — batch of location points
+### `56 5A 04` — batch of location points
 
 | Field | Type | Length |
 |---|---|---|
