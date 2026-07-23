@@ -80,21 +80,21 @@ Example (2 points):
 | `epochMillis` | long | 8 | no |
 | `latitude` | double | 8 | no |
 | `longitude` | double | 8 | no |
-| presence bitmask | byte | 1 | no |
-| `speed` | short | 2 | yes — bit `0x01` |
-| `course` | short | 2 | yes — bit `0x02` |
-| `altitude` | float | 4 | yes — bit `0x04` |
-| `satelliteCount` | byte | 1 | yes — bit `0x08` |
-| `hdop` | float | 4 | yes — bit `0x10` |
-| `ignition` | byte | 1 | yes — bit `0x20` |
-| `battery` | byte | 1 | yes — bit `0x40` |
+| `presence bitmask` | byte | 1 | no |
+| `speed` | short | 2 | yes — `presence bitmask` bit `0x01` |
+| `course` | short | 2 | yes — `presence bitmask` bit `0x02` |
+| `altitude` | float | 4 | yes — `presence bitmask` bit `0x04` |
+| `satelliteCount` | byte | 1 | yes — `presence bitmask` bit `0x08` |
+| `hdop` | float | 4 | yes — `presence bitmask` bit `0x10` |
+| `ignition` | byte | 1 | yes — `presence bitmask` bit `0x20` |
+| `battery` | byte | 1 | yes — `presence bitmask` bit `0x40` |
 
-All multi-byte numeric fields are big-endian. `epochMillis` is UTC milliseconds since the Unix
-epoch. An optional field is present in the payload only if its bit is set in the presence
+All multi-byte numeric fields are big-endian. `epochMillis` is UTC milliseconds since
+January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the presence
 bitmask; absent fields are omitted entirely rather than zero-filled, so the point length varies
 with which bits are set.
 
-Example (2023-11-14 22:13:20 UTC, all optional fields present):
+Example:
 ```
 0000018bcfe56800 404be00000000000 4042cf5c28f5c28f 7f 003c 00b4 43168000 08 3f99999a 01 5f
 ```
