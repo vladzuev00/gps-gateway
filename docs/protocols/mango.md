@@ -23,7 +23,7 @@ Mango is a binary GPS tracker protocol.
 - **Coverage:** from the first byte after `prefix` (i.e. `type`) up to and including the last
   byte of `payload`. The 2-byte `prefix` and the checksum field itself are excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
-- **Presence:** required for every package type, including `PING`.
+- **Presence:** required for every package type.
 
 ## Package types
 
