@@ -43,12 +43,11 @@ public final class MangoProtocolDecoder extends BinaryProtocolDecoder {
         return OptionalInt.of(byteBuf.getUnsignedShort(byteBuf.writerIndex() - Short.BYTES));
     }
 
-    //TODO check and refactor
     @Override
     protected int calculateChecksum(ByteBuf byteBuf) {
         int sum = 0;
         for (int i = byteBuf.readerIndex() + PACKAGE_PREFIX_LENGTH; i < byteBuf.writerIndex() - CHECKSUM_LENGTH; i++) {
-            sum += byteBuf.getByte(i) & 0xFF;
+            sum += byteBuf.getUnsignedByte(i);
         }
         return sum & 0xFFFF;
     }

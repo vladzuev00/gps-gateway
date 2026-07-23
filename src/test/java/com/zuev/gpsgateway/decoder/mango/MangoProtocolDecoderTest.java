@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-//TODO check and refactor
 @ExtendWith(MockitoExtension.class)
 public final class MangoProtocolDecoderTest {
 
@@ -124,6 +123,7 @@ public final class MangoProtocolDecoderTest {
         int actual = decoder.calculateChecksum(givenByteBuf);
         int expected = 0x0002;
         assertEquals(expected, actual);
+        assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(
                 mockedAuthPackageDecoder,
