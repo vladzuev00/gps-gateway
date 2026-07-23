@@ -10,7 +10,7 @@ Lime is a binary GPS tracker protocol.
 
 | Part | Description |
 |---|---|
-| `type` | 2-byte big-endian package type identifier; used directly as the package prefix |
+| `type` | 2-byte big-endian package type identifier |
 | `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes |
 | `payload` | Type-specific fields |
 | `checksum` | CRC-16/MODBUS over `type` + `payload length` + `payload` |
