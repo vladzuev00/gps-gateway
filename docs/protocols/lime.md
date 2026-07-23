@@ -17,13 +17,12 @@ Lime is a binary GPS tracker protocol.
 
 ## Checksum
 
-- **Algorithm:** CRC-16/MODBUS — polynomial `0x8005` (reflected form `0xA001`), initial value
-  `0xFFFF`, input and output reflected, no final XOR.
+- **Algorithm:** CRC-16/MODBUS — polynomial `0x8005`, initial value `0xFFFF`, input and output
+  reflected, no final XOR.
 - **Coverage:** from the first byte of the package (i.e. `type`) up to and including the last
-  byte of `payload`. Only the checksum field itself is excluded — there is no protocol prefix
-  to exclude.
+  byte of `payload`. Only the checksum field itself is excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
-- **Presence:** required for every package type, including `PING`.
+- **Presence:** required for every package type.
 
 ## Package types
 
