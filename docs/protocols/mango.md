@@ -68,7 +68,7 @@ Example:
 There is no delimiter between points; each point is simply appended after the previous one, so
 its own field presence bitmask determines where the next point starts.
 
-Example (2 points, second point has only the mandatory fields):
+Example (2 points):
 ```
 56 5a 04 0043 0002 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0000018bcfe57b88404be147ae147ae14042d0a3d70a3d7100 17c9
 ```
