@@ -10,8 +10,8 @@ Lime is a binary GPS tracker protocol.
 
 | Part | Description |
 |---|---|
-| `type` | 2-byte little-endian package type identifier; used directly as the package prefix |
-| `payload length` | Unsigned 2-byte little-endian length of `payload`, in bytes |
+| `type` | 2-byte big-endian package type identifier; used directly as the package prefix |
+| `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes |
 | `payload` | Type-specific fields |
 | `checksum` | CRC-16/MODBUS over `type` + `payload length` + `payload` |
 
@@ -22,12 +22,12 @@ Lime is a binary GPS tracker protocol.
 - **Coverage:** from the first byte of the package (i.e. `type`) up to and including the last
   byte of `payload`. Only the checksum field itself is excluded — there is no protocol prefix
   to exclude.
-- **Representation:** 2 bytes, little-endian, unsigned.
+- **Representation:** 2 bytes, big-endian, unsigned.
 - **Presence:** required for every package type, including `PING`.
 
 ## Package types
 
-### `01 00` — authentication
+### `00 01` — authentication
 
 | Field | Type | Length |
 |---|---|---|
@@ -36,19 +36,19 @@ Lime is a binary GPS tracker protocol.
 
 Example (`deviceId` = `305419896`, `authToken` = `2596069104`):
 ```
-0100 0800 78563412 f0debc9a 374a
+0001 0008 12345678 9abcdef0 cce8
 ```
 
-### `02 00` — keep-alive
+### `00 02` — keep-alive
 
 Empty payload.
 
 Example:
 ```
-0200 0000 019c
+0002 0000 e4a1
 ```
 
-### `03 00` — single location point
+### `00 03` — single location point
 
 | Field | Type | Length |
 |---|---|---|
@@ -65,10 +65,10 @@ Example:
 Example (2023-11-14 22:13:20 UTC, `latitude` = `55.75`, `longitude` = `37.62`, `speed` = `60`,
 heading = `180`°, `satellites` = `8`):
 ```
-0300 0f00 00f15365 00005f42 e17a1642 3c5a08 88e2
+0003 000f 6553f100 425f0000 42167ae1 3c5a08 fa3c
 ```
 
-### `04 00` — batch of location points
+### `00 04` — batch of location points
 
 | Field | Type | Length |
 |---|---|---|
@@ -80,5 +80,5 @@ so each point is always 15 bytes and the batch payload length is always `2 + 15 
 
 Example (2 points):
 ```
-0400 2000 0200 00f15365 00005f42 e17a1642 3c5a08 2cf25365 3d0a5f42 1f851642 2d2d07 0b25
+0004 0020 0002 6553f100 425f0000 42167ae1 3c5a08 6553f22c 425f0a3d 4216851f 2d2d07 2dc0
 ```
