@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+//TODO check and refactor
 @ExtendWith(MockitoExtension.class)
 public final class MangoProtocolDecoderTest {
 
@@ -48,7 +49,7 @@ public final class MangoProtocolDecoderTest {
 
     @Test
     public void completePackageEndShouldBeFound() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a020000802b565a01"));
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a0200000002565a01"));
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isPresent());
@@ -99,12 +100,12 @@ public final class MangoProtocolDecoderTest {
 
     @Test
     public void checksumShouldBeGot() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a020000802b"));
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a0200000002"));
 
         OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
         assertTrue(optionalActual.isPresent());
         int actual = optionalActual.getAsInt();
-        int expected = 0x802B;
+        int expected = 0x0002;
         assertEquals(expected, actual);
         assertEquals(0, givenByteBuf.readerIndex());
 
@@ -118,10 +119,10 @@ public final class MangoProtocolDecoderTest {
 
     @Test
     public void checksumShouldBeCalculated() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a020000802b"));
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a0200000002"));
 
         int actual = decoder.calculateChecksum(givenByteBuf);
-        int expected = 0x802B;
+        int expected = 0x0002;
         assertEquals(expected, actual);
 
         verifyNoInteractions(

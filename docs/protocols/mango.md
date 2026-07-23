@@ -1,3 +1,4 @@
+[//]: # (TODO check and refactor)
 # Mango Protocol
 
 Mango is a binary GPS tracker protocol.
@@ -14,12 +15,12 @@ Mango is a binary GPS tracker protocol.
 | `type` | 1-byte package type |
 | `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes |
 | `payload` | Type-specific fields |
-| `checksum` | CRC16 of `type` + `payload length` + `payload` |
+| `checksum` | sum of `type` + `payload length` + `payload`, modulo 65536 |
 
 ## Checksum
 
-- **Algorithm:** CRC16, polynomial `0x8005`, initial value `0x0000`, MSB-first, no input/output
-  reflection.
+- **Algorithm:** sum of the unsigned byte values of the package, modulo 65536 (i.e. the low
+  16 bits of the sum).
 - **Coverage:** from the first byte after `prefix` (i.e. `type`) up to and including the last
   byte of `payload`. The 2-byte `prefix` and the checksum field itself are excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
@@ -37,7 +38,7 @@ Mango is a binary GPS tracker protocol.
 
 Example (`imei` = `555555555555555`, `password` = `test`):
 ```
-56 5a 01 0014 353535353535353535353535353535 04 74657374 12c4
+56 5a 01 0014 353535353535353535353535353535 04 74657374 04f4
 ```
 
 ### PING (`56 5A 02`) — keep-alive
@@ -46,7 +47,7 @@ Empty payload.
 
 Example:
 ```
-56 5a 02 0000 802b
+56 5a 02 0000 0002
 ```
 
 ### DATA (`56 5A 03`) — single location point
@@ -55,7 +56,7 @@ Payload is a single data point (see [Data point](#data-point) below).
 
 Example:
 ```
-56 5a 03 0028 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f d5df
+56 5a 03 0028 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0d14
 ```
 
 ### BLACKBOX (`56 5A 04`) — batch of location points
@@ -70,7 +71,7 @@ its own field presence bitmask determines where the next point starts.
 
 Example (2 points, second point has only the mandatory fields):
 ```
-56 5a 04 0043 0002 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0000018bcfe57b88404be147ae147ae14042d0a3d70a3d7100 cd05
+56 5a 04 0043 0002 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0000018bcfe57b88404be147ae147ae14042d0a3d70a3d7100 17c9
 ```
 
 ## Data point

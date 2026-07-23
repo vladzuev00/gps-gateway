@@ -5,7 +5,6 @@ import com.zuev.gpsgateway.decoder.mango.pkg.MangoAuthPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoBlackBoxPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoDataPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoPingPackageDecoder;
-import com.zuev.gpsgateway.util.CRC16Util;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
@@ -44,12 +43,13 @@ public final class MangoProtocolDecoder extends BinaryProtocolDecoder {
         return OptionalInt.of(byteBuf.getUnsignedShort(byteBuf.writerIndex() - Short.BYTES));
     }
 
+    //TODO check and refactor
     @Override
     protected int calculateChecksum(ByteBuf byteBuf) {
-        return CRC16Util.calculate(
-                byteBuf,
-                byteBuf.readerIndex() + PACKAGE_PREFIX_LENGTH,
-                byteBuf.writerIndex() - CHECKSUM_LENGTH
-        );
+        int sum = 0;
+        for (int i = byteBuf.readerIndex() + PACKAGE_PREFIX_LENGTH; i < byteBuf.writerIndex() - CHECKSUM_LENGTH; i++) {
+            sum += byteBuf.getByte(i) & 0xFF;
+        }
+        return sum & 0xFFFF;
     }
 }
