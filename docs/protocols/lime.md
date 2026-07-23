@@ -30,12 +30,11 @@ Lime is a binary GPS tracker protocol.
 
 | Field | Type | Length |
 |---|---|---|
-| `deviceId` | unsigned int | 4 bytes |
-| `authToken` | unsigned int | 4 bytes |
+| `imei` | string | 15 bytes |
 
-Example (`deviceId` = `305419896`, `authToken` = `2596069104`):
+Example:
 ```
-0001 0008 12345678 9abcdef0 cce8
+0001 000f 353535353535353535353535353535 c983
 ```
 
 ### `00 02` — keep-alive
