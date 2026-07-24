@@ -15,13 +15,13 @@ Lemon is a binary GPS tracker protocol.
 
 ## Connection states
 
-- **Awaiting auth** — initial state, the first package received on a new connection is always
-  authentication. After it is processed, the connection moves to *awaiting data*.
-- **Awaiting data** — every package after that is data, for the lifetime of the connection:
-  - `payload length` = `0` → keep-alive.
-  - `payload length` > `0` → one or more location points back-to-back.
+- **Awaiting auth** — initial state. The first package received on a new connection is always
+  authentication. After it is processed successfully, the connection moves to the *awaiting
+  data* state.
+- **Awaiting data** — every package after that is either a data or a keep-alive package, for
+  the lifetime of the connection.
 
-## First package — authentication
+## Authentication package
 
 | Field | Type | Length |
 |---|---|---|
@@ -34,7 +34,7 @@ Example:
 0f00 353535353535353535353535353535
 ```
 
-## Data package — keep-alive
+## Keep-alive package
 
 `payload length` is `0`, no fields.
 
@@ -43,7 +43,7 @@ Example:
 0000
 ```
 
-## Data package — location points
+## Location points package
 
 `payload` is `point count` location points, each with the same fixed set of fields:
 
