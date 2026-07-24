@@ -5,41 +5,48 @@ Lemon is a binary GPS tracker protocol.
 ## Package structure
 
 ```
-[1B type][2B payload length][payload]
+[2B payload length][payload]
 ```
 
 | Part | Description |
 |---|---|
-| `type` | 1-byte package type identifier |
 | `payload length` | Unsigned 2-byte little-endian length of `payload`, in bytes |
-| `payload` | Type-specific fields |
+| `payload` | Meaning depends on connection state — see below |
 
-All multi-byte numeric fields, including `payload length`, are little-endian. There is no
-checksum.
+## Connection state machine
 
-## Package types
+- **Awaiting auth** (initial state) — the first package received on a new connection is always
+  authentication. After it is decoded, the connection moves to *awaiting data*.
+- **Awaiting data** — every package after that is data, for the lifetime of the connection:
+  - `payload length` = `0` → keep-alive.
+  - `payload length` > `0` → one or more location points back-to-back. Each point is a fixed 19
+    bytes, so `point count = payload length / 19` (`payload length` must be a multiple of 19).
 
-### `00` — authentication
+## First package — authentication
 
 | Field | Type | Length |
 |---|---|---|
 | `imei` | string | 15 bytes |
 
-Example:
-```
-00 0f00 353535353535353535353535353535
-```
-
-### `01` — keep-alive
-
-Empty payload.
+`payload length` is always `15` for this package.
 
 Example:
 ```
-01 0000
+0f00 353535353535353535353535353535
 ```
 
-### `02` — single location point
+## Data package — keep-alive
+
+`payload length` is `0`, no fields.
+
+Example:
+```
+0000
+```
+
+## Data package — location points
+
+`payload` is `point count` location points, each with the same fixed set of fields:
 
 | Field | Type | Length |
 |---|---|---|
@@ -57,19 +64,12 @@ Example:
 
 All date/time fields are in UTC.
 
-Example:
+Example (1 point):
 ```
-02 1300 e707 0b 0e 16 0d 14 00005f42 e17a1642 3c b400 08
+1300 e707 0b 0e 16 0d 14 00005f42 e17a1642 3c b400 08
 ```
-
-### `03` — batch of location points
-
-| Field | Type | Length |
-|---|---|---|
-| `count` | unsigned short | 2 bytes |
-| `points` | location point × `count` | variable |
 
 Example (2 points):
 ```
-03 2800 0200 e707 0b 0e 16 0d 14 00005f42 e17a1642 3c b400 08 e707 0b 0e 16 12 14 00005f42 e17a1642 2d 5a00 07
+2600 e707 0b 0e 16 0d 14 00005f42 e17a1642 3c b400 08 e707 0b 0e 16 12 14 00005f42 e17a1642 2d 5a00 07
 ```
