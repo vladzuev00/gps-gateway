@@ -98,3 +98,28 @@ Example:
 ```
 0000018bcfe56800 404be00000000000 4042cf5c28f5c28f 7f 003c 00b4 43168000 08 3f99999a 01 5f
 ```
+
+## Responses
+
+The server responds to every package, using the `[prefix][type][payload length][payload]`
+structure. Response `type` is the request `type` with the high bit set (`request type | 0x80`).
+
+| Request | Response | Payload |
+|---|---|---|
+| `56 5A 01` — authentication | `56 5A 81` | 1-byte status code, see below |
+| `56 5A 02` — keep-alive | `56 5A 82` | empty |
+| `56 5A 03` — single location point | `56 5A 83` | empty |
+| `56 5A 04` — batch of location points | `56 5A 84` | empty |
+
+### `56 5A 81` status codes
+
+| Code | Meaning |
+|---|---|
+| `0` | success |
+| `1` | unknown `imei` |
+| `2` | wrong `password` |
+
+Example:
+```
+56 5a 81 0001 00
+```
