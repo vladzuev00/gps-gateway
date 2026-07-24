@@ -39,7 +39,7 @@ Cherry is a text-based GPS tracker protocol.
 
 Example:
 ```
-@AUTH@123456789012345;secret;1978\0
+@AUTH@123456789012345;pass;1771\0
 ```
 
 ### `@PING@` — keep-alive
@@ -93,4 +93,29 @@ the total field count is `1 + 11 * count`. The whole package is still a single f
 Example (2 points):
 ```
 @BLACKBOX@2;141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;141123;221325;55.76;37.63;;;;;;;;5216\0
+```
+
+## Responses
+
+The server responds to every package. Response prefixes carry an `_ACK` suffix so they are
+distinguishable from tracker-sent packages.
+
+| Package | Response |
+|---|---|
+| `@AUTH@` | `@AUTH_ACK@status\0` — `status` is a decimal status code, see below |
+| `@PING@` | `@PING_ACK@\0` |
+| `@DATA@` | `@DATA_ACK@\0` |
+| `@BLACKBOX@` | `@BLACKBOX_ACK@\0` |
+
+### `@AUTH_ACK@` status codes
+
+| Code | Meaning |
+|---|---|
+| `0` | success |
+| `1` | unknown `imei` |
+| `2` | wrong `password` |
+
+Example:
+```
+@AUTH_ACK@0\0
 ```
