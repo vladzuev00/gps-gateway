@@ -17,7 +17,7 @@ Lime is a binary GPS tracker protocol.
 
 ## Checksum
 
-- **Algorithm:** CRC-16/MODBUS — polynomial `0x8005`, initial value `0xFFFF`, input and output
+- **Algorithm:** CRC-16, polynomial `0x8005`, initial value `0xFFFF`, input and output
   reflected, no final XOR.
 - **Coverage:** from the first byte of the package (i.e. `type`) up to and including the last
   byte of `payload`. Only the checksum field itself is excluded.
@@ -79,4 +79,27 @@ Example:
 Example (2 points):
 ```
 0004 0028 0002 07e7 0b 0e 16 0d 14 425f0000 42167ae1 3c 00b4 08 07e7 0b 0e 16 12 14 425f0a3d 4216851f 2d 005a 07 5278
+```
+
+## Responses
+
+The server responds to every package, using the `[type][payload length][payload]` structure.
+
+| Request | Response | Payload |
+|---|---|---|
+| `00 01` — authentication | `01 01` | 1-byte status code, see below |
+| `00 02` — keep-alive | `01 02` | empty |
+| `00 03` — single location point | `01 03` | empty |
+| `00 04` — batch of location points | `01 04` | empty |
+
+### `01 01` status codes
+
+| Code | Meaning |
+|---|---|
+| `0` | success |
+| `1` | unknown `imei` |
+
+Example:
+```
+0101 0001 00
 ```
