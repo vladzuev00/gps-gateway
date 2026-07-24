@@ -50,20 +50,23 @@ Example:
 
 | Field | Type | Length |
 |---|---|---|
-| `timestamp` | unsigned int | 4 bytes |
+| `year` | unsigned short | 2 bytes |
+| `month` | unsigned byte | 1 byte |
+| `day` | unsigned byte | 1 byte |
+| `hours` | unsigned byte | 1 byte |
+| `minutes` | unsigned byte | 1 byte |
+| `seconds` | unsigned byte | 1 byte |
 | `latitude` | float | 4 bytes |
 | `longitude` | float | 4 bytes |
 | `speed` | unsigned byte | 1 byte |
-| `heading` | unsigned byte | 1 byte |
+| `course` | unsigned short | 2 bytes |
 | `satellites` | unsigned byte | 1 byte |
 
-`timestamp` is UTC seconds since January 1, 1970, 00:00:00 UTC. `heading` is stored as
-`degrees / 2`, so its range 0-180 represents a true heading of 0-360°.
+All date/time fields are in UTC.
 
-Example (2023-11-14 22:13:20 UTC, `latitude` = `55.75`, `longitude` = `37.62`, `speed` = `60`,
-heading = `180`°, `satellites` = `8`):
+Example:
 ```
-0003 000f 6553f100 425f0000 42167ae1 3c5a08 fa3c
+0003 0013 07e7 0b 0e 16 0d 14 425f0000 42167ae1 3c 00b4 08 e723
 ```
 
 ### `00 04` — batch of location points
@@ -73,10 +76,7 @@ heading = `180`°, `satellites` = `8`):
 | `count` | unsigned short | 2 bytes |
 | `points` | location point × `count` | variable |
 
-Every point has the same fixed set of fields as a single location point (no presence bitmask),
-so each point is always 15 bytes and the batch payload length is always `2 + 15 * count`.
-
 Example (2 points):
 ```
-0004 0020 0002 6553f100 425f0000 42167ae1 3c5a08 6553f22c 425f0a3d 4216851f 2d2d07 2dc0
+0004 0028 0002 07e7 0b 0e 16 0d 14 425f0000 42167ae1 3c 00b4 08 07e7 0b 0e 16 12 14 425f0a3d 4216851f 2d 005a 07 5278
 ```
