@@ -64,7 +64,7 @@ Example (2 points):
 
 ## Responses
 
-The server responds to every package, using the same template `[2B payload length][payload]`.
+The server responds to every package, using the same structure `[2B payload length][payload]`.
 
 | Package | Response |
 |---|---|
