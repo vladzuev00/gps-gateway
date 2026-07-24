@@ -11,15 +11,7 @@ Lemon is a binary GPS tracker protocol.
 | Part | Description |
 |---|---|
 | `payload length` | Unsigned 2-byte little-endian length of `payload`, in bytes |
-| `payload` | Meaning depends on connection state — see below |
-
-## Connection states
-
-- **Awaiting auth** — initial state. The first package received on a new connection is always
-  authentication. After it is processed successfully, the connection moves to the *awaiting
-  data* state.
-- **Awaiting data** — every package after that is either a data or a keep-alive package, for
-  the lifetime of the connection.
+| `payload` | Fields specific to the package, determined by `payload length` — see below |
 
 ## Authentication package
 
@@ -27,7 +19,7 @@ Lemon is a binary GPS tracker protocol.
 |---|---|---|
 | `imei` | string | 15 bytes |
 
-`payload length` is always `15` for this package.
+`payload length` is `15` for this package.
 
 Example:
 ```
@@ -36,7 +28,7 @@ Example:
 
 ## Keep-alive package
 
-`payload length` is `0`, no fields.
+`payload length` is `0` for this package.
 
 Example:
 ```
@@ -44,6 +36,8 @@ Example:
 ```
 
 ## Location points package
+
+`payload length` is a positive multiple of `19` for this package.
 
 `payload` is `point count` location points, each with the same fixed set of fields:
 
@@ -63,12 +57,29 @@ Example:
 
 All date/time fields are in UTC.
 
-Example (1 point):
-```
-1300 e707 0b 0e 16 0d 14 00005f42 e17a1642 3c b400 08
-```
-
 Example (2 points):
 ```
 2600 e707 0b 0e 16 0d 14 00005f42 e17a1642 3c b400 08 e707 0b 0e 16 12 14 00005f42 e17a1642 2d 5a00 07
+```
+
+## Responses
+
+The server responds to every package, using the same template `[2B payload length][payload]`.
+
+| Package | Response |
+|---|---|
+| Authentication | `payload length` = `1`, `payload` = 1-byte status code, see below |
+| Keep-alive | `payload length` = `0` |
+| Location points | `payload length` = `0` |
+
+### Authentication status codes
+
+| Code | Meaning |
+|---|---|
+| `0` | success |
+| `1` | unknown `imei` |
+
+Example:
+```
+0100 00
 ```
