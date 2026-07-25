@@ -20,8 +20,8 @@ Mango is a binary GPS tracker protocol.
 
 - **Algorithm:** sum of the unsigned byte values of the package, modulo 65536 (i.e. the low
   16 bits of the sum).
-- **Coverage:** from the first byte after `prefix` (i.e. `type`) up to and including the last
-  byte of `payload`. The 2-byte `prefix` and the checksum field itself are excluded.
+- **Coverage:** from the first byte of `type` up to and including the last
+  byte of `payload`. The `prefix` and the checksum field itself are excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
 - **Presence:** required for every package type.
 
@@ -35,7 +35,7 @@ Mango is a binary GPS tracker protocol.
 | `passwordLength` | unsigned byte | 1 byte |
 | `password` | ASCII string | `passwordLength` bytes |
 
-Example (`imei` = `555555555555555`, `password` = `pass`):
+Example:
 ```
 56 5a 01 0014 353535353535353535353535353535 04 70617373 04eb
 ```
@@ -102,14 +102,14 @@ Example:
 ## Responses
 
 The server responds to every package, using the `[prefix][type][payload length][payload]`
-structure. Response `type` is the request `type` with the high bit set (`request type | 0x80`).
+structure.
 
 | Request | Response | Payload |
 |---|---|---|
-| `56 5A 01` — authentication | `56 5A 81` | 1-byte status code, see below |
-| `56 5A 02` — keep-alive | `56 5A 82` | empty |
-| `56 5A 03` — single location point | `56 5A 83` | empty |
-| `56 5A 04` — batch of location points | `56 5A 84` | empty |
+| `56 5A 01` (authentication) | `56 5A 81` | 1-byte status code, see below |
+| `56 5A 02` (keep-alive) | `56 5A 82` | empty |
+| `56 5A 03` (single location point) | `56 5A 83` | empty |
+| `56 5A 04` (batch of location points) | `56 5A 84` | empty |
 
 ### `56 5A 81` status codes
 
