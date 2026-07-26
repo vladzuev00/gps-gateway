@@ -8,13 +8,13 @@ Mango is a binary GPS tracker protocol.
 [2B prefix][1B type][2B payload length][payload][2B checksum]
 ```
 
-| Part | Description |
-|---|---|
-| `prefix` | Fixed 2-byte protocol prefix: `56 5A` |
-| `type` | 1-byte package type |
-| `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes |
-| `payload` | Type-specific fields |
-| `checksum` | sum of the unsigned bytes of `type` + `payload length` + `payload`, modulo 65536 |
+| Part             | Description                                                                      |
+|------------------|----------------------------------------------------------------------------------|
+| `prefix`         | Fixed 2-byte protocol prefix: `56 5A`                                            |
+| `type`           | 1-byte package type                                                              |
+| `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes                         |
+| `payload`        | Type-specific fields                                                             |
+| `checksum`       | sum of the unsigned bytes of `type` + `payload length` + `payload`, modulo 65536 |
 
 ## Checksum
 
@@ -22,17 +22,18 @@ Mango is a binary GPS tracker protocol.
 - **Coverage:** from the first byte of `type` up to and including the last
   byte of `payload`. The `prefix` and the checksum field itself are excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
-- **Presence:** required for every package type.
+- **Presence:** required for every package type sent by the device (login, ping, data, black box).
+  Server responses (see [Responses](#responses)) do not carry a checksum field.
 
 ## Package types
 
 ### `01` — login
 
-| Field | Type | Length |
-|---|---|---|
-| `imei` | ASCII string | 15 bytes |
-| `passwordLength` | unsigned byte | 1 byte |
-| `password` | ASCII string | `passwordLength` bytes |
+| Field            | Type          | Length                 |
+|------------------|---------------|------------------------|
+| `imei`           | ASCII string  | 15 bytes               |
+| `passwordLength` | unsigned byte | 1 byte                 |
+| `password`       | ASCII string  | `passwordLength` bytes |
 
 Example:
 ```
@@ -59,9 +60,9 @@ Example:
 
 ### `04` — black box
 
-| Field | Type | Length |
-|---|---|---|
-| `count` | unsigned short | 2 bytes |
+| Field      | Type                          | Length   |
+|------------|-------------------------------|----------|
+| `count`    | unsigned short                | 2 bytes  |
 | `messages` | [message](#message) × `count` | variable |
 
 There is no delimiter between messages; each message is simply appended after the previous one, so
@@ -74,21 +75,21 @@ Example (2 messages):
 
 ## Message
 
-| Field | Type | Length | Optional |
-|---|---|---|---|
-| `timestamp` | long | 8 | no |
-| `latitude` | double | 8 | no |
-| `longitude` | double | 8 | no |
-| `presence bitmask` | byte | 1 | no |
-| `speed` | short | 2 | yes — bit `0x01` in `presence bitmask` |
-| `course` | short | 2 | yes — bit `0x02` in `presence bitmask` |
-| `altitude` | float | 4 | yes — bit `0x04` in `presence bitmask` |
-| `satellites` | byte | 1 | yes — bit `0x08` in `presence bitmask` |
-| `hdop` | float | 4 | yes — bit `0x10` in `presence bitmask` |
-| `ignition` | byte | 1 | yes — bit `0x20` in `presence bitmask` |
-| `battery` | byte | 1 | yes — bit `0x40` in `presence bitmask` |
+| Field              | Type   | Length | Optional                               |
+|--------------------|--------|--------|----------------------------------------|
+| `timestamp`        | long   | 8      | no                                     |
+| `latitude`         | double | 8      | no                                     |
+| `longitude`        | double | 8      | no                                     |
+| `presence bitmask` | byte   | 1      | no                                     |
+| `speed`            | short  | 2      | yes — bit `0x01` in `presence bitmask` |
+| `course`           | short  | 2      | yes — bit `0x02` in `presence bitmask` |
+| `altitude`         | float  | 4      | yes — bit `0x04` in `presence bitmask` |
+| `satellites`       | byte   | 1      | yes — bit `0x08` in `presence bitmask` |
+| `hdop`             | float  | 4      | yes — bit `0x10` in `presence bitmask` |
+| `ignition`         | byte   | 1      | yes — bit `0x20` in `presence bitmask` |
+| `battery`          | byte   | 1      | yes — bit `0x40` in `presence bitmask` |
 
-All multi-byte numeric fields are big-endian. `timestamp` is UTC milliseconds since
+All multibyte numeric fields are big-endian. `timestamp` is UTC milliseconds since
 January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the presence
 bitmask; absent fields are omitted entirely rather than zero-filled, so the message length varies
 with which bits are set.
@@ -103,20 +104,20 @@ Example:
 The server responds to every package, using the `[prefix][type][payload length][payload]`
 structure.
 
-| Request Type | Response Type | Response Payload |
-|---|---|---|
-| `01` (login) | `81` | 1-byte status code, see below |
-| `02` (ping) | `82` | empty |
-| `03` (data) | `83` | empty |
-| `04` (black box) | `84` | empty |
+| Request Type     | Response Type | Response Payload              |
+|------------------|---------------|-------------------------------|
+| `01` (login)     | `81`          | 1-byte status code, see below |
+| `02` (ping)      | `82`          | empty                         |
+| `03` (data)      | `83`          | empty                         |
+| `04` (black box) | `84`          | empty                         |
 
 ### `81` status codes
 
-| Code | Meaning |
-|---|---|
-| `0` | success |
-| `1` | unknown `imei` |
-| `2` | wrong `password` |
+| Code | Meaning          |
+|------|------------------|
+| `0`  | success          |
+| `1`  | unknown `imei`   |
+| `2`  | wrong `password` |
 
 Example:
 ```
