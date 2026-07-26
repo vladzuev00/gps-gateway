@@ -1,6 +1,6 @@
 package com.zuev.gpsgateway.decoder.mango;
 
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoAuthPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoLoginPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoBlackBoxPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoDataPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoPingPackageDecoder;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 public final class MangoProtocolDecoderTest {
 
     @Mock
-    private MangoAuthPackageDecoder mockedAuthPackageDecoder;
+    private MangoLoginPackageDecoder mockedLoginPackageDecoder;
 
     @Mock
     private MangoPingPackageDecoder mockedPingPackageDecoder;
@@ -39,7 +39,7 @@ public final class MangoProtocolDecoderTest {
     @BeforeEach
     public void initializeDecoder() {
         decoder = new MangoProtocolDecoder(
-                mockedAuthPackageDecoder,
+                mockedLoginPackageDecoder,
                 mockedPingPackageDecoder,
                 mockedDataPackageDecoder,
                 mockedBlackBoxPackageDecoder
@@ -58,7 +58,7 @@ public final class MangoProtocolDecoderTest {
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(
-                mockedAuthPackageDecoder,
+                mockedLoginPackageDecoder,
                 mockedPingPackageDecoder,
                 mockedDataPackageDecoder,
                 mockedBlackBoxPackageDecoder
@@ -74,7 +74,7 @@ public final class MangoProtocolDecoderTest {
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(
-                mockedAuthPackageDecoder,
+                mockedLoginPackageDecoder,
                 mockedPingPackageDecoder,
                 mockedDataPackageDecoder,
                 mockedBlackBoxPackageDecoder
@@ -90,7 +90,7 @@ public final class MangoProtocolDecoderTest {
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(
-                mockedAuthPackageDecoder,
+                mockedLoginPackageDecoder,
                 mockedPingPackageDecoder,
                 mockedDataPackageDecoder,
                 mockedBlackBoxPackageDecoder
@@ -109,7 +109,7 @@ public final class MangoProtocolDecoderTest {
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(
-                mockedAuthPackageDecoder,
+                mockedLoginPackageDecoder,
                 mockedPingPackageDecoder,
                 mockedDataPackageDecoder,
                 mockedBlackBoxPackageDecoder
@@ -126,7 +126,7 @@ public final class MangoProtocolDecoderTest {
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(
-                mockedAuthPackageDecoder,
+                mockedLoginPackageDecoder,
                 mockedPingPackageDecoder,
                 mockedDataPackageDecoder,
                 mockedBlackBoxPackageDecoder
