@@ -37,7 +37,7 @@ public final class MangoBlackBoxPackageDecoderTest {
 
         MangoMessage givenFirstMessage = mock(MangoMessage.class);
         MangoMessage givenSecondMessage = mock(MangoMessage.class);
-        when(mockedMessageDecoder.read(same(givenPayload)))
+        when(mockedMessageDecoder.decode(same(givenPayload)))
                 .thenReturn(givenFirstMessage)
                 .thenReturn(givenSecondMessage);
 

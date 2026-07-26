@@ -31,7 +31,7 @@ public final class MangoDataPackageDecoderTest {
         ByteBuf givenPayload = mock(ByteBuf.class);
 
         MangoMessage givenMessage = mock(MangoMessage.class);
-        when(mockedMessageDecoder.read(same(givenPayload))).thenReturn(givenMessage);
+        when(mockedMessageDecoder.decode(same(givenPayload))).thenReturn(givenMessage);
 
         MangoDataPackage actual = decoder.decodePayload(givenPayload);
         MangoDataPackage expected = new MangoDataPackage(givenMessage);

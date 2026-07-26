@@ -23,7 +23,7 @@ public final class MangoBlackBoxPackageDecoder extends MangoPackageDecoder {
     protected MangoBlackBoxPackage decodePayload(ByteBuf payload) {
         int messageCount = payload.readUnsignedShort();
         return range(0, messageCount)
-                .mapToObj(i -> messageDecoder.read(payload))
+                .mapToObj(i -> messageDecoder.decode(payload))
                 .collect(collectingAndThen(toList(), MangoBlackBoxPackage::new));
     }
 }

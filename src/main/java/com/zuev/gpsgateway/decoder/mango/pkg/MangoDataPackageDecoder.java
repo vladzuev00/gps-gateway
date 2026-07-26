@@ -18,7 +18,7 @@ public final class MangoDataPackageDecoder extends MangoPackageDecoder {
 
     @Override
     protected MangoDataPackage decodePayload(ByteBuf payload) {
-        MangoMessage message = messageDecoder.read(payload);
+        MangoMessage message = messageDecoder.decode(payload);
         return new MangoDataPackage(message);
     }
 }
