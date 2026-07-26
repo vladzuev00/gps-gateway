@@ -1,6 +1,6 @@
 package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.model.mango.MangoData;
+import com.zuev.gpsgateway.model.mango.MangoMessage;
 import com.zuev.gpsgateway.model.mango.MangoDataPackage;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,24 +17,24 @@ import static org.mockito.Mockito.*;
 public final class MangoDataPackageDecoderTest {
 
     @Mock
-    private MangoDataDecoder mockedDataDecoder;
+    private MangoMessageDecoder mockedMessageDecoder;
 
     private MangoDataPackageDecoder decoder;
 
     @BeforeEach
     public void initializeDecoder() {
-        decoder = new MangoDataPackageDecoder(mockedDataDecoder);
+        decoder = new MangoDataPackageDecoder(mockedMessageDecoder);
     }
 
     @Test
     public void payloadShouldBeDecoded() {
         ByteBuf givenPayload = mock(ByteBuf.class);
 
-        MangoData givenData = mock(MangoData.class);
-        when(mockedDataDecoder.read(same(givenPayload))).thenReturn(givenData);
+        MangoMessage givenMessage = mock(MangoMessage.class);
+        when(mockedMessageDecoder.read(same(givenPayload))).thenReturn(givenMessage);
 
         MangoDataPackage actual = decoder.decodePayload(givenPayload);
-        MangoDataPackage expected = new MangoDataPackage(givenData);
+        MangoDataPackage expected = new MangoDataPackage(givenMessage);
         assertEquals(expected, actual);
 
         verifyNoInteractions(givenPayload);
