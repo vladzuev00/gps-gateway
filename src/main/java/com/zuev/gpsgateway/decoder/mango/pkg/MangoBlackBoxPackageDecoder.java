@@ -12,18 +12,18 @@ import static java.util.stream.IntStream.range;
 public final class MangoBlackBoxPackageDecoder extends MangoPackageDecoder {
     private static final byte[] PREFIX = {0x56, 0x5A, 0x04};
 
-    private final MangoDataDecoder dataDecoder;
+    private final MangoMessageDecoder messageDecoder;
 
-    public MangoBlackBoxPackageDecoder(MangoDataDecoder dataDecoder) {
+    public MangoBlackBoxPackageDecoder(MangoMessageDecoder messageDecoder) {
         super(PREFIX);
-        this.dataDecoder = dataDecoder;
+        this.messageDecoder = messageDecoder;
     }
 
     @Override
     protected MangoBlackBoxPackage decodePayload(ByteBuf payload) {
-        int dataCount = payload.readUnsignedShort();
-        return range(0, dataCount)
-                .mapToObj(i -> dataDecoder.read(payload))
+        int messageCount = payload.readUnsignedShort();
+        return range(0, messageCount)
+                .mapToObj(i -> messageDecoder.read(payload))
                 .collect(collectingAndThen(toList(), MangoBlackBoxPackage::new));
     }
 }
