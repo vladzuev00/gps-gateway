@@ -27,7 +27,7 @@ Mango is a binary GPS tracker protocol.
 
 ## Package types
 
-### `56 5A 01` — authentication
+### `56 5A 01` — login
 
 | Field | Type | Length |
 |---|---|---|
@@ -40,7 +40,7 @@ Example:
 56 5a 01 0014 353535353535353535353535353535 04 70617373 04eb
 ```
 
-### `56 5A 02` — keep-alive
+### `56 5A 02` — ping
 
 Empty payload.
 
@@ -49,31 +49,31 @@ Example:
 56 5a 02 0000 0002
 ```
 
-### `56 5A 03` — single location point
+### `56 5A 03` — data
 
-Payload is a single data point (see [Data point](#data-point) below).
+Payload is a single message (see [Message](#message) below).
 
 Example:
 ```
 56 5a 03 0028 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0d14
 ```
 
-### `56 5A 04` — batch of location points
+### `56 5A 04` — black box
 
 | Field | Type | Length |
 |---|---|---|
 | `count` | unsigned short | 2 bytes |
-| `points` | [data point](#data-point) × `count` | variable |
+| `messages` | [message](#message) × `count` | variable |
 
-There is no delimiter between points; each point is simply appended after the previous one, so
-its own field presence bitmask determines where the next point starts.
+There is no delimiter between messages; each message is simply appended after the previous one, so
+its own field presence bitmask determines where the next message starts.
 
-Example (2 points):
+Example (2 messages):
 ```
 56 5a 04 0043 0002 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0000018bcfe57b88404be147ae147ae14042d0a3d70a3d7100 17c9
 ```
 
-## Data point
+## Message
 
 | Field | Type | Length | Optional |
 |---|---|---|---|
@@ -81,17 +81,17 @@ Example (2 points):
 | `latitude` | double | 8 | no |
 | `longitude` | double | 8 | no |
 | `presence bitmask` | byte | 1 | no |
-| `speed` | short | 2 | yes — `presence bitmask` bit `0x01` |
-| `course` | short | 2 | yes — `presence bitmask` bit `0x02` |
-| `altitude` | float | 4 | yes — `presence bitmask` bit `0x04` |
-| `satelliteCount` | byte | 1 | yes — `presence bitmask` bit `0x08` |
-| `hdop` | float | 4 | yes — `presence bitmask` bit `0x10` |
-| `ignition` | byte | 1 | yes — `presence bitmask` bit `0x20` |
-| `battery` | byte | 1 | yes — `presence bitmask` bit `0x40` |
+| `speed` | short | 2 | yes — bit `0x01` in `presence bitmask` |
+| `course` | short | 2 | yes — bit `0x02` in `presence bitmask` |
+| `altitude` | float | 4 | yes — bit `0x04` in `presence bitmask` |
+| `satelliteCount` | byte | 1 | yes — bit `0x08` in `presence bitmask` |
+| `hdop` | float | 4 | yes — bit `0x10` in `presence bitmask` |
+| `ignition` | byte | 1 | yes — bit `0x20` in `presence bitmask` |
+| `battery` | byte | 1 | yes — bit `0x40` in `presence bitmask` |
 
 All multi-byte numeric fields are big-endian. `epochMillis` is UTC milliseconds since
 January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the presence
-bitmask; absent fields are omitted entirely rather than zero-filled, so the point length varies
+bitmask; absent fields are omitted entirely rather than zero-filled, so the message length varies
 with which bits are set.
 
 Example:
@@ -106,10 +106,10 @@ structure.
 
 | Request | Response | Payload |
 |---|---|---|
-| `56 5A 01` (authentication) | `56 5A 81` | 1-byte status code, see below |
-| `56 5A 02` (keep-alive) | `56 5A 82` | empty |
-| `56 5A 03` (single location point) | `56 5A 83` | empty |
-| `56 5A 04` (batch of location points) | `56 5A 84` | empty |
+| `56 5A 01` (login) | `56 5A 81` | 1-byte status code, see below |
+| `56 5A 02` (ping) | `56 5A 82` | empty |
+| `56 5A 03` (data) | `56 5A 83` | empty |
+| `56 5A 04` (black box) | `56 5A 84` | empty |
 
 ### `56 5A 81` status codes
 
