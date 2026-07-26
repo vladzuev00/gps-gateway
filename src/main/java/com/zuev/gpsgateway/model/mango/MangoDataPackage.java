@@ -1,4 +1,4 @@
 package com.zuev.gpsgateway.model.mango;
 
-public record MangoDataPackage(MangoData data) {
+public record MangoDataPackage(MangoMessage message) {
 }
