@@ -7,8 +7,8 @@ import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class ByteArrayPrefixedBinaryPackageDecoderTest {
-    private final TestByteArrayPrefixedBinaryPackageDecoder decoder = new TestByteArrayPrefixedBinaryPackageDecoder();
+public final class PrefixedBinaryPackageDecoderTest {
+    private final TestPrefixedBinaryPackageDecoder decoder = new TestPrefixedBinaryPackageDecoder();
 
     @Test
     public void sourceShouldStartWithPrefix() {
@@ -47,9 +47,9 @@ public final class ByteArrayPrefixedBinaryPackageDecoderTest {
         assertEquals(3, actual.readerIndex());
     }
 
-    private static final class TestByteArrayPrefixedBinaryPackageDecoder extends ByteArrayPrefixedBinaryPackageDecoder {
+    private static final class TestPrefixedBinaryPackageDecoder extends PrefixedBinaryPackageDecoder {
 
-        public TestByteArrayPrefixedBinaryPackageDecoder() {
+        public TestPrefixedBinaryPackageDecoder() {
             super(new byte[]{});
         }
 

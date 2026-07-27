@@ -1,9 +1,9 @@
 package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.decoder.base.pkg.ByteArrayPrefixedBinaryPackageDecoder;
+import com.zuev.gpsgateway.decoder.base.pkg.PrefixedBinaryPackageDecoder;
 import io.netty.buffer.ByteBuf;
 
-public abstract class MangoPackageDecoder extends ByteArrayPrefixedBinaryPackageDecoder {
+public abstract class MangoPackageDecoder extends PrefixedBinaryPackageDecoder {
     private static final int CHECKSUM_LENGTH = 2;
 
     public MangoPackageDecoder(byte[] prefix) {

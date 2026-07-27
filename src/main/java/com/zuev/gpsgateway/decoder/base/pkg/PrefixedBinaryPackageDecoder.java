@@ -2,9 +2,9 @@ package com.zuev.gpsgateway.decoder.base.pkg;
 
 import io.netty.buffer.ByteBuf;
 
-public abstract class ByteArrayPrefixedBinaryPackageDecoder extends PrefixedPackageDecoder<ByteBuf, byte[]> {
+public abstract class PrefixedBinaryPackageDecoder extends PrefixedPackageDecoder<ByteBuf, byte[]> {
 
-    public ByteArrayPrefixedBinaryPackageDecoder(byte[] prefix) {
+    public PrefixedBinaryPackageDecoder(byte[] prefix) {
         super(prefix);
     }
 
