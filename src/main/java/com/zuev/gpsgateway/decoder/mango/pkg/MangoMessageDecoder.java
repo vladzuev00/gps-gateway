@@ -1,11 +1,11 @@
 package com.zuev.gpsgateway.decoder.mango.pkg;
 
-import com.zuev.gpsgateway.model.mango.MangoData;
+import com.zuev.gpsgateway.model.mango.MangoMessage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class MangoDataDecoder {
+public final class MangoMessageDecoder {
     private static final int SPEED_PRESENT_BIT = 0x01;
     private static final int COURSE_PRESENT_BIT = 0x02;
     private static final int ALTITUDE_PRESENT_BIT = 0x04;
@@ -14,7 +14,7 @@ public final class MangoDataDecoder {
     private static final int IGNITION_PRESENT_BIT = 0x20;
     private static final int BATTERY_PRESENT_BIT = 0x40;
 
-    public MangoData read(ByteBuf byteBuf) {
+    public MangoMessage decode(ByteBuf byteBuf) {
         long epochMillis = byteBuf.readLong();
         double latitude = byteBuf.readDouble();
         double longitude = byteBuf.readDouble();
@@ -26,7 +26,7 @@ public final class MangoDataDecoder {
         Float hdop = isPresent(bitMask, HDOP_PRESENT_BIT) ? byteBuf.readFloat() : null;
         Byte ignition = isPresent(bitMask, IGNITION_PRESENT_BIT) ? byteBuf.readByte() : null;
         Byte battery = isPresent(bitMask, BATTERY_PRESENT_BIT) ? byteBuf.readByte() : null;
-        return new MangoData(
+        return new MangoMessage(
                 epochMillis,
                 latitude,
                 longitude,

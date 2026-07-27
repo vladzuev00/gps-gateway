@@ -2,5 +2,5 @@ package com.zuev.gpsgateway.model.mango;
 
 import java.util.List;
 
-public record MangoBlackBoxPackage(List<MangoData> datas) {
+public record MangoBlackBoxPackage(List<MangoMessage> messages) {
 }
