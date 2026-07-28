@@ -20,10 +20,10 @@ Mango is a binary GPS tracker protocol.
 
 - **Algorithm:** sum of the unsigned byte values of the package, modulo 65536.
 - **Coverage:** from the first byte of `type` up to and including the last
-  byte of `payload`. The `prefix` and the checksum field itself are excluded.
+  byte of `payload`. The `prefix` and the `checksum` field itself are excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
 - **Presence:** required for every package type sent by the device (login, ping, data, black box).
-  Server responses (see [Responses](#responses)) do not carry a checksum field.
+  Server responses (see [Responses](#responses)) do not carry a `checksum` field.
 
 ## Package types
 
@@ -66,7 +66,7 @@ Example:
 | `messages` | [message](#message) × `count` | variable |
 
 There is no delimiter between messages; each message is simply appended after the previous one, so
-its own field presence bitmask determines where the next message starts.
+its own field `presence bitmask` determines where the next message starts.
 
 Example (2 messages):
 ```
@@ -90,8 +90,8 @@ Example (2 messages):
 | `battery`          | byte   | 1      | yes — bit `0x40` in `presence bitmask` |
 
 All multibyte numeric fields are big-endian. `timestamp` is UTC milliseconds since
-January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the presence
-bitmask; absent fields are omitted entirely rather than zero-filled, so the message length varies
+January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the
+`presence bitmask`; absent fields are omitted entirely rather than zero-filled, so the message length varies
 with which bits are set.
 
 Example:
