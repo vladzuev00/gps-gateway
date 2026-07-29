@@ -154,7 +154,7 @@ public final class ProtocolDecoderTest {
         protected int calculateChecksum(ByteBuf byteBuf) {
             int sum = 0;
             for (int i = byteBuf.readerIndex(); i < byteBuf.writerIndex() - CHECKSUM_LENGTH - PACKAGE_END_LENGTH; i++) {
-                sum += byteBuf.getByte(i) & 0xFF;
+                sum += byteBuf.getUnsignedByte(i);
             }
             return sum & 0xFFFF;
         }
