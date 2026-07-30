@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class MangoPackageDecoderTest {
@@ -34,7 +34,7 @@ public final class MangoPackageDecoderTest {
         @Override
         protected Object decodePayload(ByteBuf payload) {
             int number = payload.readInt();
-            String message = payload.toString(UTF_8);
+            String message = payload.toString(US_ASCII);
             return new TestPackage(number, message);
         }
     }

@@ -4,7 +4,7 @@ import com.zuev.gpsgateway.model.mango.MangoLoginPackage;
 import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
 public final class MangoLoginPackageDecoder extends MangoPackageDecoder {
@@ -17,9 +17,9 @@ public final class MangoLoginPackageDecoder extends MangoPackageDecoder {
 
     @Override
     protected MangoLoginPackage decodePayload(ByteBuf payload) {
-        String imei = payload.readString(IMEI_LENGTH, UTF_8);
+        String imei = payload.readString(IMEI_LENGTH, US_ASCII);
         int passwordLength = payload.readUnsignedByte();
-        String password = payload.readString(passwordLength, UTF_8);
+        String password = payload.readString(passwordLength, US_ASCII);
         return new MangoLoginPackage(imei, password);
     }
 }
