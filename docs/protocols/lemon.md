@@ -62,6 +62,30 @@ Example (2 points):
 2600 e707 0b 0e 16 0d 14 00005f42 e17a1642 3c b400 08 e707 0b 0e 16 12 14 00005f42 e17a1642 2d 5a00 07
 ```
 
+## Power cut command
+
+Unlike the packages above, this one is sent by the server, unprompted — it is not a response to
+any package from the device. It remotely cuts or restores engine power (immobilizer).
+
+`payload length` is `2` for this package.
+
+| Field | Type | Length |
+|---|---|---|
+| `command` | unsigned byte | 1 byte — fixed value `0x01` |
+| `state` | unsigned byte | 1 byte — `0` = restore power, `1` = cut power |
+
+Example (cut power):
+```
+0200 0101
+```
+
+The device acknowledges with `payload length` = `1`, `payload` = 1-byte echo of `state`.
+
+Example:
+```
+0100 01
+```
+
 ## Responses
 
 The server responds to every package, using the same structure `[2B payload length][payload]`.
