@@ -18,14 +18,14 @@ public final class MangoMessageDecoder {
         long epochMillis = byteBuf.readLong();
         double latitude = byteBuf.readDouble();
         double longitude = byteBuf.readDouble();
-        byte bitMask = byteBuf.readByte();
-        Short speed = isPresent(bitMask, SPEED_PRESENT_BIT) ? byteBuf.readShort() : null;
-        Short course = isPresent(bitMask, COURSE_PRESENT_BIT) ? byteBuf.readShort() : null;
-        Float altitude = isPresent(bitMask, ALTITUDE_PRESENT_BIT) ? byteBuf.readFloat() : null;
-        Byte satelliteCount = isPresent(bitMask, SATELLITE_COUNT_PRESENT_BIT) ? byteBuf.readByte() : null;
-        Float hdop = isPresent(bitMask, HDOP_PRESENT_BIT) ? byteBuf.readFloat() : null;
-        Byte ignition = isPresent(bitMask, IGNITION_PRESENT_BIT) ? byteBuf.readByte() : null;
-        Byte battery = isPresent(bitMask, BATTERY_PRESENT_BIT) ? byteBuf.readByte() : null;
+        byte presenceBitMask = byteBuf.readByte();
+        Short speed = isPresent(presenceBitMask, SPEED_PRESENT_BIT) ? byteBuf.readShort() : null;
+        Short course = isPresent(presenceBitMask, COURSE_PRESENT_BIT) ? byteBuf.readShort() : null;
+        Float altitude = isPresent(presenceBitMask, ALTITUDE_PRESENT_BIT) ? byteBuf.readFloat() : null;
+        Byte satelliteCount = isPresent(presenceBitMask, SATELLITE_COUNT_PRESENT_BIT) ? byteBuf.readByte() : null;
+        Float hdop = isPresent(presenceBitMask, HDOP_PRESENT_BIT) ? byteBuf.readFloat() : null;
+        Byte ignition = isPresent(presenceBitMask, IGNITION_PRESENT_BIT) ? byteBuf.readByte() : null;
+        Byte battery = isPresent(presenceBitMask, BATTERY_PRESENT_BIT) ? byteBuf.readByte() : null;
         return new MangoMessage(
                 epochMillis,
                 latitude,
@@ -40,7 +40,7 @@ public final class MangoMessageDecoder {
         );
     }
 
-    private boolean isPresent(byte mask, int bit) {
-        return (mask & bit) != 0;
+    private boolean isPresent(byte presenceBitMask, int bit) {
+        return (presenceBitMask & bit) != 0;
     }
 }
