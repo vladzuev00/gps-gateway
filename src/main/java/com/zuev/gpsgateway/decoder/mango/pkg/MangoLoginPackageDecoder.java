@@ -18,7 +18,7 @@ public final class MangoLoginPackageDecoder extends MangoPackageDecoder {
     @Override
     protected MangoLoginPackage decodePayload(ByteBuf payload) {
         String imei = payload.readString(IMEI_LENGTH, US_ASCII);
-        int passwordLength = payload.readUnsignedByte();
+        short passwordLength = payload.readUnsignedByte();
         String password = payload.readString(passwordLength, US_ASCII);
         return new MangoLoginPackage(imei, password);
     }
