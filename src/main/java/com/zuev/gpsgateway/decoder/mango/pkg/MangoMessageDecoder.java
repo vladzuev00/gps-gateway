@@ -19,13 +19,13 @@ public final class MangoMessageDecoder {
         double latitude = byteBuf.readDouble();
         double longitude = byteBuf.readDouble();
         byte presenceBitMask = byteBuf.readByte();
-        Short speed = isPresent(presenceBitMask, SPEED_PRESENT_BIT) ? byteBuf.readShort() : null;
-        Short course = isPresent(presenceBitMask, COURSE_PRESENT_BIT) ? byteBuf.readShort() : null;
-        Float altitude = isPresent(presenceBitMask, ALTITUDE_PRESENT_BIT) ? byteBuf.readFloat() : null;
-        Byte satelliteCount = isPresent(presenceBitMask, SATELLITE_COUNT_PRESENT_BIT) ? byteBuf.readByte() : null;
-        Float hdop = isPresent(presenceBitMask, HDOP_PRESENT_BIT) ? byteBuf.readFloat() : null;
-        Byte ignition = isPresent(presenceBitMask, IGNITION_PRESENT_BIT) ? byteBuf.readByte() : null;
-        Byte battery = isPresent(presenceBitMask, BATTERY_PRESENT_BIT) ? byteBuf.readByte() : null;
+        Short speed = (presenceBitMask & SPEED_PRESENT_BIT) != 0 ? byteBuf.readShort() : null;
+        Short course = (presenceBitMask & COURSE_PRESENT_BIT) != 0 ? byteBuf.readShort() : null;
+        Float altitude = (presenceBitMask & ALTITUDE_PRESENT_BIT) != 0 ? byteBuf.readFloat() : null;
+        Byte satelliteCount = (presenceBitMask & SATELLITE_COUNT_PRESENT_BIT) != 0 ? byteBuf.readByte() : null;
+        Float hdop = (presenceBitMask & HDOP_PRESENT_BIT) != 0 ? byteBuf.readFloat() : null;
+        Byte ignition = (presenceBitMask & IGNITION_PRESENT_BIT) != 0 ? byteBuf.readByte() : null;
+        Byte battery = (presenceBitMask & BATTERY_PRESENT_BIT) != 0 ? byteBuf.readByte() : null;
         return new MangoMessage(
                 epochMillis,
                 latitude,
@@ -38,9 +38,5 @@ public final class MangoMessageDecoder {
                 ignition,
                 battery
         );
-    }
-
-    private boolean isPresent(byte presenceBitMask, int bit) {
-        return (presenceBitMask & bit) != 0;
     }
 }
