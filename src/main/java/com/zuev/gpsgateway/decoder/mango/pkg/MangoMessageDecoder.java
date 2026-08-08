@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class MangoMessageDecoder {
-    private static final int SPEED_PRESENT_FLAG = 0x01;
-    private static final int COURSE_PRESENT_FLAG = 0x02;
-    private static final int ALTITUDE_PRESENT_FLAG = 0x04;
-    private static final int SATELLITE_COUNT_PRESENT_FLAG = 0x08;
-    private static final int HDOP_PRESENT_FLAG = 0x10;
-    private static final int IGNITION_PRESENT_FLAG = 0x20;
-    private static final int BATTERY_PRESENT_FLAG = 0x40;
+    private static final byte SPEED_PRESENT_FLAG = 0x01;
+    private static final byte COURSE_PRESENT_FLAG = 0x02;
+    private static final byte ALTITUDE_PRESENT_FLAG = 0x04;
+    private static final byte SATELLITE_COUNT_PRESENT_FLAG = 0x08;
+    private static final byte HDOP_PRESENT_FLAG = 0x10;
+    private static final byte IGNITION_PRESENT_FLAG = 0x20;
+    private static final byte BATTERY_PRESENT_FLAG = 0x40;
 
     public MangoMessage decode(ByteBuf byteBuf) {
         long epochMillis = byteBuf.readLong();
