@@ -26,17 +26,6 @@ public final class MangoMessageDecoder {
         Float hdop = (presenceBitMask & HDOP_PRESENT_FLAG) != 0 ? byteBuf.readFloat() : null;
         Byte ignition = (presenceBitMask & IGNITION_PRESENT_FLAG) != 0 ? byteBuf.readByte() : null;
         Byte battery = (presenceBitMask & BATTERY_PRESENT_FLAG) != 0 ? byteBuf.readByte() : null;
-        return new MangoMessage(
-                epochMillis,
-                latitude,
-                longitude,
-                speed,
-                course,
-                altitude,
-                satelliteCount,
-                hdop,
-                ignition,
-                battery
-        );
+        return new MangoMessage(epochMillis, latitude, longitude, speed, course, altitude, satelliteCount, hdop, ignition, battery);
     }
 }
