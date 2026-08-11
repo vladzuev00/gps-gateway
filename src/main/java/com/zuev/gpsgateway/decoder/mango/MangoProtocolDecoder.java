@@ -1,10 +1,7 @@
 package com.zuev.gpsgateway.decoder.mango;
 
 import com.zuev.gpsgateway.decoder.base.BinaryProtocolDecoder;
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoLoginPackageDecoder;
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoBlackBoxPackageDecoder;
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoDataPackageDecoder;
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoPingPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoPackageDecoder;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
@@ -18,11 +15,8 @@ public final class MangoProtocolDecoder extends BinaryProtocolDecoder {
     private static final int EMPTY_PACKAGE_LENGTH = PACKAGE_PREFIX_LENGTH + PACKAGE_TYPE_LENGTH + PAYLOAD_LENGTH_LENGTH
             + CHECKSUM_LENGTH;
 
-    public MangoProtocolDecoder(MangoLoginPackageDecoder loginPackageDecoder,
-                                MangoPingPackageDecoder pingPackageDecoder,
-                                MangoDataPackageDecoder dataPackageDecoder,
-                                MangoBlackBoxPackageDecoder blackBoxPackageDecoder) {
-        super(List.of(loginPackageDecoder, pingPackageDecoder, dataPackageDecoder, blackBoxPackageDecoder));
+    public MangoProtocolDecoder(List<MangoPackageDecoder> packageDecoders) {
+        super(packageDecoders);
     }
 
     @Override

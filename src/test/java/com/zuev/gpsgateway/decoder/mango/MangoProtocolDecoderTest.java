@@ -1,8 +1,8 @@
 package com.zuev.gpsgateway.decoder.mango;
 
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoLoginPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoBlackBoxPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoDataPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoLoginPackageDecoder;
 import com.zuev.gpsgateway.decoder.mango.pkg.MangoPingPackageDecoder;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.OptionalInt;
 
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
@@ -39,10 +40,12 @@ public final class MangoProtocolDecoderTest {
     @BeforeEach
     public void initializeDecoder() {
         decoder = new MangoProtocolDecoder(
-                mockedLoginPackageDecoder,
-                mockedPingPackageDecoder,
-                mockedDataPackageDecoder,
-                mockedBlackBoxPackageDecoder
+                List.of(
+                        mockedLoginPackageDecoder,
+                        mockedPingPackageDecoder,
+                        mockedDataPackageDecoder,
+                        mockedBlackBoxPackageDecoder
+                )
         );
     }
 
