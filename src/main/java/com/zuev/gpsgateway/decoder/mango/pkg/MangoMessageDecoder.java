@@ -18,14 +18,14 @@ public final class MangoMessageDecoder {
         long epochMillis = byteBuf.readLong();
         double latitude = byteBuf.readDouble();
         double longitude = byteBuf.readDouble();
-        byte presenceBitMask = byteBuf.readByte();
-        Short speed = (presenceBitMask & SPEED_PRESENCE_MASK) != 0 ? byteBuf.readShort() : null;
-        Short course = (presenceBitMask & COURSE_PRESENCE_MASK) != 0 ? byteBuf.readShort() : null;
-        Float altitude = (presenceBitMask & ALTITUDE_PRESENCE_MASK) != 0 ? byteBuf.readFloat() : null;
-        Byte satelliteCount = (presenceBitMask & SATELLITE_COUNT_PRESENCE_MASK) != 0 ? byteBuf.readByte() : null;
-        Float hdop = (presenceBitMask & HDOP_PRESENCE_MASK) != 0 ? byteBuf.readFloat() : null;
-        Byte ignition = (presenceBitMask & IGNITION_PRESENCE_MASK) != 0 ? byteBuf.readByte() : null;
-        Byte battery = (presenceBitMask & BATTERY_PRESENCE_MASK) != 0 ? byteBuf.readByte() : null;
+        byte presenceFlags = byteBuf.readByte();
+        Short speed = (presenceFlags & SPEED_PRESENCE_MASK) != 0 ? byteBuf.readShort() : null;
+        Short course = (presenceFlags & COURSE_PRESENCE_MASK) != 0 ? byteBuf.readShort() : null;
+        Float altitude = (presenceFlags & ALTITUDE_PRESENCE_MASK) != 0 ? byteBuf.readFloat() : null;
+        Byte satelliteCount = (presenceFlags & SATELLITE_COUNT_PRESENCE_MASK) != 0 ? byteBuf.readByte() : null;
+        Float hdop = (presenceFlags & HDOP_PRESENCE_MASK) != 0 ? byteBuf.readFloat() : null;
+        Byte ignition = (presenceFlags & IGNITION_PRESENCE_MASK) != 0 ? byteBuf.readByte() : null;
+        Byte battery = (presenceFlags & BATTERY_PRESENCE_MASK) != 0 ? byteBuf.readByte() : null;
         return new MangoMessage(epochMillis, latitude, longitude, speed, course, altitude, satelliteCount, hdop, ignition, battery);
     }
 }
