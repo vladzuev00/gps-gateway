@@ -65,8 +65,9 @@ Example:
 | `count`    | unsigned short                | 2 bytes  |
 | `messages` | [message](#message) × `count` | variable |
 
-There is no delimiter between messages; each message is simply appended after the previous one, so
-its own field `presence bitmask` determines where the next message starts.
+There is no delimiter between messages; each message is simply appended after the previous one.
+The length of each message is determined by its `presence bitmask`, which in turn determines where
+the next message starts.
 
 Example (2 messages):
 ```
