@@ -14,7 +14,7 @@ Mango is a binary GPS tracker protocol.
 | `type`           | 1-byte package type                                                              |
 | `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes                         |
 | `payload`        | Type-specific fields                                                             |
-| `checksum`       | sum of the unsigned bytes of `type` + `payload length` + `payload`, modulo 65536 |
+| `checksum`       | Unsigned 2-byte big-endian sum of the unsigned bytes of `type` + `payload length` + `payload`, modulo 65536 |
 
 ## Checksum
 
