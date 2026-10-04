@@ -18,7 +18,7 @@ Mango is a binary GPS tracker protocol.
 
 ## Checksum
 
-- **Algorithm:** sum of the unsigned byte values of the package, modulo 65536.
+- **Algorithm:** sum of the unsigned values of the covered bytes (see Coverage), modulo 65536.
 - **Coverage:** from the first byte of `type` up to and including the last
   byte of `payload`. The `prefix` and the `checksum` field itself are excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
