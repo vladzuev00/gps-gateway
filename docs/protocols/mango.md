@@ -76,19 +76,19 @@ Example (2 messages):
 
 ## Message
 
-| Field              | Type   | Length | Optional                               |
-|--------------------|--------|--------|----------------------------------------|
-| `timestamp`        | long   | 8      | no                                     |
-| `latitude`         | double | 8      | no                                     |
-| `longitude`        | double | 8      | no                                     |
-| `presence bitmask` | byte   | 1      | no                                     |
-| `speed`            | short  | 2      | yes — bit `0x01` in `presence bitmask` |
-| `course`           | short  | 2      | yes — bit `0x02` in `presence bitmask` |
-| `altitude`         | float  | 4      | yes — bit `0x04` in `presence bitmask` |
-| `satellites`       | byte   | 1      | yes — bit `0x08` in `presence bitmask` |
-| `hdop`             | float  | 4      | yes — bit `0x10` in `presence bitmask` |
-| `ignition`         | byte   | 1      | yes — bit `0x20` in `presence bitmask` |
-| `battery`          | byte   | 1      | yes — bit `0x40` in `presence bitmask` |
+| Field              | Type   | Length | Unit    | Presence bit   | Notes           |
+|--------------------|--------|--------|---------|----------------|-----------------|
+| `timestamp`        | long   | 8      | ms      | — (required)   | UTC             |
+| `latitude`         | double | 8      | degrees | — (required)   | −90 – 90        |
+| `longitude`        | double | 8      | degrees | — (required)   | −180 – 180      |
+| `presence bitmask` | byte   | 1      | —       | — (required)   | —               |
+| `speed`            | short  | 2      | km/h    | `0x01`         | —               |
+| `course`           | short  | 2      | degrees | `0x02`         | 0 – 359         |
+| `altitude`         | float  | 4      | meters  | `0x04`         | —               |
+| `satellites`       | byte   | 1      | count   | `0x08`         | —               |
+| `hdop`             | float  | 4      | —       | `0x10`         | —               |
+| `ignition`         | byte   | 1      | —       | `0x20`         | 0 = off, 1 = on |
+| `battery`          | byte   | 1      | percent | `0x40`         | 0 – 100         |
 
 All multibyte numeric fields are big-endian. `timestamp` is UTC milliseconds since
 January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the
