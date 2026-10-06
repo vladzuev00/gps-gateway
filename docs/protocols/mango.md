@@ -29,11 +29,11 @@ Mango is a binary GPS tracker protocol.
 
 ### `01` — login
 
-| Field            | Type          | Length                 |
-|------------------|---------------|------------------------|
-| `imei`           | ASCII string  | 15 bytes               |
-| `passwordLength` | unsigned byte | 1 byte                 |
-| `password`       | ASCII string  | `passwordLength` bytes |
+| Field            | Type          | Length           |
+|------------------|---------------|------------------|
+| `imei`           | ASCII string  | 15               |
+| `passwordLength` | unsigned byte | 1                |
+| `password`       | ASCII string  | `passwordLength` |
 
 Example:
 ```
@@ -62,7 +62,7 @@ Example:
 
 | Field      | Type                          | Length   |
 |------------|-------------------------------|----------|
-| `count`    | unsigned short                | 2 bytes  |
+| `count`    | unsigned short, big-endian    | 2        |
 | `messages` | [message](#message) × `count` | variable |
 
 There is no delimiter between messages; each message is simply appended after the previous one.
