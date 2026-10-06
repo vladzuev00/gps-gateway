@@ -116,9 +116,9 @@ structure.
 
 | Code | Meaning          |
 |------|------------------|
-| `0`  | success          |
-| `1`  | unknown `imei`   |
-| `2`  | wrong `password` |
+| `00` | success          |
+| `01` | unknown `imei`   |
+| `02` | wrong `password` |
 
 Example:
 ```
