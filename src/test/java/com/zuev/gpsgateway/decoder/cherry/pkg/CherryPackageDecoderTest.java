@@ -9,19 +9,10 @@ public final class CherryPackageDecoderTest {
 
     @Test
     public void bodyShouldBeDecoded() {
-        String givenBody = "first;;third;1234\0";
+        String givenBody = "first;;third;;;;1234\0";
 
         String[] actual = (String[]) decoder.decodeBody(givenBody);
-        String[] expected = {"first", "", "third"};
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void bodyWithEmptyLastFieldShouldBeDecoded() {
-        String givenBody = "first;;1234\0";
-
-        String[] actual = (String[]) decoder.decodeBody(givenBody);
-        String[] expected = {"first", ""};
+        String[] expected = {"first", "", "third", "", "", ""};
         assertArrayEquals(expected, actual);
     }
 
