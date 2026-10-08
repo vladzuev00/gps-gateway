@@ -3,6 +3,8 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 import com.zuev.gpsgateway.model.cherry.CherryPingPackage;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
+
 @Component
 public final class CherryPingPackageDecoder extends CherryPackageDecoder {
     private static final String PREFIX = "@PING@";
@@ -12,7 +14,7 @@ public final class CherryPingPackageDecoder extends CherryPackageDecoder {
     }
 
     @Override
-    protected CherryPingPackage decodeFields(String[] fields) {
+    protected CherryPingPackage decodeFields(Iterator<String> iterator) {
         return new CherryPingPackage();
     }
 }

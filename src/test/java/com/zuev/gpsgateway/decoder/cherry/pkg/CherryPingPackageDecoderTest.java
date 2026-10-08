@@ -3,6 +3,9 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 import com.zuev.gpsgateway.model.cherry.CherryPingPackage;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+
+import static java.util.Collections.emptyIterator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class CherryPingPackageDecoderTest {
@@ -10,7 +13,7 @@ public final class CherryPingPackageDecoderTest {
 
     @Test
     public void fieldsShouldBeDecoded() {
-        String[] givenFields = {};
+        Iterator<String> givenFields = emptyIterator();
 
         CherryPingPackage actual = decoder.decodeFields(givenFields);
         CherryPingPackage expected = new CherryPingPackage();

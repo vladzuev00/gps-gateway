@@ -3,6 +3,9 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 import com.zuev.gpsgateway.model.cherry.CherryAuthPackage;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class CherryAuthPackageDecoderTest {
@@ -10,7 +13,7 @@ public final class CherryAuthPackageDecoderTest {
 
     @Test
     public void fieldsShouldBeDecoded() {
-        String[] givenFields = {"123456789012345", "pass"};
+        Iterator<String> givenFields = List.of("123456789012345", "pass").iterator();
 
         CherryAuthPackage actual = decoder.decodeFields(givenFields);
         CherryAuthPackage expected = new CherryAuthPackage("123456789012345", "pass");

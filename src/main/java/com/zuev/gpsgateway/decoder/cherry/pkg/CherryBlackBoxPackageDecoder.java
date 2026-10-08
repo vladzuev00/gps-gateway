@@ -3,7 +3,6 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 import com.zuev.gpsgateway.model.cherry.CherryBlackBoxPackage;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -22,11 +21,10 @@ public final class CherryBlackBoxPackageDecoder extends CherryPackageDecoder {
     }
 
     @Override
-    protected CherryBlackBoxPackage decodeFields(String[] fields) {
-        Iterator<String> fieldIterator = Arrays.asList(fields).iterator();
-        int messageCount = Integer.parseInt(fieldIterator.next());
+    protected CherryBlackBoxPackage decodeFields(Iterator<String> iterator) {
+        int messageCount = Integer.parseInt(iterator.next());
         return range(0, messageCount)
-                .mapToObj(i -> messageDecoder.decode(fieldIterator))
+                .mapToObj(i -> messageDecoder.decode(iterator))
                 .collect(collectingAndThen(toList(), CherryBlackBoxPackage::new));
     }
 }
