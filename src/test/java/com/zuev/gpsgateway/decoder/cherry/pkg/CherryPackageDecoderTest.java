@@ -2,6 +2,8 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -39,8 +41,10 @@ public final class CherryPackageDecoderTest {
         }
 
         @Override
-        protected TestPackage decodeFields(String[] fields) {
-            return new TestPackage(List.of(fields));
+        protected TestPackage decodeFields(Iterator<String> iterator) {
+            List<String> fields = new ArrayList<>();
+            iterator.forEachRemaining(fields::add);
+            return new TestPackage(fields);
         }
     }
 }
