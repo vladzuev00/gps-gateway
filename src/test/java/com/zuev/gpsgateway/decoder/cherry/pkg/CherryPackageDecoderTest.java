@@ -23,7 +23,7 @@ public final class CherryPackageDecoderTest {
 
     @Test
     public void bodyWithoutFieldsShouldBeDecoded() {
-        String givenBody = "1234\0";
+        String givenBody = "\0";
 
         Object actual = decoder.decodeBody(givenBody);
         TestPackage expected = new TestPackage(emptyList());
