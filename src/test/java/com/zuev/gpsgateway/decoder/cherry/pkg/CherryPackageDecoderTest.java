@@ -2,36 +2,33 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class CherryPackageDecoderTest {
-    private final TestCherryPackageDecoder decoder = new TestCherryPackageDecoder();
+    private final CherryPackageDecoder decoder = new TestCherryPackageDecoder();
 
     @Test
     public void bodyShouldBeDecoded() {
         String givenBody = "first;;third;;;;1234\0";
 
-        String[] actual = (String[]) decoder.decodeBody(givenBody);
-        String[] expected = {"first", "", "third", "", "", ""};
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
-    public void bodyWithSeveralEmptyLastFieldsShouldBeDecoded() {
-        String givenBody = "a;;b;;;1234\0";
-
-        String[] actual = (String[]) decoder.decodeBody(givenBody);
-        String[] expected = {"a", "", "b", "", ""};
-        assertArrayEquals(expected, actual);
+        Object actual = decoder.decodeBody(givenBody);
+        TestPackage expected = new TestPackage(List.of("first", "", "third", "", "", ""));
+        assertEquals(expected, actual);
     }
 
     @Test
     public void bodyWithoutFieldsShouldBeDecoded() {
-        String givenBody = "\0";
+        String givenBody = "1234\0";
 
-        String[] actual = (String[]) decoder.decodeBody(givenBody);
-        String[] expected = {};
-        assertArrayEquals(expected, actual);
+        Object actual = decoder.decodeBody(givenBody);
+        TestPackage expected = new TestPackage(emptyList());
+        assertEquals(expected, actual);
+    }
+
+    private record TestPackage(List<String> fields) {
     }
 
     private static final class TestCherryPackageDecoder extends CherryPackageDecoder {
@@ -42,8 +39,8 @@ public final class CherryPackageDecoderTest {
         }
 
         @Override
-        protected String[] decodeFields(String[] fields) {
-            return fields;
+        protected TestPackage decodeFields(String[] fields) {
+            return new TestPackage(List.of(fields));
         }
     }
 }

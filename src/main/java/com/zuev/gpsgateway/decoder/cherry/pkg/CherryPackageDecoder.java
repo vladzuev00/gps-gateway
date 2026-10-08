@@ -12,9 +12,9 @@ public abstract class CherryPackageDecoder extends PrefixedTextPackageDecoder {
 
     @Override
     protected final Object decodeBody(String body) {
-        int lastSeparatorIndex = body.lastIndexOf(FIELD_SEPARATOR);
-        String[] fields = lastSeparatorIndex != -1
-                ? body.substring(0, lastSeparatorIndex).split(FIELD_SEPARATOR, KEEP_TRAILING_EMPTY_STRINGS)
+        int lastFieldSeparatorIndex = body.lastIndexOf(FIELD_SEPARATOR);
+        String[] fields = lastFieldSeparatorIndex != -1
+                ? body.substring(0, lastFieldSeparatorIndex).split(FIELD_SEPARATOR, KEEP_TRAILING_EMPTY_STRINGS)
                 : new String[0];
         return decodeFields(fields);
     }
