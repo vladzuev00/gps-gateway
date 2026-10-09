@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
+//TODO refactor
 @Component
 public final class CherryBlackBoxPackageDecoder extends CherryPackageDecoder {
     private static final String PREFIX = "@BLACKBOX@";

@@ -9,6 +9,7 @@ import java.util.OptionalInt;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
+//TODO refactor
 public final class CherryProtocolDecoder extends TextProtocolDecoder {
     private static final byte PACKAGE_END = '\0';
     private static final byte FIELD_SEPARATOR = ';';
