@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class CherryAuthPackageDecoderTest {
     private final CherryAuthPackageDecoder decoder = new CherryAuthPackageDecoder();
@@ -18,5 +19,7 @@ public final class CherryAuthPackageDecoderTest {
         CherryAuthPackage actual = decoder.decodeFields(givenIterator);
         CherryAuthPackage expected = new CherryAuthPackage("123456789012345", "pass");
         assertEquals(expected, actual);
+
+        assertFalse(givenIterator.hasNext());
     }
 }
