@@ -1,3 +1,4 @@
+[//]: # (TODO refactor)
 # Cherry Protocol
 
 Cherry is a text-based GPS tracker protocol.
