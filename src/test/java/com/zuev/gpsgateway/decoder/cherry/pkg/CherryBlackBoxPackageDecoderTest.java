@@ -8,11 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,21 +30,17 @@ public final class CherryBlackBoxPackageDecoderTest {
 
     @Test
     public void fieldsShouldBeDecoded() {
-        Iterator<String> givenFields = List.of("2", "first", "second").iterator();
+        Iterator<String> givenIterator = List.of("2").iterator();
 
         CherryMessage givenFirstMessage = mock(CherryMessage.class);
         CherryMessage givenSecondMessage = mock(CherryMessage.class);
-        when(mockedMessageDecoder.decode(same(givenFields)))
+        when(mockedMessageDecoder.decode(same(givenIterator)))
                 .thenReturn(givenFirstMessage)
                 .thenReturn(givenSecondMessage);
 
-        CherryBlackBoxPackage actual = decoder.decodeFields(givenFields);
+        CherryBlackBoxPackage actual = decoder.decodeFields(givenIterator);
         CherryBlackBoxPackage expected = new CherryBlackBoxPackage(List.of(givenFirstMessage, givenSecondMessage));
         assertEquals(expected, actual);
-
-        verify(mockedMessageDecoder, times(2)).decode(same(givenFields));
-        List<String> actualRemainingFields = new ArrayList<>();
-        givenFields.forEachRemaining(actualRemainingFields::add);
-        assertEquals(List.of("first", "second"), actualRemainingFields);
+        assertFalse(givenIterator.hasNext());
     }
 }

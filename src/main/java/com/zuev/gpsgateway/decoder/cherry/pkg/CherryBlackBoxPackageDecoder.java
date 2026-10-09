@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 
+import static java.lang.Integer.parseInt;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
-//TODO refactor
 @Component
 public final class CherryBlackBoxPackageDecoder extends CherryPackageDecoder {
     private static final String PREFIX = "@BLACKBOX@";
@@ -23,7 +23,7 @@ public final class CherryBlackBoxPackageDecoder extends CherryPackageDecoder {
 
     @Override
     protected CherryBlackBoxPackage decodeFields(Iterator<String> iterator) {
-        int messageCount = Integer.parseInt(iterator.next());
+        int messageCount = parseInt(iterator.next());
         return range(0, messageCount)
                 .mapToObj(i -> messageDecoder.decode(iterator))
                 .collect(collectingAndThen(toList(), CherryBlackBoxPackage::new));
