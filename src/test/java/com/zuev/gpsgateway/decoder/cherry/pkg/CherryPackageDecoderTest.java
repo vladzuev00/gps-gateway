@@ -14,10 +14,10 @@ public final class CherryPackageDecoderTest {
 
     @Test
     public void bodyShouldBeDecoded() {
-        String givenBody = "first;;third;;;;1234\0";
+        String givenBody = ";second;;fourth;;;;1234\0";
 
         Object actual = decoder.decodeBody(givenBody);
-        TestPackage expected = new TestPackage(List.of("first", "", "third", "", "", ""));
+        TestPackage expected = new TestPackage(List.of("", "second", "", "fourth", "", "", ""));
         assertEquals(expected, actual);
     }
 
