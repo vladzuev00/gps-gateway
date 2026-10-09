@@ -9,9 +9,9 @@ import java.util.OptionalInt;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-//TODO refactor
 public final class CherryProtocolDecoder extends TextProtocolDecoder {
     private static final byte PACKAGE_END = '\0';
+    private static final int NO_SUCH_OCCURRENCE = -1;
     private static final byte FIELD_SEPARATOR = ';';
     private static final int PACKAGE_END_LENGTH = 1;
 
@@ -21,14 +21,14 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
 
     @Override
     protected OptionalInt findCompletePackageEnd(ByteBuf byteBuf) {
-        int index = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), PACKAGE_END);
-        return index != -1 ? OptionalInt.of(index) : OptionalInt.empty();
+        int packageEndIndex = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), PACKAGE_END);
+        return packageEndIndex != NO_SUCH_OCCURRENCE ? OptionalInt.of(packageEndIndex) : OptionalInt.empty();
     }
 
     @Override
     protected OptionalInt getChecksum(ByteBuf byteBuf) {
-        int lastSeparatorIndex = findLastSeparatorIndex(byteBuf);
-        if (lastSeparatorIndex == -1) {
+        int lastSeparatorIndex = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), FIELD_SEPARATOR);
+        if (lastSeparatorIndex == NO_SUCH_OCCURRENCE) {
             return OptionalInt.empty();
         }
         int checksumStart = lastSeparatorIndex + 1;
@@ -39,15 +39,11 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
 
     @Override
     protected int calculateChecksum(ByteBuf byteBuf) {
-        int lastSeparatorIndex = findLastSeparatorIndex(byteBuf);
+        int lastSeparatorIndex = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), FIELD_SEPARATOR);
         int sum = 0;
         for (int i = byteBuf.readerIndex(); i <= lastSeparatorIndex; i++) {
             sum += byteBuf.getUnsignedByte(i);
         }
         return sum;
-    }
-
-    private static int findLastSeparatorIndex(ByteBuf byteBuf) {
-        return byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
     }
 }
