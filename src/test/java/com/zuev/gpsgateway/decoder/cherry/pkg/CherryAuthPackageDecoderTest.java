@@ -13,9 +13,9 @@ public final class CherryAuthPackageDecoderTest {
 
     @Test
     public void fieldsShouldBeDecoded() {
-        Iterator<String> givenFields = List.of("123456789012345", "pass").iterator();
+        Iterator<String> givenIterator = List.of("123456789012345", "pass").iterator();
 
-        CherryAuthPackage actual = decoder.decodeFields(givenFields);
+        CherryAuthPackage actual = decoder.decodeFields(givenIterator);
         CherryAuthPackage expected = new CherryAuthPackage("123456789012345", "pass");
         assertEquals(expected, actual);
     }
