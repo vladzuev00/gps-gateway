@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Iterator;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -29,13 +28,15 @@ public final class CherryDataPackageDecoderTest {
 
     @Test
     public void fieldsShouldBeDecoded() {
-        Iterator<String> givenFields = List.of("first", "second").iterator();
+        @SuppressWarnings("unchecked") Iterator<String> givenIterator = mock(Iterator.class);
 
         CherryMessage givenMessage = mock(CherryMessage.class);
-        when(mockedMessageDecoder.decode(same(givenFields))).thenReturn(givenMessage);
+        when(mockedMessageDecoder.decode(same(givenIterator))).thenReturn(givenMessage);
 
-        CherryDataPackage actual = decoder.decodeFields(givenFields);
+        CherryDataPackage actual = decoder.decodeFields(givenIterator);
         CherryDataPackage expected = new CherryDataPackage(givenMessage);
         assertEquals(expected, actual);
+
+        verifyNoInteractions(givenIterator);
     }
 }
