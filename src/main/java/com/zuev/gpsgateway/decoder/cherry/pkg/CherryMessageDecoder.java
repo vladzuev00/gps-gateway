@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
-import java.util.function.Function;
 
 import static java.lang.Double.parseDouble;
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -25,11 +24,10 @@ public final class CherryMessageDecoder {
         Short speed = decodeSpeed(iterator.next());
         Short course = decodeCourse(iterator.next());
         Float altitude = decodeAltitude(iterator.next());
-
-        Byte satelliteCount = decodeOptional(iterator.next(), Byte::valueOf);
-        Float hdop = decodeOptional(iterator.next(), Float::valueOf);
-        Byte ignition = decodeOptional(iterator.next(), Byte::valueOf);
-        Byte battery = decodeOptional(iterator.next(), Byte::valueOf);
+        Byte satelliteCount = decodeSatelliteCount(iterator.next());
+        Float hdop = decodeHdop(iterator.next());
+        Byte ignition = decodeIgnition(iterator.next());
+        Byte battery = decodeBattery(iterator.next());
         return new CherryMessage(dateTime, latitude, longitude, speed, course, altitude, satelliteCount, hdop, ignition, battery);
     }
 
@@ -59,7 +57,19 @@ public final class CherryMessageDecoder {
         return !field.isEmpty() ? Float.valueOf(field) : null;
     }
 
-    private static <T> T decodeOptional(String field, Function<String, T> parser) {
-        return !field.isEmpty() ? parser.apply(field) : null;
+    private Byte decodeSatelliteCount(String field) {
+        return !field.isEmpty() ? Byte.valueOf(field) : null;
+    }
+
+    private Float decodeHdop(String field) {
+        return !field.isEmpty() ? Float.valueOf(field) : null;
+    }
+
+    private Byte decodeIgnition(String field) {
+        return !field.isEmpty() ? Byte.valueOf(field) : null;
+    }
+
+    private Byte decodeBattery(String field) {
+        return !field.isEmpty() ? Byte.valueOf(field) : null;
     }
 }

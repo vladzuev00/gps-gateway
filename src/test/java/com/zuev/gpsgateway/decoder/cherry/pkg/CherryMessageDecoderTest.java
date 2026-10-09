@@ -4,21 +4,20 @@ import com.zuev.gpsgateway.model.cherry.CherryMessage;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class CherryMessageDecoderTest {
     private final CherryMessageDecoder decoder = new CherryMessageDecoder();
 
     @Test
     public void messageWithOptionalFieldsShouldBeDecoded() {
-        Iterator<String> givenFields = List.of(
-                "141123", "221320", "55.75", "37.62", "60", "180", "150.5", "8", "1.2", "1", "95", "next"
-        ).iterator();
+        var givenIterator = List.of("141123", "221320", "55.75", "37.62", "60", "180", "150.5", "8", "1.2", "1", "95")
+                .iterator();
 
-        CherryMessage actual = decoder.decode(givenFields);
+        CherryMessage actual = decoder.decode(givenIterator);
         CherryMessage expected = new CherryMessage(
                 LocalDateTime.of(2023, 11, 14, 22, 13, 20),
                 55.75,
@@ -32,16 +31,14 @@ public final class CherryMessageDecoderTest {
                 (byte) 95
         );
         assertEquals(expected, actual);
-        assertEquals("next", givenFields.next());
+        assertFalse(givenIterator.hasNext());
     }
 
     @Test
     public void messageWithoutOptionalFieldsShouldBeDecoded() {
-        Iterator<String> givenFields = List.of(
-                "141123", "221325", "55.76", "37.63", "", "", "", "", "", "", "", "next"
-        ).iterator();
+        var givenIterator = List.of("141123", "221325", "55.76", "37.63", "", "", "", "", "", "", "").iterator();
 
-        CherryMessage actual = decoder.decode(givenFields);
+        CherryMessage actual = decoder.decode(givenIterator);
         CherryMessage expected = new CherryMessage(
                 LocalDateTime.of(2023, 11, 14, 22, 13, 25),
                 55.76,
@@ -55,6 +52,6 @@ public final class CherryMessageDecoderTest {
                 null
         );
         assertEquals(expected, actual);
-        assertEquals("next", givenFields.next());
+        assertFalse(givenIterator.hasNext());
     }
 }
