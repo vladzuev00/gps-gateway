@@ -19,7 +19,6 @@ public final class CherryAuthPackageDecoderTest {
         CherryAuthPackage actual = decoder.decodeFields(givenIterator);
         CherryAuthPackage expected = new CherryAuthPackage("123456789012345", "pass");
         assertEquals(expected, actual);
-
         assertFalse(givenIterator.hasNext());
     }
 }
