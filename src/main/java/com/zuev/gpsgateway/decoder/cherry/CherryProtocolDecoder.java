@@ -27,7 +27,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
 
     @Override
     protected OptionalInt getChecksum(ByteBuf byteBuf) {
-        int lastSeparatorIndex = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), FIELD_SEPARATOR);
+        int lastSeparatorIndex = findLastSeparatorIndex(byteBuf);
         if (lastSeparatorIndex == NO_SUCH_OCCURRENCE) {
             return OptionalInt.empty();
         }
@@ -39,11 +39,16 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
 
     @Override
     protected int calculateChecksum(ByteBuf byteBuf) {
-        int lastSeparatorIndex = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), FIELD_SEPARATOR);
+        int lastSeparatorIndex = findLastSeparatorIndex(byteBuf);
         int sum = 0;
         for (int i = byteBuf.readerIndex(); i <= lastSeparatorIndex; i++) {
             sum += byteBuf.getUnsignedByte(i);
         }
         return sum;
+    }
+
+    private int findLastSeparatorIndex(ByteBuf byteBuf) {
+        // fromIndex > toIndex makes Netty search backwards
+        return byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
     }
 }
