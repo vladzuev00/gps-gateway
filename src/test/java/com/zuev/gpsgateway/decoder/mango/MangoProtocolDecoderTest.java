@@ -1,9 +1,6 @@
 package com.zuev.gpsgateway.decoder.mango;
 
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoBlackBoxPackageDecoder;
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoDataPackageDecoder;
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoLoginPackageDecoder;
-import com.zuev.gpsgateway.decoder.mango.pkg.MangoPingPackageDecoder;
+import com.zuev.gpsgateway.decoder.mango.pkg.*;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,48 +21,30 @@ import static org.mockito.Mockito.verifyNoInteractions;
 public final class MangoProtocolDecoderTest {
 
     @Mock
-    private MangoLoginPackageDecoder mockedLoginPackageDecoder;
+    private MangoPackageDecoder mockedFirstPackageDecoder;
 
     @Mock
-    private MangoPingPackageDecoder mockedPingPackageDecoder;
-
-    @Mock
-    private MangoDataPackageDecoder mockedDataPackageDecoder;
-
-    @Mock
-    private MangoBlackBoxPackageDecoder mockedBlackBoxPackageDecoder;
+    private MangoPackageDecoder mockedSecondPackageDecoder;
 
     private MangoProtocolDecoder decoder;
 
     @BeforeEach
     public void initializeDecoder() {
-        decoder = new MangoProtocolDecoder(
-                List.of(
-                        mockedLoginPackageDecoder,
-                        mockedPingPackageDecoder,
-                        mockedDataPackageDecoder,
-                        mockedBlackBoxPackageDecoder
-                )
-        );
+        decoder = new MangoProtocolDecoder(List.of(mockedFirstPackageDecoder, mockedSecondPackageDecoder));
     }
 
     @Test
     public void completePackageEndShouldBeFound() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a0200000002565a01"));
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("0000565a0200000002565a01")).readerIndex(2);
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isPresent());
         int actual = optionalActual.getAsInt();
-        int expected = 6;
+        int expected = 8;
         assertEquals(expected, actual);
-        assertEquals(0, givenByteBuf.readerIndex());
+        assertEquals(2, givenByteBuf.readerIndex());
 
-        verifyNoInteractions(
-                mockedLoginPackageDecoder,
-                mockedPingPackageDecoder,
-                mockedDataPackageDecoder,
-                mockedBlackBoxPackageDecoder
-        );
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
     @Test
@@ -76,12 +55,7 @@ public final class MangoProtocolDecoderTest {
         assertTrue(optionalActual.isEmpty());
         assertEquals(0, givenByteBuf.readerIndex());
 
-        verifyNoInteractions(
-                mockedLoginPackageDecoder,
-                mockedPingPackageDecoder,
-                mockedDataPackageDecoder,
-                mockedBlackBoxPackageDecoder
-        );
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
     @Test
@@ -92,12 +66,7 @@ public final class MangoProtocolDecoderTest {
         assertTrue(optionalActual.isEmpty());
         assertEquals(0, givenByteBuf.readerIndex());
 
-        verifyNoInteractions(
-                mockedLoginPackageDecoder,
-                mockedPingPackageDecoder,
-                mockedDataPackageDecoder,
-                mockedBlackBoxPackageDecoder
-        );
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
     @Test
@@ -111,28 +80,30 @@ public final class MangoProtocolDecoderTest {
         assertEquals(expected, actual);
         assertEquals(0, givenByteBuf.readerIndex());
 
-        verifyNoInteractions(
-                mockedLoginPackageDecoder,
-                mockedPingPackageDecoder,
-                mockedDataPackageDecoder,
-                mockedBlackBoxPackageDecoder
-        );
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
     @Test
     public void checksumShouldBeCalculated() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a0200000002"));
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a010014353535353535353535353535353535047061737304eb"));
 
         int actual = decoder.calculateChecksum(givenByteBuf);
-        int expected = 0x0002;
+        int expected = 0x04eb;
         assertEquals(expected, actual);
         assertEquals(0, givenByteBuf.readerIndex());
 
-        verifyNoInteractions(
-                mockedLoginPackageDecoder,
-                mockedPingPackageDecoder,
-                mockedDataPackageDecoder,
-                mockedBlackBoxPackageDecoder
-        );
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
+    }
+
+    @Test
+    public void checksumShouldBeCalculatedWithOverflow() {
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a020101" + "ff".repeat(257) + "0003"));
+
+        int actual = decoder.calculateChecksum(givenByteBuf);
+        int expected = 0x0003;
+        assertEquals(expected, actual);
+        assertEquals(0, givenByteBuf.readerIndex());
+
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 }
