@@ -1,8 +1,8 @@
 package com.zuev.gpsgateway.model.cherry;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-public record CherryMessage(LocalDateTime dateTime,
+public record CherryMessage(Instant dateTime,
                             double latitude,
                             double longitude,
                             Short speed,
