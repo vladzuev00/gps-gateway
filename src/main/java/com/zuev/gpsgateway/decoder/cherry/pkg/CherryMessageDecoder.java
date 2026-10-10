@@ -3,13 +3,14 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 import com.zuev.gpsgateway.model.cherry.CherryMessage;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 
 import static java.lang.Double.parseDouble;
+import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Component
@@ -18,7 +19,7 @@ public final class CherryMessageDecoder {
     private static final DateTimeFormatter TIME_FORMATTER = ofPattern("HHmmss");
 
     public CherryMessage decode(Iterator<String> iterator) {
-        LocalDateTime dateTime = decodeDateTime(iterator.next(), iterator.next());
+        Instant dateTime = decodeDateTime(iterator.next(), iterator.next());
         double latitude = decodeLatitude(iterator.next());
         double longitude = decodeLongitude(iterator.next());
         Short speed = decodeSpeed(iterator.next());
@@ -31,10 +32,10 @@ public final class CherryMessageDecoder {
         return new CherryMessage(dateTime, latitude, longitude, speed, course, altitude, satelliteCount, hdop, ignition, battery);
     }
 
-    private LocalDateTime decodeDateTime(String dateField, String timeField) {
+    private Instant decodeDateTime(String dateField, String timeField) {
         LocalDate date = LocalDate.parse(dateField, DATE_FORMATTER);
         LocalTime time = LocalTime.parse(timeField, TIME_FORMATTER);
-        return LocalDateTime.of(date, time);
+        return date.atTime(time).toInstant(UTC);
     }
 
     private double decodeLatitude(String field) {

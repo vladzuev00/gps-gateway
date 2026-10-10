@@ -3,9 +3,9 @@ package com.zuev.gpsgateway.decoder.cherry.pkg;
 import com.zuev.gpsgateway.model.cherry.CherryMessage;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.Instant.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -19,7 +19,7 @@ public final class CherryMessageDecoderTest {
 
         CherryMessage actual = decoder.decode(givenIterator);
         CherryMessage expected = new CherryMessage(
-                LocalDateTime.of(2023, 11, 14, 22, 13, 20),
+                parse("2023-11-14T22:13:20Z"),
                 55.75,
                 37.62,
                 (short) 60,
@@ -40,7 +40,7 @@ public final class CherryMessageDecoderTest {
 
         CherryMessage actual = decoder.decode(givenIterator);
         CherryMessage expected = new CherryMessage(
-                LocalDateTime.of(2023, 11, 14, 22, 13, 25),
+                parse("2023-11-14T22:13:25Z"),
                 55.76,
                 37.63,
                 null,
