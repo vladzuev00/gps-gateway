@@ -12,7 +12,7 @@ public final class MangoMessageDecoderTest {
     private final MangoMessageDecoder decoder = new MangoMessageDecoder();
 
     @Test
-    public void messageWithOptionalFieldsShouldBeDecode() {
+    public void messageWithOptionalFieldsShouldBeDecoded() {
         ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("0000018bcfe56800404a0fcd67fd3f5b40107e6b3fe9fadb7f003c00b441280000083f99999a01550000018bcfe56be8404a53c0ca600b0340129e065300581500"));
 
         MangoMessage actual = decoder.decode(givenByteBuf);
@@ -33,7 +33,7 @@ public final class MangoMessageDecoderTest {
     }
 
     @Test
-    public void messageWithoutOptionalFieldsShouldBeDecode() {
+    public void messageWithoutOptionalFieldsShouldBeDecoded() {
         ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("0000018bcfe56800404a0fcd67fd3f5b40107e6b3fe9fadb000000018bcfe56be8404a53c0ca600b0340129e06530058157f003c00b441280000083f99999a0155"));
 
         MangoMessage actual = decoder.decode(givenByteBuf);

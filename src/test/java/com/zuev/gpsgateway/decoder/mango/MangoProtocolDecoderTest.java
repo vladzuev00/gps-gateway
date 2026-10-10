@@ -48,7 +48,7 @@ public final class MangoProtocolDecoderTest {
     }
 
     @Test
-    public void completePackageEndShouldNotBeFoundBecauseOfReadableBytesIsLessThanEmptyPackageLength() {
+    public void completePackageEndShouldNotBeFoundBecauseOfReadableBytesAreLessThanEmptyPackageLength() {
         ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a02000080"));
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
