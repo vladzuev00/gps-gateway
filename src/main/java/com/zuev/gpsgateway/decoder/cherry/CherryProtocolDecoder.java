@@ -25,6 +25,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         return packageEndIndex != NO_SUCH_OCCURRENCE ? OptionalInt.of(packageEndIndex) : OptionalInt.empty();
     }
 
+    //TODO refactor
     @Override
     protected OptionalInt getChecksum(ByteBuf byteBuf) {
         int lastSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
@@ -37,6 +38,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         return OptionalInt.of(Integer.parseInt(checksum));
     }
 
+    //TODO refactor
     @Override
     protected int calculateChecksum(ByteBuf byteBuf) {
         int lastSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
