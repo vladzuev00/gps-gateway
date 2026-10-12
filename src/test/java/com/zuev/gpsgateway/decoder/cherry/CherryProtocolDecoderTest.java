@@ -1,10 +1,13 @@
 package com.zuev.gpsgateway.decoder.cherry;
 
 import com.zuev.gpsgateway.decoder.cherry.pkg.CherryPackageDecoder;
+import com.zuev.gpsgateway.exception.InvalidChecksumException;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -13,8 +16,7 @@ import java.util.OptionalInt;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,31 +60,43 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-//    @Test
-//    public void checksumShouldBeGot() {
-//        ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;1771\0", US_ASCII);
-//
-//        OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
-//        assertTrue(optionalActual.isPresent());
-//        int actual = optionalActual.getAsInt();
-//        int expected = 1771;
-//        assertEquals(expected, actual);
-//        assertEquals(0, givenByteBuf.readerIndex());
-//
-//        verifyNoPackageDecoderInteractions();
-//    }
-//
-//    @Test
-//    public void checksumShouldNotBeGotBecauseOfPackageWithoutFields() {
-//        ByteBuf givenByteBuf = copiedBuffer("@PING@\0", US_ASCII);
-//
-//        OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
-//        assertTrue(optionalActual.isEmpty());
-//        assertEquals(0, givenByteBuf.readerIndex());
-//
-//        verifyNoPackageDecoderInteractions();
-//    }
-//
+    @Test
+    public void checksumShouldBeGot() {
+        ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;1771\0", US_ASCII);
+
+        OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
+        assertTrue(optionalActual.isPresent());
+        int actual = optionalActual.getAsInt();
+        int expected = 1771;
+        assertEquals(expected, actual);
+        assertEquals(0, givenByteBuf.readerIndex());
+
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
+    }
+
+    @Test
+    public void checksumShouldNotBeGotBecauseThereAreNoFieldsInPackage() {
+        ByteBuf givenByteBuf = copiedBuffer("@PING@\0", US_ASCII);
+
+        OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
+        assertTrue(optionalActual.isEmpty());
+        assertEquals(0, givenByteBuf.readerIndex());
+
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "17a1"})
+    public void checksumShouldNotBeGotBecauseItIsCorrupted(String checksum) {
+        ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;" + checksum + "\0", US_ASCII);
+
+        var actual = assertThrows(InvalidChecksumException.class, () -> decoder.getChecksum(givenByteBuf));
+        assertInstanceOf(NumberFormatException.class, actual.getCause());
+        assertEquals(0, givenByteBuf.readerIndex());
+
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
+    }
+
 //    @Test
 //    public void checksumShouldBeCalculated() {
 //        ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;1771\0", US_ASCII);

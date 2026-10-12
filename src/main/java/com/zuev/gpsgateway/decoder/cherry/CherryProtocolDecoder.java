@@ -2,11 +2,13 @@ package com.zuev.gpsgateway.decoder.cherry;
 
 import com.zuev.gpsgateway.decoder.base.TextProtocolDecoder;
 import com.zuev.gpsgateway.decoder.cherry.pkg.CherryPackageDecoder;
+import com.zuev.gpsgateway.exception.InvalidChecksumException;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 import java.util.OptionalInt;
 
+import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class CherryProtocolDecoder extends TextProtocolDecoder {
@@ -25,17 +27,20 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         return packageEndIndex != NO_SUCH_OCCURRENCE ? OptionalInt.of(packageEndIndex) : OptionalInt.empty();
     }
 
-    //TODO refactor
     @Override
     protected OptionalInt getChecksum(ByteBuf byteBuf) {
-        int lastSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
-        if (lastSeparatorIndex == NO_SUCH_OCCURRENCE) {
-            return OptionalInt.empty();
+        try {
+            int lastFieldSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
+            if (lastFieldSeparatorIndex == NO_SUCH_OCCURRENCE) {
+                return OptionalInt.empty();
+            }
+            int checksumStartIndex = lastFieldSeparatorIndex + 1;
+            int checksumLength = byteBuf.writerIndex() - PACKAGE_END_LENGTH - checksumStartIndex;
+            String checksum = byteBuf.toString(checksumStartIndex, checksumLength, US_ASCII);
+            return OptionalInt.of(parseInt(checksum));
+        } catch (NumberFormatException cause) {
+            throw new InvalidChecksumException(cause);
         }
-        int checksumStart = lastSeparatorIndex + 1;
-        int checksumLength = byteBuf.writerIndex() - PACKAGE_END_LENGTH - checksumStart;
-        String checksum = byteBuf.toString(checksumStart, checksumLength, US_ASCII);
-        return OptionalInt.of(Integer.parseInt(checksum));
     }
 
     //TODO refactor
