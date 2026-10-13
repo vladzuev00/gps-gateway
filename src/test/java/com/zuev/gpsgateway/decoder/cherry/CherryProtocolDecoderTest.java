@@ -3,6 +3,7 @@ package com.zuev.gpsgateway.decoder.cherry;
 import com.zuev.gpsgateway.decoder.cherry.pkg.CherryPackageDecoder;
 import com.zuev.gpsgateway.exception.InvalidChecksumException;
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.TooLongFrameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.OptionalInt;
 
+import static com.zuev.gpsgateway.decoder.cherry.CherryProtocolDecoder.MAX_INCOMPLETE_PACKAGE_LENGTH;
 import static io.netty.buffer.Unpooled.copiedBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,6 +47,16 @@ public final class CherryProtocolDecoderTest {
         int actual = optionalActual.getAsInt();
         int expected = 7;
         assertEquals(expected, actual);
+        assertEquals(1, givenByteBuf.readerIndex());
+
+        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
+    }
+
+    @Test
+    public void completePackageEndShouldNotBeFoundBecauseIncompletePackageReachedMaxLength() {
+        ByteBuf givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH), US_ASCII).readerIndex(1);
+
+        assertThrows(TooLongFrameException.class, () -> decoder.findCompletePackageEnd(givenByteBuf));
         assertEquals(1, givenByteBuf.readerIndex());
 
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);

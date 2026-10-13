@@ -14,25 +14,26 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 //TODO refactor
 public final class CherryProtocolDecoder extends TextProtocolDecoder {
-    private static final byte PACKAGE_END = '\0';
-    private static final int NO_SUCH_OCCURRENCE = -1;
-    private static final byte FIELD_SEPARATOR = ';';
-    private static final int PACKAGE_END_LENGTH = 1;
+    static final byte PACKAGE_END = '\0';
+    static final int NO_SUCH_OCCURRENCE = -1;
+    static final int MAX_INCOMPLETE_PACKAGE_LENGTH = 64_000;
+    static final byte FIELD_SEPARATOR = ';';
+    static final int PACKAGE_END_LENGTH = 1;
 
-    private final int maxIncompletePackageLength;
-
-    public CherryProtocolDecoder(List<CherryPackageDecoder> packageDecoders, int maxIncompletePackageLength) {
+    public CherryProtocolDecoder(List<CherryPackageDecoder> packageDecoders) {
         super(packageDecoders, US_ASCII);
-        this.maxIncompletePackageLength = maxIncompletePackageLength;
     }
 
     @Override
     protected OptionalInt findCompletePackageEnd(ByteBuf byteBuf) {
         int packageEndIndex = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), PACKAGE_END);
-        if (packageEndIndex == NO_SUCH_OCCURRENCE && byteBuf.readableBytes() >= maxIncompletePackageLength) {
-            throw new TooLongFrameException("Incomplete package exceeds " + maxIncompletePackageLength + " bytes");
+        if (packageEndIndex != NO_SUCH_OCCURRENCE) {
+            return OptionalInt.of(packageEndIndex);
+        } else if (byteBuf.readableBytes() >= MAX_INCOMPLETE_PACKAGE_LENGTH) {
+            throw new TooLongFrameException("Incomplete package reached " + MAX_INCOMPLETE_PACKAGE_LENGTH + " bytes");
+        } else {
+            return OptionalInt.empty();
         }
-        return packageEndIndex != NO_SUCH_OCCURRENCE ? OptionalInt.of(packageEndIndex) : OptionalInt.empty();
     }
 
     @Override
