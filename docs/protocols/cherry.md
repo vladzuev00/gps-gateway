@@ -12,18 +12,19 @@ Cherry is a text-based GPS tracker protocol.
 | Part | Description |
 |---|---|
 | `@TYPE@` | Package type prefix, e.g. `@AUTH@`, `@PING@`, `@DATA@`, `@BLACKBOX@` |
-| `field1;field2;...;fieldN` | Type-specific fields, separated by `;` (optional) |
-| `checksum` | Decimal integer checksum (optional) |
+| `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;` (absent for packages without fields) |
+| `checksum` | Decimal integer checksum (required) |
 | `\0` | Package terminator |
 
 ## Checksum
 
 - **Algorithm:** sum of the unsigned byte values of the package, from the first byte of
-  `@TYPE@` up to and including the last `;` before the checksum field (the checksum
+  `@TYPE@` up to the checksum field: up to and including the last `;`, or up to and
+  including the closing `@` of `@TYPE@` if the package has no fields (the checksum
   digits and the terminator are excluded from the sum).
 - **Representation:** decimal digits, e.g. `1978`.
-- **Presence:** required for `@AUTH@`, `@DATA@`, `@BLACKBOX@`. **Not present** for
-  `@PING@` — a ping package ends immediately with the terminator, no checksum field.
+- **Presence:** required for all package types. A package without a valid checksum is
+  rejected.
 
 ## Package types
 
@@ -46,7 +47,12 @@ Example:
 ### `@PING@` — keep-alive
 
 ```
-@PING@\0
+@PING@checksum\0
+```
+
+Example:
+```
+@PING@430\0
 ```
 
 ### `@DATA@` — single location point
