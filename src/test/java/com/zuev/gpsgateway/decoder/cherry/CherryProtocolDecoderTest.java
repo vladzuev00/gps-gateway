@@ -21,7 +21,6 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-//TODO refactor
 @ExtendWith(MockitoExtension.class)
 public final class CherryProtocolDecoderTest {
 
@@ -53,8 +52,8 @@ public final class CherryProtocolDecoderTest {
     }
 
     @Test
-    public void completePackageEndShouldNotBeFoundBecauseIncompletePackageReachedMaxLength() {
-        ByteBuf givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH), US_ASCII).readerIndex(1);
+    public void completePackageEndShouldNotBeFoundBecauseIncompletePackageExceededMaxLength() {
+        var givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH + 1), US_ASCII).readerIndex(1);
 
         assertThrows(TooLongFrameException.class, () -> decoder.findCompletePackageEnd(givenByteBuf));
         assertEquals(1, givenByteBuf.readerIndex());
@@ -73,6 +72,7 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
+    //TODO refactor
     @Test
     public void checksumShouldBeGot() {
         ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;1771\0", US_ASCII);
@@ -87,6 +87,7 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
+    //TODO refactor
     @Test
     public void checksumShouldNotBeGotBecauseThereAreNoFieldsInPackage() {
         ByteBuf givenByteBuf = copiedBuffer("@PING@\0", US_ASCII);
@@ -98,6 +99,7 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
+    //TODO refactor
     @ParameterizedTest
     @ValueSource(strings = {"", "17a1"})
     public void checksumShouldNotBeGotBecauseItIsCorrupted(String checksum) {
@@ -110,6 +112,7 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
+    //TODO refactor
     @Test
     public void checksumShouldBeCalculated() {
         ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;1771\0", US_ASCII);

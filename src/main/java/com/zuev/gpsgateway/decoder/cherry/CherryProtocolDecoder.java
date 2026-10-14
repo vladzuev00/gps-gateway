@@ -12,7 +12,6 @@ import java.util.OptionalInt;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-//TODO refactor
 public final class CherryProtocolDecoder extends TextProtocolDecoder {
     static final byte PACKAGE_END = '\0';
     static final int NO_SUCH_OCCURRENCE = -1;
@@ -29,13 +28,14 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         int packageEndIndex = byteBuf.indexOf(byteBuf.readerIndex(), byteBuf.writerIndex(), PACKAGE_END);
         if (packageEndIndex != NO_SUCH_OCCURRENCE) {
             return OptionalInt.of(packageEndIndex);
-        } else if (byteBuf.readableBytes() >= MAX_INCOMPLETE_PACKAGE_LENGTH) {
-            throw new TooLongFrameException("Incomplete package reached " + MAX_INCOMPLETE_PACKAGE_LENGTH + " bytes");
+        } else if (byteBuf.readableBytes() > MAX_INCOMPLETE_PACKAGE_LENGTH) {
+            throw new TooLongFrameException("Incomplete package exceeded " + MAX_INCOMPLETE_PACKAGE_LENGTH + " bytes");
         } else {
             return OptionalInt.empty();
         }
     }
 
+    //TODO refactor
     @Override
     protected OptionalInt getChecksum(ByteBuf byteBuf) {
         try {
@@ -52,6 +52,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         }
     }
 
+    //TODO refactor
     @Override
     protected int calculateChecksum(ByteBuf byteBuf) {
         int lastFieldSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
