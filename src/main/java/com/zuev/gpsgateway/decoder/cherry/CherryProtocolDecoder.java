@@ -60,15 +60,15 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         return sum;
     }
 
+    //TODO refactor
     private static int findChecksumStartIndex(ByteBuf byteBuf) {
-        int lastFieldSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
-        if (lastFieldSeparatorIndex != NO_SUCH_OCCURRENCE) {
-            return lastFieldSeparatorIndex + 1;
-        }
-        int prefixEndIndex = byteBuf.indexOf(byteBuf.readerIndex() + 1, byteBuf.writerIndex(), PREFIX_BOUND);
-        if (prefixEndIndex == NO_SUCH_OCCURRENCE) {
+        int checksumBoundIndex = byteBuf.forEachByteDesc(
+                byteBuf.readerIndex(), byteBuf.readableBytes(),
+                value -> value != FIELD_SEPARATOR && value != PREFIX_BOUND
+        );
+        if (checksumBoundIndex == NO_SUCH_OCCURRENCE) {
             throw new InvalidChecksumException();
         }
-        return prefixEndIndex + 1;
+        return checksumBoundIndex + 1;
     }
 }
