@@ -2,8 +2,8 @@ package com.zuev.gpsgateway.decoder.cherry;
 
 import com.zuev.gpsgateway.decoder.cherry.pkg.CherryPackageDecoder;
 import com.zuev.gpsgateway.exception.InvalidChecksumException;
+import com.zuev.gpsgateway.exception.TooLongPackageException;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.TooLongFrameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +55,7 @@ public final class CherryProtocolDecoderTest {
     public void completePackageEndShouldNotBeFoundBecauseIncompletePackageExceededMaxLength() {
         var givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH + 1), US_ASCII).readerIndex(1);
 
-        assertThrows(TooLongFrameException.class, () -> decoder.findCompletePackageEnd(givenByteBuf));
+        assertThrows(TooLongPackageException.class, () -> decoder.findCompletePackageEnd(givenByteBuf));
         assertEquals(1, givenByteBuf.readerIndex());
 
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);

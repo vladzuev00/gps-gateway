@@ -3,8 +3,8 @@ package com.zuev.gpsgateway.decoder.cherry;
 import com.zuev.gpsgateway.decoder.base.TextProtocolDecoder;
 import com.zuev.gpsgateway.decoder.cherry.pkg.CherryPackageDecoder;
 import com.zuev.gpsgateway.exception.InvalidChecksumException;
+import com.zuev.gpsgateway.exception.TooLongPackageException;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.TooLongFrameException;
 
 import java.util.List;
 import java.util.OptionalInt;
@@ -29,13 +29,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         if (packageEndIndex != NO_SUCH_OCCURRENCE) {
             return OptionalInt.of(packageEndIndex);
         } else if (byteBuf.readableBytes() > MAX_INCOMPLETE_PACKAGE_LENGTH) {
-            //TODO
-//             public final class TooLongPackageException extends TooLongFrameException {
-//      public TooLongPackageException(int maxLength) {
-//          super("Incomplete package exceeded " + maxLength + " bytes");
-//      }
-//  }
-            throw new TooLongFrameException("Incomplete package exceeded " + MAX_INCOMPLETE_PACKAGE_LENGTH + " bytes");
+            throw new TooLongPackageException("Incomplete package exceeded " + MAX_INCOMPLETE_PACKAGE_LENGTH + " bytes");
         } else {
             return OptionalInt.empty();
         }
