@@ -21,7 +21,6 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-//TODO refactor
 @ExtendWith(MockitoExtension.class)
 public final class CherryProtocolDecoderTest {
 
@@ -38,10 +37,9 @@ public final class CherryProtocolDecoderTest {
         decoder = new CherryProtocolDecoder(List.of(mockedFirstPackageDecoder, mockedSecondPackageDecoder));
     }
 
-    //TODO refactor
     @Test
     public void completePackageEndShouldBeFound() {
-        ByteBuf givenByteBuf = copiedBuffer("\0@PING@430\0@AUTH@123456789012345;pass;1771\0@PI", US_ASCII).readerIndex(1);
+        var givenByteBuf = copiedBuffer("\0@PING@430\0@AUTH@123456789012345;pass;1771\0@PI", US_ASCII).readerIndex(1);
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isPresent());
@@ -53,7 +51,6 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    //TODO refactor
     @Test
     public void completePackageEndShouldNotBeFoundBecauseIncompletePackageExceededMaxLength() {
         var givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH + 1), US_ASCII).readerIndex(1);
@@ -64,7 +61,6 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    //TODO refactor
     @Test
     public void completePackageEndShouldNotBeFound() {
         ByteBuf givenByteBuf = copiedBuffer("\0@AUTH@123456789012345;pa", US_ASCII).readerIndex(1);
