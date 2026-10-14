@@ -29,6 +29,12 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
         if (packageEndIndex != NO_SUCH_OCCURRENCE) {
             return OptionalInt.of(packageEndIndex);
         } else if (byteBuf.readableBytes() > MAX_INCOMPLETE_PACKAGE_LENGTH) {
+            //TODO
+//             public final class TooLongPackageException extends TooLongFrameException {
+//      public TooLongPackageException(int maxLength) {
+//          super("Incomplete package exceeded " + maxLength + " bytes");
+//      }
+//  }
             throw new TooLongFrameException("Incomplete package exceeded " + MAX_INCOMPLETE_PACKAGE_LENGTH + " bytes");
         } else {
             return OptionalInt.empty();
