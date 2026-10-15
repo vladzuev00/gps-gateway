@@ -40,12 +40,13 @@ public final class MangoProtocolDecoderTest {
 
     @Test
     public void completePackageEndShouldBeFound() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("0000565a0200000002565a01")).readerIndex(2);
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("0000565a010014353535353535353535353535353535047061737304eb565a01"))
+                .readerIndex(2);
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isPresent());
         int actual = optionalActual.getAsInt();
-        int expected = 8;
+        int expected = 28;
         assertEquals(expected, actual);
         assertEquals(2, givenByteBuf.readerIndex());
 
