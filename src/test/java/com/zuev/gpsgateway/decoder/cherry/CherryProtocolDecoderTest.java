@@ -75,8 +75,8 @@ public final class CherryProtocolDecoderTest {
 
     @ParameterizedTest
     @CsvSource({"'@AUTH@123456789012345;pass;1771\0', 1771", "'@PING@430\0', 430"})
-    public void checksumShouldBeGot(String givenPackage, int expected) {
-        ByteBuf givenByteBuf = copiedBuffer(givenPackage, CHARSET);
+    public void checksumShouldBeGot(String givenText, int expected) {
+        ByteBuf givenByteBuf = copiedBuffer(givenText, CHARSET);
 
         OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
         assertTrue(optionalActual.isPresent());
@@ -89,8 +89,8 @@ public final class CherryProtocolDecoderTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"@AUTH@123456789012345;pass;\0", "@AUTH@123456789012345;pass;17a1\0", "@PING430\0"})
-    public void checksumShouldNotBeGotBecausePackageIsCorrupted(String givenPackage) {
-        ByteBuf givenByteBuf = copiedBuffer(givenPackage, CHARSET);
+    public void checksumShouldNotBeGotBecausePackageIsCorrupted(String givenText) {
+        ByteBuf givenByteBuf = copiedBuffer(givenText, CHARSET);
 
         assertThrows(InvalidChecksumException.class, () -> decoder.getChecksum(givenByteBuf));
         assertEquals(0, givenByteBuf.readerIndex());
@@ -100,8 +100,8 @@ public final class CherryProtocolDecoderTest {
 
     @ParameterizedTest
     @CsvSource({"'@AUTH@123456789012345;pass;0\0', 1771", "'@PING@0\0', 430"})
-    public void checksumShouldBeCalculated(String givenPackage, int expected) {
-        ByteBuf givenByteBuf = copiedBuffer(givenPackage, CHARSET);
+    public void checksumShouldBeCalculated(String givenText, int expected) {
+        ByteBuf givenByteBuf = copiedBuffer(givenText, CHARSET);
 
         int actual = decoder.calculateChecksum(givenByteBuf);
         assertEquals(expected, actual);
