@@ -1,15 +1,20 @@
 package com.zuev.gpsgateway.decoder.mango;
 
-import com.zuev.gpsgateway.decoder.mango.pkg.*;
+import com.zuev.gpsgateway.decoder.mango.pkg.MangoPackageDecoder;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.stream.Stream;
 
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
@@ -47,20 +52,10 @@ public final class MangoProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    @Test
-    public void completePackageEndShouldNotBeFoundBecauseOfReadableBytesAreLessThanEmptyPackageLength() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a02000080"));
-
-        OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
-        assertTrue(optionalActual.isEmpty());
-        assertEquals(0, givenByteBuf.readerIndex());
-
-        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
-    }
-
-    @Test
-    public void completePackageEndShouldNotBeFoundBecauseOfNotCompleteBody() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a010014353535"));
+    @ParameterizedTest
+    @ValueSource(strings = {"565a02000080", "565a010014353535"})
+    public void completePackageEndShouldNotBeFound(String givenHexDump) {
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump(givenHexDump));
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isEmpty());
@@ -83,27 +78,22 @@ public final class MangoProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    @Test
-    public void checksumShouldBeCalculated() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a010014353535353535353535353535353535047061737304eb"));
+    @ParameterizedTest
+    @MethodSource("checksumShouldBeCalculatedMethodSource")
+    public void checksumShouldBeCalculated(String givenHexDump, int expected) {
+        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump(givenHexDump));
 
         int actual = decoder.calculateChecksum(givenByteBuf);
-        int expected = 0x04eb;
         assertEquals(expected, actual);
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    @Test
-    public void checksumShouldBeCalculatedWithOverflow() {
-        ByteBuf givenByteBuf = wrappedBuffer(decodeHexDump("565a020101" + "ff".repeat(257) + "0003"));
-
-        int actual = decoder.calculateChecksum(givenByteBuf);
-        int expected = 0x0003;
-        assertEquals(expected, actual);
-        assertEquals(0, givenByteBuf.readerIndex());
-
-        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
+    private static Stream<Arguments> checksumShouldBeCalculatedMethodSource() {
+        return Stream.of(
+                Arguments.of("565a010014353535353535353535353535353535047061737304eb", 0x04eb),
+                Arguments.of("565a020101" + "ff".repeat(257) + "0003", 0x0003)
+        );
     }
 }
