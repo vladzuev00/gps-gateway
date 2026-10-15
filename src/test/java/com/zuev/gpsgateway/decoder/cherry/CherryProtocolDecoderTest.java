@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,9 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.OptionalInt;
 
+import static com.zuev.gpsgateway.decoder.cherry.CherryProtocolDecoder.CHARSET;
 import static com.zuev.gpsgateway.decoder.cherry.CherryProtocolDecoder.MAX_INCOMPLETE_PACKAGE_LENGTH;
 import static io.netty.buffer.Unpooled.copiedBuffer;
-import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -39,7 +40,7 @@ public final class CherryProtocolDecoderTest {
 
     @Test
     public void completePackageEndShouldBeFound() {
-        var givenByteBuf = copiedBuffer("\0@PING@430\0@AUTH@123456789012345;pass;1771\0@PI", US_ASCII).readerIndex(1);
+        var givenByteBuf = copiedBuffer("\0@PING@430\0@AUTH@123456789012345;pass;1771\0@PI", CHARSET).readerIndex(1);
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isPresent());
@@ -53,7 +54,7 @@ public final class CherryProtocolDecoderTest {
 
     @Test
     public void completePackageEndShouldNotBeFoundBecauseIncompletePackageExceededMaxLength() {
-        var givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH + 1), US_ASCII).readerIndex(1);
+        var givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH + 1), CHARSET).readerIndex(1);
 
         assertThrows(TooLongPackageException.class, () -> decoder.findCompletePackageEnd(givenByteBuf));
         assertEquals(1, givenByteBuf.readerIndex());
@@ -63,7 +64,7 @@ public final class CherryProtocolDecoderTest {
 
     @Test
     public void completePackageEndShouldNotBeFound() {
-        ByteBuf givenByteBuf = copiedBuffer("\0@AUTH@123456789012345;pa", US_ASCII).readerIndex(1);
+        ByteBuf givenByteBuf = copiedBuffer("\0@AUTH@123456789012345;pa", CHARSET).readerIndex(1);
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isEmpty());
@@ -72,95 +73,48 @@ public final class CherryProtocolDecoderTest {
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    //TODO refactor
-    @Test
-    public void checksumShouldBeGot() {
-        ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;1771\0", US_ASCII);
+    @ParameterizedTest
+    @CsvSource({"'@AUTH@123456789012345;pass;1771\0', 1771", "'@PING@430\0', 430"})
+    public void checksumShouldBeGot(String givenPackage, int expected) {
+        ByteBuf givenByteBuf = copiedBuffer(givenPackage, CHARSET);
 
         OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
         assertTrue(optionalActual.isPresent());
         int actual = optionalActual.getAsInt();
-        int expected = 1771;
         assertEquals(expected, actual);
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    //TODO refactor
-    @Test
-    public void checksumOfPackageWithoutFieldsShouldBeGot() {
-        ByteBuf givenByteBuf = copiedBuffer("@PING@430\0", US_ASCII);
-
-        OptionalInt optionalActual = decoder.getChecksum(givenByteBuf);
-        assertTrue(optionalActual.isPresent());
-        int actual = optionalActual.getAsInt();
-        int expected = 430;
-        assertEquals(expected, actual);
-        assertEquals(0, givenByteBuf.readerIndex());
-
-        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
-    }
-
-    //TODO refactor
     @ParameterizedTest
-    @ValueSource(strings = {"", "17a1"})
-    public void checksumShouldNotBeGotBecauseItIsCorrupted(String checksum) {
-        ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;" + checksum + "\0", US_ASCII);
+    @ValueSource(strings = {"@AUTH@123456789012345;pass;\0", "@AUTH@123456789012345;pass;17a1\0", "@PING430\0"})
+    public void checksumShouldNotBeGotBecausePackageIsCorrupted(String givenPackage) {
+        ByteBuf givenByteBuf = copiedBuffer(givenPackage, CHARSET);
 
-        var actual = assertThrows(InvalidChecksumException.class, () -> decoder.getChecksum(givenByteBuf));
-        assertInstanceOf(NumberFormatException.class, actual.getCause());
+        assertThrows(InvalidChecksumException.class, () -> decoder.getChecksum(givenByteBuf));
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    //TODO refactor
     @ParameterizedTest
-    @ValueSource(strings = {"", "4a0"})
-    public void checksumOfPackageWithoutFieldsShouldNotBeGotBecauseItIsCorrupted(String checksum) {
-        ByteBuf givenByteBuf = copiedBuffer("@PING@" + checksum + "\0", US_ASCII);
-
-        var actual = assertThrows(InvalidChecksumException.class, () -> decoder.getChecksum(givenByteBuf));
-        assertInstanceOf(NumberFormatException.class, actual.getCause());
-        assertEquals(0, givenByteBuf.readerIndex());
-
-        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
-    }
-
-    //TODO refactor
-    @Test
-    public void checksumShouldNotBeGotBecausePrefixIsNotClosed() {
-        ByteBuf givenByteBuf = copiedBuffer("@PING430\0", US_ASCII);
-
-        var actual = assertThrows(InvalidChecksumException.class, () -> decoder.getChecksum(givenByteBuf));
-        assertNull(actual.getCause());
-        assertEquals(0, givenByteBuf.readerIndex());
-
-        verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
-    }
-
-    //TODO refactor
-    @Test
-    public void checksumShouldBeCalculated() {
-        ByteBuf givenByteBuf = copiedBuffer("@AUTH@123456789012345;pass;1771\0", US_ASCII);
+    @CsvSource({"'@AUTH@123456789012345;pass;0\0', 1771", "'@PING@0\0', 430"})
+    public void checksumShouldBeCalculated(String givenPackage, int expected) {
+        ByteBuf givenByteBuf = copiedBuffer(givenPackage, CHARSET);
 
         int actual = decoder.calculateChecksum(givenByteBuf);
-        int expected = 1771;
         assertEquals(expected, actual);
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
     }
 
-    //TODO refactor
     @Test
-    public void checksumOfPackageWithoutFieldsShouldBeCalculated() {
-        ByteBuf givenByteBuf = copiedBuffer("@PING@430\0", US_ASCII);
+    public void checksumShouldNotBeCalculatedBecausePackageIsCorrupted() {
+        ByteBuf givenByteBuf = copiedBuffer("@PING430\0", CHARSET);
 
-        int actual = decoder.calculateChecksum(givenByteBuf);
-        int expected = 430;
-        assertEquals(expected, actual);
+        assertThrows(IllegalStateException.class, () -> decoder.calculateChecksum(givenByteBuf));
         assertEquals(0, givenByteBuf.readerIndex());
 
         verifyNoInteractions(mockedFirstPackageDecoder, mockedSecondPackageDecoder);
