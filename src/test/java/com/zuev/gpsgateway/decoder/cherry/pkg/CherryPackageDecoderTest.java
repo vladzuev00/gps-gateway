@@ -1,10 +1,13 @@
 package com.zuev.gpsgateway.decoder.cherry.pkg;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,22 +15,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class CherryPackageDecoderTest {
     private final CherryPackageDecoder decoder = new TestCherryPackageDecoder();
 
-    @Test
-    public void bodyShouldBeDecoded() {
-        String givenBody = ";second;;fourth;;;;1234\0";
-
+    @ParameterizedTest
+    @MethodSource("bodyShouldBeDecodedMethodSource")
+    public void bodyShouldBeDecoded(String givenBody, List<String> expectedFields) {
         Object actual = decoder.decodeBody(givenBody);
-        TestPackage expected = new TestPackage(List.of("", "second", "", "fourth", "", "", ""));
+        TestPackage expected = new TestPackage(expectedFields);
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void bodyWithoutFieldsShouldBeDecoded() {
-        String givenBody = "\0";
-
-        Object actual = decoder.decodeBody(givenBody);
-        TestPackage expected = new TestPackage(emptyList());
-        assertEquals(expected, actual);
+    private static Stream<Arguments> bodyShouldBeDecodedMethodSource() {
+        return Stream.of(
+                Arguments.of(";second;;fourth;;;;1234\0", List.of("", "second", "", "fourth", "", "", "")),
+                Arguments.of("\0", emptyList())
+        );
     }
 
     private record TestPackage(List<String> fields) {
