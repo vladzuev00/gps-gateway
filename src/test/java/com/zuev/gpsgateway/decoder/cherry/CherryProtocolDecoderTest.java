@@ -53,7 +53,7 @@ public final class CherryProtocolDecoderTest {
     }
 
     @Test
-    public void completePackageEndShouldNotBeFoundBecauseIncompletePackageExceededMaxLength() {
+    public void completePackageEndShouldNotBeFoundBecauseIncompletePackageExceedsMaxLength() {
         var givenByteBuf = copiedBuffer("\0" + "@".repeat(MAX_INCOMPLETE_PACKAGE_LENGTH + 1), CHARSET).readerIndex(1);
 
         assertThrows(TooLongPackageException.class, () -> decoder.findCompletePackageEnd(givenByteBuf));
