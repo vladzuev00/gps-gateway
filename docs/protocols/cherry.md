@@ -10,8 +10,8 @@ Cherry is a text-based GPS tracker protocol.
 
 | Part                        | Description                                                                         |
 |-----------------------------|-------------------------------------------------------------------------------------|
-| `@TYPE@`                    | Package type prefix: `@AUTH@`, `@PING@`, `@DATA@` or `@BLACKBOX@`                   |
-| `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;`; absent for packages without fields      |
+| `@TYPE@`                    | Package type prefix                                                                 |
+| `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;` (absent for packages without fields)     |
 | `checksum`                  | Decimal sum of the unsigned bytes of `@TYPE@` + `field1;field2;...;fieldN;`         |
 | `\0`                        | Package terminator                                                                  |
 
