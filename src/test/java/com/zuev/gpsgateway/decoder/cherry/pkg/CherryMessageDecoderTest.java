@@ -1,9 +1,13 @@
 package com.zuev.gpsgateway.decoder.cherry.pkg;
 
 import com.zuev.gpsgateway.model.cherry.CherryMessage;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.time.Instant.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,46 +16,46 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public final class CherryMessageDecoderTest {
     private final CherryMessageDecoder decoder = new CherryMessageDecoder();
 
-    @Test
-    public void messageWithOptionalFieldsShouldBeDecoded() {
-        var givenIterator = List.of("141123", "221320", "55.75", "37.62", "60", "180", "150.5", "8", "1.2", "1", "95")
-                .iterator();
-
+    @ParameterizedTest
+    @MethodSource("messageShouldBeDecodedMethodSource")
+    public void messageShouldBeDecoded(Iterator<String> givenIterator, CherryMessage expected) {
         CherryMessage actual = decoder.decode(givenIterator);
-        CherryMessage expected = new CherryMessage(
-                parse("2023-11-14T22:13:20Z"),
-                55.75,
-                37.62,
-                (short) 60,
-                (short) 180,
-                150.5F,
-                (byte) 8,
-                1.2F,
-                (byte) 1,
-                (byte) 95
-        );
         assertEquals(expected, actual);
         assertFalse(givenIterator.hasNext());
     }
 
-    @Test
-    public void messageWithoutOptionalFieldsShouldBeDecoded() {
-        var givenIterator = List.of("141123", "221325", "55.76", "37.63", "", "", "", "", "", "", "").iterator();
-
-        CherryMessage actual = decoder.decode(givenIterator);
-        CherryMessage expected = new CherryMessage(
-                parse("2023-11-14T22:13:25Z"),
-                55.76,
-                37.63,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+    static Stream<Arguments> messageShouldBeDecodedMethodSource() {
+        return Stream.of(
+                Arguments.of(
+                        List.of("141123", "221320", "55.75", "37.62", "60", "180", "150.5", "8", "1.2", "1", "95").iterator(),
+                        new CherryMessage(
+                                parse("2023-11-14T22:13:20Z"),
+                                55.75,
+                                37.62,
+                                (short) 60,
+                                (short) 180,
+                                150.5F,
+                                (byte) 8,
+                                1.2F,
+                                (byte) 1,
+                                (byte) 95
+                        )
+                ),
+                Arguments.of(
+                        List.of("141123", "221325", "55.76", "37.63", "", "", "", "", "", "", "").iterator(),
+                        new CherryMessage(
+                                parse("2023-11-14T22:13:25Z"),
+                                55.76,
+                                37.63,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                        )
+                )
         );
-        assertEquals(expected, actual);
-        assertFalse(givenIterator.hasNext());
     }
 }
