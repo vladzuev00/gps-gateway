@@ -8,12 +8,12 @@ Cherry is a text-based GPS tracker protocol.
 @TYPE@field1;field2;...;fieldN;checksum\0
 ```
 
-| Part                        | Description                                                                         |
-|-----------------------------|-------------------------------------------------------------------------------------|
-| `@TYPE@`                    | Package type prefix                                                                 |
-| `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;` (absent for packages without fields)     |
-| `checksum`                  | Decimal sum of the unsigned bytes of `@TYPE@` + `field1;field2;...;fieldN;`         |
-| `\0`                        | Package terminator                                                                  |
+| Part                        | Description                                                                     |
+|-----------------------------|---------------------------------------------------------------------------------|
+| `@TYPE@`                    | Package type prefix                                                             |
+| `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;` (absent for packages without fields) |
+| `checksum`                  | Decimal sum of the unsigned bytes of `@TYPE@` + `field1;field2;...;fieldN;`     |
+| `\0`                        | Package terminator                                                              |
 
 All parts are ASCII-encoded.
 
@@ -31,10 +31,10 @@ All parts are ASCII-encoded.
 
 ### `@AUTH@` — auth
 
-| Field      | Type         |
-|------------|--------------|
-| `imei`     | ASCII string |
-| `password` | ASCII string |
+| Field      | Type   |
+|------------|--------|
+| `imei`     | string |
+| `password` | string |
 
 Example:
 ```
@@ -61,14 +61,14 @@ Example:
 
 ### `@BLACKBOX@` — black box
 
-| Field      | Type                          | Count        |
-|------------|-------------------------------|--------------|
-| `count`    | int                           | 1            |
-| `messages` | [message](#message) × `count` | 11 × `count` |
+| Field      | Type                          |
+|------------|-------------------------------|
+| `count`    | int                           |
+| `messages` | [message](#message) × `count` |
 
 There is no additional delimiter between messages; the fields of each message simply follow
 the fields of the previous one in the same flat `;`-separated list. Every message has exactly
-11 fields (absent optional fields are still present as empty strings), so the total field count
+11 fields (an absent optional field is encoded as an empty string), so the total field count
 is `1 + 11 × count`.
 
 Example (2 messages):
@@ -106,12 +106,12 @@ Example:
 The server responds to every package, using the `@TYPE_ACK@payload\0` structure. Response
 prefixes carry an `_ACK` suffix so they are distinguishable from device-sent packages.
 
-| Request Type | Response Type    | Response Payload                    |
-|--------------|------------------|-------------------------------------|
-| `@AUTH@`     | `@AUTH_ACK@`     | decimal status code, see below      |
-| `@PING@`     | `@PING_ACK@`     | empty                               |
-| `@DATA@`     | `@DATA_ACK@`     | empty                               |
-| `@BLACKBOX@` | `@BLACKBOX_ACK@` | empty                               |
+| Request Type | Response Type    | Response Payload               |
+|--------------|------------------|--------------------------------|
+| `@AUTH@`     | `@AUTH_ACK@`     | decimal status code, see below |
+| `@PING@`     | `@PING_ACK@`     | empty                          |
+| `@DATA@`     | `@DATA_ACK@`     | empty                          |
+| `@BLACKBOX@` | `@BLACKBOX_ACK@` | empty                          |
 
 ### `@AUTH_ACK@` status codes
 
