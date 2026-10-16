@@ -92,7 +92,6 @@ Example (2 messages):
 | `ignition`   | byte   | —       | yes      | 0 = off, 1 = on |
 | `battery`    | byte   | percent | yes      | 0 – 100         |
 
-`date` and `time` have no separators within the field.
 An absent optional field is encoded as an empty string rather than omitted, so a message
 always has the same number of fields.
 
