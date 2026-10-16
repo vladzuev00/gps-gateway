@@ -78,19 +78,19 @@ Example (2 messages):
 
 ## Message
 
-| Field            | Type   | Unit    | Optional | Notes           |
-|------------------|--------|---------|----------|-----------------|
-| `date`           | string | —       | no       | `DDMMYY`, UTC   |
-| `time`           | string | —       | no       | `HHMMSS`, UTC   |
-| `latitude`       | double | degrees | no       | −90 – 90        |
-| `longitude`      | double | degrees | no       | −180 – 180      |
-| `speed`          | short  | km/h    | yes      | —               |
-| `course`         | short  | degrees | yes      | 0 – 359         |
-| `altitude`       | float  | meters  | yes      | —               |
-| `satelliteCount` | byte   | count   | yes      | —               |
-| `hdop`           | float  | —       | yes      | —               |
-| `ignition`       | byte   | —       | yes      | 0 = off, 1 = on |
-| `battery`        | byte   | percent | yes      | 0 – 100         |
+| Field        | Type   | Unit    | Optional | Notes           |
+|--------------|--------|---------|----------|-----------------|
+| `date`       | string | —       | no       | `DDMMYY`, UTC   |
+| `time`       | string | —       | no       | `HHMMSS`, UTC   |
+| `latitude`   | double | degrees | no       | −90 – 90        |
+| `longitude`  | double | degrees | no       | −180 – 180      |
+| `speed`      | short  | km/h    | yes      | —               |
+| `course`     | short  | degrees | yes      | 0 – 359         |
+| `altitude`   | float  | meters  | yes      | —               |
+| `satellites` | byte   | count   | yes      | —               |
+| `hdop`       | float  | —       | yes      | —               |
+| `ignition`   | byte   | —       | yes      | 0 = off, 1 = on |
+| `battery`    | byte   | percent | yes      | 0 – 100         |
 
 All numeric fields are decimal. `date` and `time` have no separators within the field.
 An absent optional field is encoded as an empty string rather than omitted, so a message
