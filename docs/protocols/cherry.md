@@ -31,14 +31,13 @@ All parts are ASCII-encoded.
 
 ### `@AUTH@` — auth
 
-| Field      | Type   |
-|------------|--------|
-| `imei`     | string |
-| `password` | string |
+| Field  | Type   |
+|--------|--------|
+| `imei` | string |
 
 Example:
 ```
-@AUTH@123456789012345;pass;1771\0
+@AUTH@123456789012345;1273\0
 ```
 
 ### `@PING@` — ping
@@ -114,11 +113,10 @@ type is the request type preceded by `A`.
 
 ### `@AAUTH@` status codes
 
-| Code | Meaning          |
-|------|------------------|
-| `0`  | success          |
-| `1`  | unknown `imei`   |
-| `2`  | wrong `password` |
+| Code | Meaning        |
+|------|----------------|
+| `0`  | success        |
+| `1`  | unknown `imei` |
 
 Example:
 ```
