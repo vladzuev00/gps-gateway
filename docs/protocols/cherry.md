@@ -102,17 +102,17 @@ Example:
 
 ## Responses
 
-The server responds to every package, using the `@TYPE_ACK@payload\0` structure. Response
-prefixes carry an `_ACK` suffix so they are distinguishable from device-sent packages.
+The server responds to every package, using the `@TYPE@payload\0` structure. Each response
+type is the request type preceded by `A`.
 
-| Request Type | Response Type    | Response Payload               |
-|--------------|------------------|--------------------------------|
-| `@AUTH@`     | `@AUTH_ACK@`     | decimal status code, see below |
-| `@PING@`     | `@PING_ACK@`     | empty                          |
-| `@DATA@`     | `@DATA_ACK@`     | empty                          |
-| `@BLACKBOX@` | `@BLACKBOX_ACK@` | empty                          |
+| Request Type | Response Type | Response Payload       |
+|--------------|---------------|------------------------|
+| `@AUTH@`     | `@AAUTH@`     | status code, see below |
+| `@PING@`     | `@APING@`     | empty                  |
+| `@DATA@`     | `@ADATA@`     | empty                  |
+| `@BLACKBOX@` | `@ABLACKBOX@` | empty                  |
 
-### `@AUTH_ACK@` status codes
+### `@AAUTH@` status codes
 
 | Code | Meaning          |
 |------|------------------|
@@ -122,5 +122,5 @@ prefixes carry an `_ACK` suffix so they are distinguishable from device-sent pac
 
 Example:
 ```
-@AUTH_ACK@0\0
+@AAUTH@0\0
 ```
