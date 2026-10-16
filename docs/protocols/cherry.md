@@ -1,4 +1,3 @@
-[//]: # (TODO refactor)
 # Cherry Protocol
 
 Cherry is a text-based GPS tracker protocol.
@@ -9,118 +8,119 @@ Cherry is a text-based GPS tracker protocol.
 @TYPE@field1;field2;...;fieldN;checksum\0
 ```
 
-| Part | Description |
-|---|---|
-| `@TYPE@` | Package type prefix, e.g. `@AUTH@`, `@PING@`, `@DATA@`, `@BLACKBOX@` |
-| `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;` (absent for packages without fields) |
-| `checksum` | Decimal integer checksum (required) |
-| `\0` | Package terminator |
+| Part                        | Description                                                                         |
+|-----------------------------|-------------------------------------------------------------------------------------|
+| `@TYPE@`                    | Package type prefix: `@AUTH@`, `@PING@`, `@DATA@` or `@BLACKBOX@`                   |
+| `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;`; absent for packages without fields      |
+| `checksum`                  | Decimal sum of the unsigned bytes of `@TYPE@` + `field1;field2;...;fieldN;`         |
+| `\0`                        | Package terminator                                                                  |
+
+All parts are ASCII-encoded.
 
 ## Checksum
 
-- **Algorithm:** sum of the unsigned byte values of the package, from the first byte of
-  `@TYPE@` up to the checksum field: up to and including the last `;`, or up to and
-  including the closing `@` of `@TYPE@` if the package has no fields (the checksum
-  digits and the terminator are excluded from the sum).
-- **Representation:** decimal digits, e.g. `1978`.
-- **Presence:** required for all package types. A package without a valid checksum is
-  rejected.
+- **Algorithm:** sum of the unsigned values of the covered bytes (see Coverage).
+- **Coverage:** from the first byte of `@TYPE@` up to and including the last `;`, or up to and
+  including the closing `@` of `@TYPE@` if the package has no fields. The `checksum` field itself
+  and the `\0` terminator are excluded.
+- **Representation:** decimal digits, e.g. `1771`.
+- **Presence:** required for every package type sent by the device (auth, ping, data, black box).
+  A package without a valid checksum is rejected.
+  Server responses (see [Responses](#responses)) do not carry a `checksum` field.
 
 ## Package types
 
-### `@AUTH@` — authentication
+### `@AUTH@` — auth
 
-```
-@AUTH@imei;password;checksum\0
-```
-
-| Field | Type |
-|---|---|
-| `imei` | string |
-| `password` | string |
+| Field      | Type         |
+|------------|--------------|
+| `imei`     | ASCII string |
+| `password` | ASCII string |
 
 Example:
 ```
 @AUTH@123456789012345;pass;1771\0
 ```
 
-### `@PING@` — keep-alive
+### `@PING@` — ping
 
-```
-@PING@checksum\0
-```
+No fields.
 
 Example:
 ```
 @PING@430\0
 ```
 
-### `@DATA@` — single location point
+### `@DATA@` — data
 
-```
-@DATA@date;time;latitude;longitude;speed;course;altitude;satelliteCount;hdop;ignition;battery;checksum\0
-```
-
-| Field | Type | Optional |
-|---|---|---|
-| `date` | `DDMMYY` | no |
-| `time` | `HHMMSS` | no |
-| `latitude` | double | no |
-| `longitude` | double | no |
-| `speed` | short | yes |
-| `course` | short | yes |
-| `altitude` | float | yes |
-| `satelliteCount` | byte | yes |
-| `hdop` | float | yes |
-| `ignition` | byte | yes |
-| `battery` | byte | yes |
-
-`date`/`time` are UTC, no separators within each field.
-Optional fields that are not present are encoded as an empty string.
+Fields are a single message (see [Message](#message) below).
 
 Example:
 ```
 @DATA@141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;3037\0
 ```
 
-### `@BLACKBOX@` — batch of location points
+### `@BLACKBOX@` — black box
 
-```
-@BLACKBOX@count;<point1 fields>;<point2 fields>;...;<pointN fields>;checksum\0
-```
+| Field      | Type                          | Count        |
+|------------|-------------------------------|--------------|
+| `count`    | int                           | 1            |
+| `messages` | [message](#message) × `count` | 11 × `count` |
 
-| Field | Type |
-|---|---|
-| `count` | int — number of points that follow |
+There is no additional delimiter between messages; the fields of each message simply follow
+the fields of the previous one in the same flat `;`-separated list. Every message has exactly
+11 fields (absent optional fields are still present as empty strings), so the total field count
+is `1 + 11 × count`.
 
-Each point contributes the same 11 fields as `@DATA@` (`date` through `battery`), so
-the total field count is `1 + 11 * count`. The whole package is still a single flat
-`;`-separated list — there is no additional nesting delimiter between points.
-
-Example (2 points):
+Example (2 messages):
 ```
 @BLACKBOX@2;141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;141123;221325;55.76;37.63;;;;;;;;5216\0
 ```
 
+## Message
+
+| Field            | Type   | Unit    | Optional | Notes           |
+|------------------|--------|---------|----------|-----------------|
+| `date`           | string | —       | no       | `DDMMYY`, UTC   |
+| `time`           | string | —       | no       | `HHMMSS`, UTC   |
+| `latitude`       | double | degrees | no       | −90 – 90        |
+| `longitude`      | double | degrees | no       | −180 – 180      |
+| `speed`          | short  | km/h    | yes      | —               |
+| `course`         | short  | degrees | yes      | 0 – 359         |
+| `altitude`       | float  | meters  | yes      | —               |
+| `satelliteCount` | byte   | count   | yes      | —               |
+| `hdop`           | float  | —       | yes      | —               |
+| `ignition`       | byte   | —       | yes      | 0 = off, 1 = on |
+| `battery`        | byte   | percent | yes      | 0 – 100         |
+
+All numeric fields are decimal. `date` and `time` have no separators within the field.
+An absent optional field is encoded as an empty string rather than omitted, so a message
+always has the same number of fields.
+
+Example:
+```
+141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;
+```
+
 ## Responses
 
-The server responds to every package. Response prefixes carry an `_ACK` suffix so they are
-distinguishable from tracker-sent packages.
+The server responds to every package, using the `@TYPE_ACK@payload\0` structure. Response
+prefixes carry an `_ACK` suffix so they are distinguishable from device-sent packages.
 
-| Package | Response |
-|---|---|
-| `@AUTH@` | `@AUTH_ACK@status\0` — `status` is a decimal status code, see below |
-| `@PING@` | `@PING_ACK@\0` |
-| `@DATA@` | `@DATA_ACK@\0` |
-| `@BLACKBOX@` | `@BLACKBOX_ACK@\0` |
+| Request Type | Response Type    | Response Payload                    |
+|--------------|------------------|-------------------------------------|
+| `@AUTH@`     | `@AUTH_ACK@`     | decimal status code, see below      |
+| `@PING@`     | `@PING_ACK@`     | empty                               |
+| `@DATA@`     | `@DATA_ACK@`     | empty                               |
+| `@BLACKBOX@` | `@BLACKBOX_ACK@` | empty                               |
 
 ### `@AUTH_ACK@` status codes
 
-| Code | Meaning |
-|---|---|
-| `0` | success |
-| `1` | unknown `imei` |
-| `2` | wrong `password` |
+| Code | Meaning          |
+|------|------------------|
+| `0`  | success          |
+| `1`  | unknown `imei`   |
+| `2`  | wrong `password` |
 
 Example:
 ```
