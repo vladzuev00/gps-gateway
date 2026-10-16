@@ -16,7 +16,6 @@ public final class CherryAuthPackageDecoder extends CherryPackageDecoder {
     @Override
     protected CherryAuthPackage decodeFields(Iterator<String> iterator) {
         String imei = iterator.next();
-        String password = iterator.next();
-        return new CherryAuthPackage(imei, password);
+        return new CherryAuthPackage(imei);
     }
 }
