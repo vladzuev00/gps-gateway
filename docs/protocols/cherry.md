@@ -25,7 +25,6 @@ All parts are ASCII-encoded.
   and the `\0` terminator are excluded.
 - **Representation:** decimal digits.
 - **Presence:** required for every package type sent by the device (auth, ping, data, black box).
-  A package without a valid checksum is rejected.
   Server responses (see [Responses](#responses)) do not carry a `checksum` field.
 
 ## Package types
