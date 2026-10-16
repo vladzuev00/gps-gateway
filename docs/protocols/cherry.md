@@ -23,7 +23,7 @@ All parts are ASCII-encoded.
 - **Coverage:** from the first byte of `@TYPE@` up to and including the last `;`, or up to and
   including the closing `@` of `@TYPE@` if the package has no fields. The `checksum` field itself
   and the `\0` terminator are excluded.
-- **Representation:** decimal digits, e.g. `1771`.
+- **Representation:** decimal digits.
 - **Presence:** required for every package type sent by the device (auth, ping, data, black box).
   A package without a valid checksum is rejected.
   Server responses (see [Responses](#responses)) do not carry a `checksum` field.
