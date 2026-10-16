@@ -24,7 +24,7 @@ public final class CherryMessageDecoderTest {
         assertFalse(givenIterator.hasNext());
     }
 
-    static Stream<Arguments> messageShouldBeDecodedMethodSource() {
+    private static Stream<Arguments> messageShouldBeDecodedMethodSource() {
         return Stream.of(
                 Arguments.of(
                         List.of("141123", "221320", "55.75", "37.62", "60", "180", "150.5", "8", "1.2", "1", "95").iterator(),
