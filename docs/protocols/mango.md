@@ -14,7 +14,7 @@ Mango is a binary GPS tracker protocol.
 | `type`           | 1-byte package type                                                              |
 | `payload length` | Unsigned 2-byte big-endian length of `payload`, in bytes                         |
 | `payload`        | Type-specific fields                                                             |
-| `checksum`       | Unsigned 2-byte big-endian sum of the unsigned bytes of `type` + `payload length` + `payload`, modulo 65536 |
+| `checksum`       | Unsigned 2-byte big-endian checksum, see [Checksum](#checksum)                   |
 
 ## Checksum
 
@@ -124,7 +124,7 @@ checksum        17c9
 All multibyte numeric fields are big-endian. `timestamp` is UTC milliseconds since
 January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the
 `presence bitmask`; absent fields are omitted entirely rather than zero-filled, so the message length varies
-with which bits are set.
+with which bits are set. Bit `0x80` of the `presence bitmask` is unused and ignored.
 
 Example:
 ```
