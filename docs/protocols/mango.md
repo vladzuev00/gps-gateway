@@ -38,6 +38,14 @@ Mango is a binary GPS tracker protocol.
 Example:
 ```
 565a 01 0014 353535353535353535353535353535 04 70617373 04eb
+
+prefix          565a
+type            01                              → login
+payload length  0014                            → 20 bytes
+imei            353535353535353535353535353535  → "555555555555555"
+passwordLength  04                              → 4
+password        70617373                        → "pass"
+checksum        04eb
 ```
 
 ### `02` — ping
@@ -47,6 +55,11 @@ Empty payload.
 Example:
 ```
 565a 02 0000 0002
+
+prefix          565a
+type            02    → ping
+payload length  0000  → 0 bytes
+checksum        0002
 ```
 
 ### `03` — data
@@ -56,6 +69,12 @@ Payload is a single message (see [Message](#message) below).
 Example:
 ```
 565a 03 0028 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0d14
+
+prefix          565a
+type            03    → data
+payload length  0028  → 40 bytes
+message         0000018bcfe56800...5f  → same as the Message example below
+checksum        0d14
 ```
 
 ### `04` — black box
@@ -72,6 +91,18 @@ the next message starts.
 Example (2 messages):
 ```
 565a 04 0043 0002 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0000018bcfe57b88404be147ae147ae14042d0a3d70a3d7100 17c9
+
+prefix          565a
+type            04    → black box
+payload length  0043  → 67 bytes
+count           0002  → 2 messages
+message 1       0000018bcfe56800...5f  → 40 bytes, same as the Message example below
+message 2       0000018bcfe57b88...00  → 25 bytes:
+  timestamp     0000018bcfe57b88  → 1700000005000 (2023-11-14 22:13:25 UTC)
+  latitude      404be147ae147ae1  → 55.76
+  longitude     4042d0a3d70a3d71  → 37.63
+  bitmask       00                → no optional fields
+checksum        17c9
 ```
 
 ## Message
@@ -98,6 +129,18 @@ with which bits are set.
 Example:
 ```
 0000018bcfe56800 404be00000000000 4042cf5c28f5c28f 7f 003c 00b4 43168000 08 3f99999a 01 5f
+
+timestamp   0000018bcfe56800  → 1700000000000 (2023-11-14 22:13:20 UTC)
+latitude    404be00000000000  → 55.75
+longitude   4042cf5c28f5c28f  → 37.62
+bitmask     7f                → all optional fields present
+speed       003c              → 60 km/h
+course      00b4              → 180°
+altitude    43168000          → 150.5 m
+satellites  08                → 8
+hdop        3f99999a          → 1.2
+ignition    01                → on
+battery     5f                → 95 %
 ```
 
 ## Responses
@@ -123,4 +166,9 @@ structure.
 Example:
 ```
 565a 81 0001 00
+
+prefix          565a
+type            81    → login response
+payload length  0001  → 1 byte
+status          00    → success
 ```
