@@ -29,7 +29,7 @@ Mango is a binary GPS tracker protocol.
 
 ### `01` — login
 
-| Field            | Type          | Length           |
+| Payload field    | Type          | Length           |
 |------------------|---------------|------------------|
 | `imei`           | ASCII string  | 15               |
 | `passwordLength` | unsigned byte | 1                |
@@ -41,11 +41,11 @@ Example:
 
 prefix          565a
 type            01                              → login
-payload length  0014                            → 20 bytes
+payload length  0014                            → 20
 imei            353535353535353535353535353535  → "555555555555555"
 passwordLength  04                              → 4
 password        70617373                        → "pass"
-checksum        04eb
+checksum        04eb                            → 1259
 ```
 
 ### `02` — ping
@@ -58,8 +58,8 @@ Example:
 
 prefix          565a
 type            02    → ping
-payload length  0000  → 0 bytes
-checksum        0002
+payload length  0000  → 0
+checksum        0002  → 2
 ```
 
 ### `03` — data
@@ -72,17 +72,17 @@ Example:
 
 prefix          565a
 type            03    → data
-payload length  0028  → 40 bytes
+payload length  0028  → 40
 message         0000018bcfe56800...5f  → same as the Message example below
-checksum        0d14
+checksum        0d14  → 3348
 ```
 
 ### `04` — black box
 
-| Field      | Type                          | Length   |
-|------------|-------------------------------|----------|
-| `count`    | unsigned short, big-endian    | 2        |
-| `messages` | [message](#message) × `count` | variable |
+| Payload field | Type                          | Length   |
+|---------------|-------------------------------|----------|
+| `count`       | unsigned short, big-endian    | 2        |
+| `messages`    | [message](#message) × `count` | variable |
 
 There is no delimiter between messages; each message is simply appended after the previous one.
 The length of each message is determined by its `presence bitmask`, which in turn determines where
@@ -94,7 +94,7 @@ Example (2 messages):
 
 prefix          565a
 type            04    → black box
-payload length  0043  → 67 bytes
+payload length  0043  → 67
 count           0002  → 2 messages
 message 1       0000018bcfe56800...5f  → 40 bytes, same as the Message example below
 message 2       0000018bcfe57b88...00  → 25 bytes:
@@ -102,7 +102,7 @@ message 2       0000018bcfe57b88...00  → 25 bytes:
   latitude      404be147ae147ae1  → 55.76
   longitude     4042d0a3d70a3d71  → 37.63
   bitmask       00                → no optional fields
-checksum        17c9
+checksum        17c9  → 6089
 ```
 
 ## Message
@@ -169,6 +169,6 @@ Example:
 
 prefix          565a
 type            81    → login response
-payload length  0001  → 1 byte
+payload length  0001  → 1
 status          00    → success
 ```
