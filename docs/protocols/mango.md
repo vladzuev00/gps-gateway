@@ -93,16 +93,12 @@ Example (2 messages):
 565a 04 0043 0002 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0000018bcfe57b88404be147ae147ae14042d0a3d70a3d7100 17c9
 
 prefix          565a
-type            04    → black box
-payload length  0043  → 67
-count           0002  → 2 messages
-message 1       0000018bcfe56800...5f  → 40 bytes, same as the Message example below
-message 2       0000018bcfe57b88...00  → 25 bytes:
-  timestamp     0000018bcfe57b88  → 1700000005000 (2023-11-14 22:13:25 UTC)
-  latitude      404be147ae147ae1  → 55.76
-  longitude     4042d0a3d70a3d71  → 37.63
-  bitmask       00                → no optional fields
-checksum        17c9  → 6089
+type            04               → black box
+payload length  0043             → 67
+count           0002             → 2
+message 1       0000018bcf...5f  → message 1
+message 2       0000018bcf...00  → message 2
+checksum        17c9             → 6089
 ```
 
 ## Message
