@@ -25,7 +25,7 @@ public final class MangoMessageDecoderTest {
         assertEquals(expectedReaderIndex, givenByteBuf.readerIndex());
     }
 
-    static Stream<Arguments> messageShouldBeDecodedMethodSource() {
+    private static Stream<Arguments> messageShouldBeDecodedMethodSource() {
         return Stream.of(
                 Arguments.of(
                         "0000018bcfe56800404a0fcd67fd3f5b40107e6b3fe9fadb7f003c00b441280000083f99999a01550000018bcfe56be8404a53c0ca600b0340129e065300581500",
