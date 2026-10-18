@@ -2,6 +2,7 @@ package com.zuev.gpsgateway.model.cherry;
 
 import java.time.Instant;
 
+//TODO сделать другие доп параметры, эти совпадают с mango
 public record CherryMessage(Instant dateTime,
                             double latitude,
                             double longitude,
