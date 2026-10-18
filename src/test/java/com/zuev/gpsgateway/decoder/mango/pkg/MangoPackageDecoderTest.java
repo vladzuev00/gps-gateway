@@ -9,7 +9,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class MangoPackageDecoderTest {
-    private final TestMangoPackageDecoder decoder = new TestMangoPackageDecoder();
+    private final MangoPackageDecoder decoder = new TestMangoPackageDecoder();
 
     @Test
     public void bodyShouldBeDecoded() {
