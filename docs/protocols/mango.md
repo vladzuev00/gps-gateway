@@ -117,7 +117,7 @@ checksum        17c9             → 6089
 | `ignition`         | byte   | 1      | —       | `0x20`         | 0 = off, 1 = on |
 | `battery`          | byte   | 1      | percent | `0x40`         | 0 – 100         |
 
-All multibyte numeric fields are big-endian. `timestamp` is UTC milliseconds since
+All multibyte numeric fields are big-endian. `timestamp` is milliseconds since
 January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the
 `presence bitmask`; absent fields are omitted entirely rather than zero-filled, so the message length varies
 with which bits are set. Bit `0x80` of the `presence bitmask` is unused and ignored.
@@ -126,17 +126,17 @@ Example:
 ```
 0000018bcfe56800 404be00000000000 4042cf5c28f5c28f 7f 003c 00b4 43168000 08 3f99999a 01 5f
 
-timestamp   0000018bcfe56800  → 1700000000000
-latitude    404be00000000000  → 55.75
-longitude   4042cf5c28f5c28f  → 37.62
-bitmask     7f                → 01111111
-speed       003c              → 60
-course      00b4              → 180
-altitude    43168000          → 150.5
-satellites  08                → 8
-hdop        3f99999a          → 1.2
-ignition    01                → 1
-battery     5f                → 95
+timestamp         0000018bcfe56800  → 1700000000000
+latitude          404be00000000000  → 55.75
+longitude         4042cf5c28f5c28f  → 37.62
+presence bitmask  7f                → 01111111
+speed             003c              → 60
+course            00b4              → 180
+altitude          43168000          → 150.5
+satellites        08                → 8
+hdop              3f99999a          → 1.2
+ignition          01                → 1
+battery           5f                → 95
 ```
 
 ## Responses
@@ -144,7 +144,7 @@ battery     5f                → 95
 The server responds to every package, using the `[prefix][type][payload length][payload]`
 structure.
 
-| Request Type     | Response Type | Response Payload               |
+| Request type     | Response type | Response payload               |
 |------------------|---------------|--------------------------------|
 | `01` (login)     | `81`          | 1-byte status code (see below) |
 | `02` (ping)      | `82`          | empty                          |
