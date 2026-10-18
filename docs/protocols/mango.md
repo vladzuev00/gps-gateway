@@ -71,10 +71,10 @@ Example:
 565a 03 0028 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0d14
 
 prefix          565a
-type            03    → data
-payload length  0028  → 40
-message         0000018bcfe56800...5f  → same as the Message example below
-checksum        0d14  → 3348
+type            03               → data
+payload length  0028             → 40
+message         0000018bcf...5f  → message
+checksum        0d14             → 3348
 ```
 
 ### `04` — black box
