@@ -126,17 +126,17 @@ Example:
 ```
 0000018bcfe56800 404be00000000000 4042cf5c28f5c28f 7f 003c 00b4 43168000 08 3f99999a 01 5f
 
-timestamp   0000018bcfe56800  → 1700000000000 (2023-11-14 22:13:20 UTC)
+timestamp   0000018bcfe56800  → 1700000000000
 latitude    404be00000000000  → 55.75
 longitude   4042cf5c28f5c28f  → 37.62
-bitmask     7f                → all optional fields present
-speed       003c              → 60 km/h
-course      00b4              → 180°
-altitude    43168000          → 150.5 m
+bitmask     7f                → 01111111
+speed       003c              → 60
+course      00b4              → 180
+altitude    43168000          → 150.5
 satellites  08                → 8
 hdop        3f99999a          → 1.2
-ignition    01                → on
-battery     5f                → 95 %
+ignition    01                → 1
+battery     5f                → 95
 ```
 
 ## Responses
