@@ -26,7 +26,7 @@ public final class CherryPackageDecoderTest {
     private static Stream<Arguments> bodyShouldBeDecodedMethodSource() {
         return Stream.of(
                 Arguments.of(";second;;fourth;;;;1234\0", List.of("", "second", "", "fourth", "", "", "")),
-                Arguments.of("\0", emptyList())
+                Arguments.of("430\0", emptyList())
         );
     }
 
