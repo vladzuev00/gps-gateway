@@ -88,7 +88,7 @@ Example (2 messages):
 type       @BLACKBOX@
 count      2
 message 1  141123;221320;...;95;
-message 2  141123;221325;...;;;;;;
+message 2  141123;221325;...;;
 checksum   5216
 ```
 
