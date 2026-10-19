@@ -130,8 +130,7 @@ battery     95
 
 ## Responses
 
-The server responds to every package, using the `@TYPE@payload\0` structure. Each response
-type is the request type preceded by `A`.
+The server responds to every package, using the `@TYPE@payload\0` structure.
 
 | Request type | Response type | Response payload        |
 |--------------|---------------|-------------------------|
@@ -151,6 +150,6 @@ Example:
 ```
 @AAUTH@0\0
 
-type    @AAUTH@  → auth response
-status  0        → success
+type    @AAUTH@
+status  0
 ```
