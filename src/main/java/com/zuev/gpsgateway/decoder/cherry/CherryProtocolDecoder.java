@@ -20,6 +20,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
     static final int PACKAGE_END_LENGTH = 1;
     static final int NO_SUCH_OCCURRENCE = -1;
     static final int MAX_INCOMPLETE_PACKAGE_LENGTH = 64_000;
+    //TODO rename
     static final byte FIELD_SEPARATOR = ';';
     static final byte PREFIX_END = '@';
 
