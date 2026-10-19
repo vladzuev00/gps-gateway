@@ -64,9 +64,9 @@ Example:
 ```
 @DATA@141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;3037\0
 
-type      @DATA@                 → data
-message   141123;221320;...;95;  → message
-checksum  3037                   → 3037
+type      @DATA@
+message   141123;221320;...;95;
+checksum  3037
 ```
 
 ### `@BLACKBOX@` — black box
