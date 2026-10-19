@@ -85,11 +85,11 @@ Example (2 messages):
 ```
 @BLACKBOX@2;141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;141123;221325;55.76;37.63;;;;;;;;5216\0
 
-type       @BLACKBOX@               → black box
-count      2                        → 2
-message 1  141123;221320;...;95;    → message 1
-message 2  141123;221325;...;;;;;;  → message 2
-checksum   5216                     → 5216
+type       @BLACKBOX@
+count      2
+message 1  141123;221320;...;95;
+message 2  141123;221325;...;;;;;;
+checksum   5216
 ```
 
 ## Message
