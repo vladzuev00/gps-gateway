@@ -39,9 +39,9 @@ Example:
 ```
 @AUTH@123456789012345;1273\0
 
-type      @AUTH@           → auth
-imei      123456789012345  → "123456789012345"
-checksum  1273             → 1273
+type      @AUTH@
+imei      123456789012345
+checksum  1273
 ```
 
 ### `@PING@` — ping
@@ -52,8 +52,8 @@ Example:
 ```
 @PING@430\0
 
-type      @PING@  → ping
-checksum  430     → 430
+type      @PING@
+checksum  430
 ```
 
 ### `@DATA@` — data
