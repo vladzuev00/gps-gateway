@@ -20,8 +20,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
     static final int PACKAGE_END_LENGTH = 1;
     static final int NO_SUCH_OCCURRENCE = -1;
     static final int MAX_INCOMPLETE_PACKAGE_LENGTH = 64_000;
-    //TODO rename
-    static final byte FIELD_SEPARATOR = ';';
+    static final byte FIELD_END = ';';
     static final byte PREFIX_END = '@';
 
     public CherryProtocolDecoder(List<CherryPackageDecoder> packageDecoders) {
@@ -63,7 +62,7 @@ public final class CherryProtocolDecoder extends TextProtocolDecoder {
     }
 
     private int getChecksumStartIndexOrThrow(ByteBuf byteBuf, Supplier<RuntimeException> exceptionSupplier) {
-        int lastFieldSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_SEPARATOR);
+        int lastFieldSeparatorIndex = byteBuf.indexOf(byteBuf.writerIndex(), byteBuf.readerIndex(), FIELD_END);
         if (lastFieldSeparatorIndex != NO_SUCH_OCCURRENCE) {
             return lastFieldSeparatorIndex + 1;
         }
