@@ -115,17 +115,17 @@ Example:
 ```
 141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;
 
-date        141123  → 14.11.2023
-time        221320  → 22:13:20
-latitude    55.75   → 55.75
-longitude   37.62   → 37.62
-speed       60      → 60
-course      180     → 180
-altitude    150.5   → 150.5
-satellites  8       → 8
-hdop        1.2     → 1.2
-ignition    1       → 1
-battery     95      → 95
+date        141123
+time        221320
+latitude    55.75
+longitude   37.62
+speed       60
+course      180
+altitude    150.5
+satellites  8
+hdop        1.2
+ignition    1
+battery     95
 ```
 
 ## Responses
