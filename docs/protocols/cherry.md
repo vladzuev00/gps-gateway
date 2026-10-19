@@ -12,7 +12,7 @@ Cherry is a text-based GPS tracker protocol.
 |-----------------------------|---------------------------------------------------------------------------------|
 | `@TYPE@`                    | Package type prefix                                                             |
 | `field1;field2;...;fieldN;` | Type-specific fields, each followed by `;` (absent for packages without fields) |
-| `checksum`                  | Decimal sum of the unsigned bytes of `@TYPE@` + `field1;field2;...;fieldN;`     |
+| `checksum`                  | Decimal checksum, see [Checksum](#checksum)                                     |
 | `\0`                        | Package terminator                                                              |
 
 All parts are ASCII-encoded.
@@ -38,6 +38,10 @@ All parts are ASCII-encoded.
 Example:
 ```
 @AUTH@123456789012345;1273\0
+
+type      @AUTH@           → auth
+imei      123456789012345  → "123456789012345"
+checksum  1273             → 1273
 ```
 
 ### `@PING@` — ping
@@ -47,6 +51,9 @@ No fields.
 Example:
 ```
 @PING@430\0
+
+type      @PING@  → ping
+checksum  430     → 430
 ```
 
 ### `@DATA@` — data
@@ -56,6 +63,10 @@ Fields are a single message (see [Message](#message) below).
 Example:
 ```
 @DATA@141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;3037\0
+
+type      @DATA@                 → data
+message   141123;221320;...;95;  → message
+checksum  3037                   → 3037
 ```
 
 ### `@BLACKBOX@` — black box
@@ -73,6 +84,12 @@ is `1 + 11 × count`.
 Example (2 messages):
 ```
 @BLACKBOX@2;141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;141123;221325;55.76;37.63;;;;;;;;5216\0
+
+type       @BLACKBOX@               → black box
+count      2                        → 2
+message 1  141123;221320;...;95;    → message 1
+message 2  141123;221325;...;;;;;;  → message 2
+checksum   5216                     → 5216
 ```
 
 ## Message
@@ -97,6 +114,18 @@ always has the same number of fields.
 Example:
 ```
 141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;
+
+date        141123  → 14.11.2023
+time        221320  → 22:13:20
+latitude    55.75   → 55.75
+longitude   37.62   → 37.62
+speed       60      → 60
+course      180     → 180
+altitude    150.5   → 150.5
+satellites  8       → 8
+hdop        1.2     → 1.2
+ignition    1       → 1
+battery     95      → 95
 ```
 
 ## Responses
@@ -104,12 +133,12 @@ Example:
 The server responds to every package, using the `@TYPE@payload\0` structure. Each response
 type is the request type preceded by `A`.
 
-| Request Type | Response Type | Response Payload       |
-|--------------|---------------|------------------------|
-| `@AUTH@`     | `@AAUTH@`     | status code, see below |
-| `@PING@`     | `@APING@`     | empty                  |
-| `@DATA@`     | `@ADATA@`     | empty                  |
-| `@BLACKBOX@` | `@ABLACKBOX@` | empty                  |
+| Request type | Response type | Response payload        |
+|--------------|---------------|-------------------------|
+| `@AUTH@`     | `@AAUTH@`     | status code (see below) |
+| `@PING@`     | `@APING@`     | empty                   |
+| `@DATA@`     | `@ADATA@`     | empty                   |
+| `@BLACKBOX@` | `@ABLACKBOX@` | empty                   |
 
 ### `@AAUTH@` status codes
 
@@ -121,4 +150,7 @@ type is the request type preceded by `A`.
 Example:
 ```
 @AAUTH@0\0
+
+type    @AAUTH@  → auth response
+status  0        → success
 ```
