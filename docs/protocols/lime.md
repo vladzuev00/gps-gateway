@@ -59,8 +59,7 @@ length  0000  → 0
 | `0a` | `hdop`       | float  | 4      | —       | yes      | —          |
 | `0b` | `battery`    | byte   | 1      | percent | yes      | 0 – 100    |
 
-The data package carries no timestamp: the server assigns its own current time (UTC) on receipt.
-Consequently, the protocol has no black box package.
+The server's current time (UTC) is used as the timestamp.
 
 Example:
 ```
@@ -81,28 +80,26 @@ battery     0b 5f                → 95
 
 The server responds to every package, using the same `[length][tag][value]...` structure.
 
-| Request | Response tags |
-|---------|---------------|
-| login   | `status`      |
-| ping    | — (empty)     |
-| data    | — (empty)     |
+| Request | Response tags  |
+|---------|----------------|
+| login   | `login_status` |
+| ping    | —              |
+| data    | —              |
 
-### `status`
+### `login_status`
 
-| Tag  | Field    | Type | Length | Optional | Notes                  |
-|------|----------|------|--------|----------|------------------------|
-| `03` | `status` | byte | 1      | no       | Status code, see below |
+Tag `03`, 1 byte, required.
 
-| Code | Meaning          |
-|------|------------------|
-| `00` | success          |
-| `01` | unknown `imei`   |
-| `02` | wrong `password` |
+| Value | Meaning          |
+|-------|------------------|
+| `00`  | success          |
+| `01`  | unknown `imei`   |
+| `02`  | wrong `password` |
 
 Example:
 ```
 0200 03 00
 
-length  0200   → 2
-status  03 00  → success
+length        0200   → 2
+login_status  03 00  → success
 ```
