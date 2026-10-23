@@ -4,18 +4,32 @@ import com.zuev.gpsgateway.decoder.base.pkg.PackageDecoder;
 import com.zuev.gpsgateway.exception.LimeUnknownTagException;
 import io.netty.buffer.ByteBuf;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static com.zuev.gpsgateway.decoder.lime.pkg.LimePackageDecoder.Tags.*;
 import static lombok.AccessLevel.PRIVATE;
 
-//TODO refactor
+@RequiredArgsConstructor
 public abstract class LimePackageDecoder implements PackageDecoder<ByteBuf> {
     private static final int TAG_VALUE_PAIRS_LENGTH_LENGTH = 2;
     private static final int IMEI_LENGTH = 15;
     private static final int PASSWORD_LENGTH_LENGTH = 1;
+
+    private final Set<Byte> expectedTags;
+
+    @Override
+    public final boolean isAbleDecode(ByteBuf byteBuf) {
+        int firstTagIndex = byteBuf.readerIndex() + TAG_VALUE_PAIRS_LENGTH_LENGTH;
+        if (firstTagIndex == byteBuf.writerIndex()) {
+            return expectedTags.isEmpty();
+        }
+        byte firstTag = byteBuf.getByte(firstTagIndex);
+        return expectedTags.contains(firstTag);
+    }
 
     @Override
     public final Object decode(ByteBuf byteBuf) {
