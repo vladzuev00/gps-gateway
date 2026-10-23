@@ -13,11 +13,12 @@ import java.util.Set;
 import static com.zuev.gpsgateway.decoder.lime.pkg.LimePackageDecoder.Tags.*;
 import static lombok.AccessLevel.PRIVATE;
 
+//TODO refactor
 @RequiredArgsConstructor
 public abstract class LimePackageDecoder implements PackageDecoder<ByteBuf> {
-    private static final int TAG_VALUE_PAIRS_LENGTH_LENGTH = 2;
-    private static final int IMEI_LENGTH = 15;
-    private static final int PASSWORD_LENGTH_LENGTH = 1;
+    protected static final int TAG_VALUE_PAIRS_LENGTH_LENGTH = 2;
+    protected static final int IMEI_LENGTH = 15;
+    protected static final int PASSWORD_LENGTH_LENGTH = 1;
 
     private final Set<Byte> expectedTags;
 
