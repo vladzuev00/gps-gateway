@@ -54,7 +54,7 @@ public final class PackageHandlerTest {
 
         @Override
         protected TestPackage handleInternal(TestPackage request, ChannelHandlerContext context) {
-            return new TestPackage(request.value + 1);
+            return new TestPackage(request.value() + 1);
         }
     }
 }
