@@ -3,6 +3,9 @@ package com.zuev.gpsgateway.handler.base;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -53,8 +56,8 @@ public final class PackageHandlerTest {
         }
 
         @Override
-        protected TestPackage handleInternal(TestPackage request, ChannelHandlerContext context) {
-            return new TestPackage(request.value() + 1);
+        protected CompletableFuture<TestPackage> handleInternal(TestPackage request, ChannelHandlerContext context) {
+            return completedFuture(new TestPackage(request.value() + 1));
         }
     }
 }
