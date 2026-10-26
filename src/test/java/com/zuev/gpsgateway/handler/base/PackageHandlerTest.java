@@ -1,6 +1,5 @@
-package com.zuev.gpsgateway.decoder.handler.base;
+package com.zuev.gpsgateway.handler.base;
 
-import com.zuev.gpsgateway.handler.base.PackageHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.junit.jupiter.api.Test;
 
