@@ -1,10 +1,8 @@
 package com.zuev.gpsgateway.decoder.lime.pkg;
 
 import com.zuev.gpsgateway.model.lime.LimeLoginPackage;
-import io.netty.buffer.ByteBuf;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Set;
 
 import static com.zuev.gpsgateway.decoder.lime.pkg.LimePackageDecoder.Tags.IMEI;
@@ -19,17 +17,17 @@ public final class LimeLoginPackageDecoder extends LimePackageDecoder {
     }
 
     @Override
-    protected LimeLoginPackage decodeValueSlices(Map<Byte, ByteBuf> slicesByTags) {
-        String imei = decodeImei(slicesByTags);
-        String password = decodePassword(slicesByTags);
+    protected LimeLoginPackage decodeValueSlices(ValueSlices slices) {
+        String imei = decodeImei(slices);
+        String password = decodePassword(slices);
         return new LimeLoginPackage(imei, password);
     }
 
-    private String decodeImei(Map<Byte, ByteBuf> slicesByTags) {
-        return slicesByTags.get(IMEI).toString(US_ASCII);
+    private String decodeImei(ValueSlices slices) {
+        return slices.getRequired(IMEI).toString(US_ASCII);
     }
 
-    private String decodePassword(Map<Byte, ByteBuf> slicesByTags) {
-        return slicesByTags.get(PASSWORD).skipBytes(PASSWORD_LENGTH_LENGTH).toString(US_ASCII);
+    private String decodePassword(ValueSlices slices) {
+        return slices.getRequired(PASSWORD).skipBytes(PASSWORD_LENGTH_LENGTH).toString(US_ASCII);
     }
 }
