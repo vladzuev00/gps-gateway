@@ -1,6 +1,7 @@
 package com.zuev.gpsgateway.decoder.lime.pkg;
 
 import com.zuev.gpsgateway.decoder.base.pkg.PackageDecoder;
+import com.zuev.gpsgateway.exception.LimeMissingTagException;
 import com.zuev.gpsgateway.exception.LimeUnknownTagException;
 import io.netty.buffer.ByteBuf;
 import lombok.NoArgsConstructor;
@@ -39,10 +40,10 @@ public abstract class LimePackageDecoder implements PackageDecoder<ByteBuf> {
             Map.Entry<Byte, ByteBuf> valueSliceByTag = readValueSliceByTag(byteBuf);
             valueSlicesByTags.put(valueSliceByTag.getKey(), valueSliceByTag.getValue());
         }
-        return decodeValueSlices(valueSlicesByTags);
+        return decodeValueSlices(new ValueSlices(valueSlicesByTags));
     }
 
-    protected abstract Object decodeValueSlices(Map<Byte, ByteBuf> slicesByTags);
+    protected abstract Object decodeValueSlices(ValueSlices slices);
 
     private Map.Entry<Byte, ByteBuf> readValueSliceByTag(ByteBuf byteBuf) {
         byte tag = byteBuf.readByte();
@@ -71,5 +72,22 @@ public abstract class LimePackageDecoder implements PackageDecoder<ByteBuf> {
         public static final byte SATELLITE_COUNT = 0x09;
         public static final byte HDOP = 0x0A;
         public static final byte BATTERY = 0x0B;
+    }
+
+    @RequiredArgsConstructor
+    protected static final class ValueSlices {
+        private final Map<Byte, ByteBuf> slicesByTags;
+
+        public ByteBuf getRequired(byte tag) {
+            ByteBuf slice = slicesByTags.get(tag);
+            if (slice == null) {
+                throw new LimeMissingTagException("Missing tag %02x".formatted(tag));
+            }
+            return slice;
+        }
+
+        public ByteBuf getOptional(byte tag) {
+            return slicesByTags.get(tag);
+        }
     }
 }

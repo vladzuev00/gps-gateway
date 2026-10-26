@@ -1,5 +1,7 @@
 package com.zuev.gpsgateway.decoder.lime.pkg;
 
+import com.zuev.gpsgateway.decoder.lime.pkg.LimePackageDecoder.ValueSlices;
+import com.zuev.gpsgateway.exception.LimeMissingTagException;
 import com.zuev.gpsgateway.exception.LimeUnknownTagException;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public final class LimePackageDecoderTest {
     private final LimePackageDecoder allTagsDecoder = new TestLimeAllTagsPackageDecoder();
@@ -47,7 +50,7 @@ public final class LimePackageDecoderTest {
         LimePackageDecoder givenDecoder = new LimePackageDecoder(Set.of(IMEI)) {
 
             @Override
-            protected Object decodeValueSlices(Map<Byte, ByteBuf> slicesByTags) {
+            protected Object decodeValueSlices(ValueSlices slices) {
                 throw new UnsupportedOperationException();
             }
         };
@@ -96,6 +99,39 @@ public final class LimePackageDecoderTest {
         assertFalse(givenByteBuf.isReadable());
     }
 
+    @Test
+    public void requiredValueSliceShouldBeGot() {
+        ByteBuf givenPasswordSlice = mock(ByteBuf.class);
+        ValueSlices givenSlices = new ValueSlices(Map.of(IMEI, mock(ByteBuf.class), PASSWORD, givenPasswordSlice));
+
+        ByteBuf actual = givenSlices.getRequired(PASSWORD);
+        assertSame(givenPasswordSlice, actual);
+    }
+
+    @Test
+    public void requiredValueSliceShouldNotBeGot() {
+        ValueSlices givenSlices = new ValueSlices(Map.of(IMEI, mock(ByteBuf.class), PASSWORD, mock(ByteBuf.class)));
+
+        assertThrows(LimeMissingTagException.class, () -> givenSlices.getRequired(LATITUDE));
+    }
+
+    @Test
+    public void optionalValueSliceShouldBeGot() {
+        ByteBuf givenPasswordSlice = mock(ByteBuf.class);
+        ValueSlices givenSlices = new ValueSlices(Map.of(IMEI, mock(ByteBuf.class), PASSWORD, givenPasswordSlice));
+
+        ByteBuf actual = givenSlices.getOptional(PASSWORD);
+        assertSame(givenPasswordSlice, actual);
+    }
+
+    @Test
+    public void optionalValueSliceShouldNotBeGot() {
+        ValueSlices givenSlices = new ValueSlices(Map.of(IMEI, mock(ByteBuf.class), PASSWORD, mock(ByteBuf.class)));
+
+        ByteBuf actual = givenSlices.getOptional(LATITUDE);
+        assertNull(actual);
+    }
+
     private record TestLimeAllTagsPackage(String imei,
                                           String password,
                                           double latitude,
@@ -118,58 +154,58 @@ public final class LimePackageDecoderTest {
         }
 
         @Override
-        protected TestLimeAllTagsPackage decodeValueSlices(Map<Byte, ByteBuf> slicesByTags) {
-            String imei = decodeImei(slicesByTags);
-            String password = decodePassword(slicesByTags);
-            double latitude = decodeLatitude(slicesByTags);
-            double longitude = decodeLongitude(slicesByTags);
-            short speed = decodeSpeed(slicesByTags);
-            short course = decodeCourse(slicesByTags);
-            float altitude = decodeAltitude(slicesByTags);
-            byte satelliteCount = decodeSatelliteCount(slicesByTags);
-            float hdop = decodeHdop(slicesByTags);
-            byte battery = decodeBattery(slicesByTags);
+        protected TestLimeAllTagsPackage decodeValueSlices(ValueSlices slices) {
+            String imei = decodeImei(slices);
+            String password = decodePassword(slices);
+            double latitude = decodeLatitude(slices);
+            double longitude = decodeLongitude(slices);
+            short speed = decodeSpeed(slices);
+            short course = decodeCourse(slices);
+            float altitude = decodeAltitude(slices);
+            byte satelliteCount = decodeSatelliteCount(slices);
+            float hdop = decodeHdop(slices);
+            byte battery = decodeBattery(slices);
             return new TestLimeAllTagsPackage(imei, password, latitude, longitude, speed, course, altitude, satelliteCount, hdop, battery);
         }
 
-        private String decodeImei(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(IMEI).toString(US_ASCII);
+        private String decodeImei(ValueSlices slices) {
+            return slices.getRequired(IMEI).toString(US_ASCII);
         }
 
-        private String decodePassword(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(PASSWORD).skipBytes(PASSWORD_LENGTH_LENGTH).toString(US_ASCII);
+        private String decodePassword(ValueSlices slices) {
+            return slices.getRequired(PASSWORD).skipBytes(PASSWORD_LENGTH_LENGTH).toString(US_ASCII);
         }
 
-        private double decodeLatitude(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(LATITUDE).readDoubleLE();
+        private double decodeLatitude(ValueSlices slices) {
+            return slices.getRequired(LATITUDE).readDoubleLE();
         }
 
-        private double decodeLongitude(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(LONGITUDE).readDoubleLE();
+        private double decodeLongitude(ValueSlices slices) {
+            return slices.getRequired(LONGITUDE).readDoubleLE();
         }
 
-        private short decodeSpeed(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(SPEED).readShortLE();
+        private short decodeSpeed(ValueSlices slices) {
+            return slices.getRequired(SPEED).readShortLE();
         }
 
-        private short decodeCourse(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(COURSE).readShortLE();
+        private short decodeCourse(ValueSlices slices) {
+            return slices.getRequired(COURSE).readShortLE();
         }
 
-        private float decodeAltitude(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(ALTITUDE).readFloatLE();
+        private float decodeAltitude(ValueSlices slices) {
+            return slices.getRequired(ALTITUDE).readFloatLE();
         }
 
-        private byte decodeSatelliteCount(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(SATELLITE_COUNT).readByte();
+        private byte decodeSatelliteCount(ValueSlices slices) {
+            return slices.getRequired(SATELLITE_COUNT).readByte();
         }
 
-        private float decodeHdop(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(HDOP).readFloatLE();
+        private float decodeHdop(ValueSlices slices) {
+            return slices.getRequired(HDOP).readFloatLE();
         }
 
-        private byte decodeBattery(Map<Byte, ByteBuf> slicesByTags) {
-            return slicesByTags.get(BATTERY).readByte();
+        private byte decodeBattery(ValueSlices slices) {
+            return slices.getRequired(BATTERY).readByte();
         }
     }
 
@@ -180,7 +216,7 @@ public final class LimePackageDecoderTest {
         }
 
         @Override
-        protected TestLimeNoTagsPackage decodeValueSlices(Map<Byte, ByteBuf> slicesByTags) {
+        protected TestLimeNoTagsPackage decodeValueSlices(ValueSlices slices) {
             return new TestLimeNoTagsPackage();
         }
     }
