@@ -1,8 +1,8 @@
 package com.zuev.gpsgateway.decoder.lime.pkg;
 
 import com.zuev.gpsgateway.decoder.base.pkg.PackageDecoder;
-import com.zuev.gpsgateway.exception.LimeMissingTagException;
-import com.zuev.gpsgateway.exception.LimeUnknownTagException;
+import com.zuev.gpsgateway.exception.lime.LimeMissingTagException;
+import com.zuev.gpsgateway.exception.lime.LimeUnknownTagException;
 import io.netty.buffer.ByteBuf;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
