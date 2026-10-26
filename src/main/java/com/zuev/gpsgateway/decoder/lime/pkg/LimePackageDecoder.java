@@ -13,23 +13,22 @@ import java.util.Set;
 import static com.zuev.gpsgateway.decoder.lime.pkg.LimePackageDecoder.Tags.*;
 import static lombok.AccessLevel.PRIVATE;
 
-//TODO refactor
 @RequiredArgsConstructor
 public abstract class LimePackageDecoder implements PackageDecoder<ByteBuf> {
     protected static final int TAG_VALUE_PAIRS_LENGTH_LENGTH = 2;
     protected static final int IMEI_LENGTH = 15;
     protected static final int PASSWORD_LENGTH_LENGTH = 1;
 
-    private final Set<Byte> expectedTags;
+    private final Set<Byte> packageTags;
 
     @Override
     public final boolean isAbleDecode(ByteBuf byteBuf) {
         int firstTagIndex = byteBuf.readerIndex() + TAG_VALUE_PAIRS_LENGTH_LENGTH;
         if (firstTagIndex == byteBuf.writerIndex()) {
-            return expectedTags.isEmpty();
+            return packageTags.isEmpty();
         }
         byte firstTag = byteBuf.getByte(firstTagIndex);
-        return expectedTags.contains(firstTag);
+        return packageTags.contains(firstTag);
     }
 
     @Override
