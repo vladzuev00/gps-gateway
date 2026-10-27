@@ -19,7 +19,7 @@ public final class ChannelAttributeUtil {
         context.channel().attr(TRACKER_KEY).set(tracker);
     }
 
-    public static Optional<Tracker> getTracker(ChannelHandlerContext context) {
+    public static Optional<Tracker> findTracker(ChannelHandlerContext context) {
         return ofNullable(context.channel().attr(TRACKER_KEY).get());
     }
 }
