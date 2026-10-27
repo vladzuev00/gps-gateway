@@ -1,9 +1,6 @@
 package com.zuev.gpsgateway.handler.base;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
 
@@ -119,6 +116,22 @@ public final class PackageHandlerTest {
 
         RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
         assertSame(givenException, actual);
+    }
+
+    @Test
+    public void responseShouldBeWrittenByEventLoopThread() {
+        TestPackage givenRequest = new TestPackage(5);
+        ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+
+        Channel givenChannel = mock(Channel.class);
+        when(givenContext.channel()).thenReturn(givenChannel);
+
+        EventLoop givenEventLoop = mock(EventLoop.class);
+        when(givenChannel.eventLoop()).thenReturn(givenEventLoop);
+
+        handler.handleAsync(givenRequest, givenContext);
+
+        verify(givenEventLoop).execute(any());
     }
 
     private record TestPackage(int value) {
