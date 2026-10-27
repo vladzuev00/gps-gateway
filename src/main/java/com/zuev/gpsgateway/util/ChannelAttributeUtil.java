@@ -15,11 +15,11 @@ import static lombok.AccessLevel.PRIVATE;
 public final class ChannelAttributeUtil {
     private static final AttributeKey<Tracker> TRACKER_KEY = AttributeKey.valueOf("tracker");
 
-    public static void putTracker(ChannelHandlerContext context, Tracker tracker) {
+    public static void setTracker(ChannelHandlerContext context, Tracker tracker) {
         context.channel().attr(TRACKER_KEY).set(tracker);
     }
 
-    public static Optional<Tracker> findTracker(ChannelHandlerContext context) {
+    public static Optional<Tracker> getTracker(ChannelHandlerContext context) {
         return ofNullable(context.channel().attr(TRACKER_KEY).get());
     }
 }

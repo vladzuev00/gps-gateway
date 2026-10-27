@@ -20,7 +20,7 @@ public abstract class LoginPackageHandler<REQUEST> extends PackageHandler<REQUES
                 .thenApplyAsync(
                         tracker -> tracker
                                 .map(loggedInTracker -> {
-                                            ChannelAttributeUtil.putTracker(context, loggedInTracker);
+                                            ChannelAttributeUtil.setTracker(context, loggedInTracker);
                                             return createSuccessResponse(request);
                                         }
                                 )
