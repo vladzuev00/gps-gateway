@@ -24,12 +24,12 @@ All parts are ASCII-encoded.
   including the closing `@` of `@TYPE@` if the package has no fields. The `checksum` field itself
   and the `\0` terminator are excluded.
 - **Representation:** decimal digits.
-- **Presence:** required for every package type sent by the device (auth, ping, data, black box).
+- **Presence:** required for every package type sent by the device (login, ping, data, black box).
   Server responses (see [Responses](#responses)) do not carry a `checksum` field.
 
 ## Package types
 
-### `@AUTH@` — auth
+### `@LOGIN@` — login
 
 | Field  | Type   |
 |--------|--------|
@@ -37,11 +37,11 @@ All parts are ASCII-encoded.
 
 Example:
 ```
-@AUTH@123456789012345;1273\0
+@LOGIN@123456789012345;1344\0
 
-type      @AUTH@
+type      @LOGIN@
 imei      123456789012345
-checksum  1273
+checksum  1344
 ```
 
 ### `@PING@` — ping
@@ -134,12 +134,12 @@ The server responds to every package, using the `@TYPE@payload\0` structure.
 
 | Request type | Response type | Response payload        |
 |--------------|---------------|-------------------------|
-| `@AUTH@`     | `@AAUTH@`     | status code (see below) |
+| `@LOGIN@`    | `@ALOGIN@`    | status code (see below) |
 | `@PING@`     | `@APING@`     | empty                   |
 | `@DATA@`     | `@ADATA@`     | empty                   |
 | `@BLACKBOX@` | `@ABLACKBOX@` | empty                   |
 
-### `@AAUTH@` status codes
+### `@ALOGIN@` status codes
 
 | Code | Meaning        |
 |------|----------------|
@@ -148,8 +148,8 @@ The server responds to every package, using the `@TYPE@payload\0` structure.
 
 Example:
 ```
-@AAUTH@0\0
+@ALOGIN@0\0
 
-type    @AAUTH@
+type    @ALOGIN@
 status  0
 ```

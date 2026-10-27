@@ -40,7 +40,7 @@ public final class CherryProtocolDecoderTest {
 
     @Test
     public void completePackageEndShouldBeFound() {
-        ByteBuf givenByteBuf = copiedBuffer("\0@PING@430\0@AUTH@123456789012345;1273\0@PI", CHARSET).readerIndex(1);
+        ByteBuf givenByteBuf = copiedBuffer("\0@PING@430\0@LOGIN@123456789012345;1344\0@PI", CHARSET).readerIndex(1);
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isPresent());
@@ -64,7 +64,7 @@ public final class CherryProtocolDecoderTest {
 
     @Test
     public void completePackageEndShouldNotBeFound() {
-        ByteBuf givenByteBuf = copiedBuffer("\0@AUTH@123456789012345;", CHARSET).readerIndex(1);
+        ByteBuf givenByteBuf = copiedBuffer("\0@LOGIN@123456789012345;", CHARSET).readerIndex(1);
 
         OptionalInt optionalActual = decoder.findCompletePackageEnd(givenByteBuf);
         assertTrue(optionalActual.isEmpty());
@@ -74,7 +74,7 @@ public final class CherryProtocolDecoderTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"'@AUTH@123456789012345;1273\0', 1273", "'@PING@430\0', 430"})
+    @CsvSource({"'@LOGIN@123456789012345;1344\0', 1344", "'@PING@430\0', 430"})
     public void checksumShouldBeGot(String givenText, int expected) {
         ByteBuf givenByteBuf = copiedBuffer(givenText, CHARSET);
 
@@ -88,7 +88,7 @@ public final class CherryProtocolDecoderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"@AUTH@123456789012345;\0", "@AUTH@123456789012345;12a3\0", "@PING430\0"})
+    @ValueSource(strings = {"@LOGIN@123456789012345;\0", "@LOGIN@123456789012345;12a3\0", "@PING430\0"})
     public void checksumShouldNotBeGotBecausePackageIsCorrupted(String givenText) {
         ByteBuf givenByteBuf = copiedBuffer(givenText, CHARSET);
 
@@ -99,7 +99,7 @@ public final class CherryProtocolDecoderTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"'@AUTH@123456789012345;0\0', 1273", "'@PING@0\0', 430"})
+    @CsvSource({"'@LOGIN@123456789012345;0\0', 1344", "'@PING@0\0', 430"})
     public void checksumShouldBeCalculated(String givenText, int expected) {
         ByteBuf givenByteBuf = copiedBuffer(givenText, CHARSET);
 

@@ -1,0 +1,21 @@
+package com.zuev.gpsgateway.decoder.cherry.pkg;
+
+import com.zuev.gpsgateway.model.cherry.CherryLoginPackage;
+import org.springframework.stereotype.Component;
+
+import java.util.Iterator;
+
+@Component
+public final class CherryLoginPackageDecoder extends CherryPackageDecoder {
+    private static final String PREFIX = "@LOGIN@";
+
+    public CherryLoginPackageDecoder() {
+        super(PREFIX);
+    }
+
+    @Override
+    protected CherryLoginPackage decodeFields(Iterator<String> iterator) {
+        String imei = iterator.next();
+        return new CherryLoginPackage(imei);
+    }
+}
