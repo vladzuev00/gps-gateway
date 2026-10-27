@@ -119,7 +119,7 @@ public final class PackageHandlerTest {
     }
 
     @Test
-    public void responseShouldBeWrittenByEventLoopThread() {
+    public void responseCallbackShouldBeHandledByEventLoopThread() {
         TestPackage givenRequest = new TestPackage(5);
         ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
