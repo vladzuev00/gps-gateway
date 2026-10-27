@@ -8,16 +8,16 @@ import java.util.concurrent.CompletableFuture;
 import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 
 @RequiredArgsConstructor
-public abstract class PackageHandler<REQUEST> {
-    private final Class<REQUEST> requestType;
+public abstract class PackageHandler<PKG> {
+    private final Class<PKG> packageType;
 
-    public final boolean isAbleHandle(Object request) {
-        return requestType.isInstance(request);
+    public final boolean isAbleHandle(Object pkg) {
+        return packageType.isInstance(pkg);
     }
 
-    public final void handleAsync(Object request, ChannelHandlerContext context) {
-        REQUEST castedRequest = requestType.cast(request);
-        handleAsyncInternal(castedRequest, context)
+    public final void handleAsync(Object pkg, ChannelHandlerContext context) {
+        PKG castedPackage = packageType.cast(pkg);
+        handleAsyncInternal(castedPackage, context)
                 .whenCompleteAsync(
                         (response, exception) -> {
                             if (exception != null) {
@@ -30,5 +30,5 @@ public abstract class PackageHandler<REQUEST> {
                 );
     }
 
-    protected abstract CompletableFuture<?> handleAsyncInternal(REQUEST request, ChannelHandlerContext context);
+    protected abstract CompletableFuture<?> handleAsyncInternal(PKG pkg, ChannelHandlerContext context);
 }

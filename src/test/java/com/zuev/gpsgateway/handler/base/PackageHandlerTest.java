@@ -15,26 +15,26 @@ public final class PackageHandlerTest {
     private final TestPackageHandler handler = new TestPackageHandler();
 
     @Test
-    public void handlerShouldBeAbleToHandleRequest() {
-        TestPackage givenRequest = new TestPackage(5);
+    public void handlerShouldBeAbleToHandlePackage() {
+        TestPackage givenPackage = new TestPackage(5);
 
-        assertTrue(handler.isAbleHandle(givenRequest));
+        assertTrue(handler.isAbleHandle(givenPackage));
     }
 
     @Test
-    public void handlerShouldNotBeAbleToHandleRequest() {
-        Object givenRequest = new Object();
+    public void handlerShouldNotBeAbleToHandlePackage() {
+        Object givenPackage = new Object();
 
-        assertFalse(handler.isAbleHandle(givenRequest));
+        assertFalse(handler.isAbleHandle(givenPackage));
     }
 
     @Test
-    public void requestShouldBeHandledWithResponse() {
+    public void packageShouldBeHandledWithResponse() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
-        TestPackage givenRequest = new TestPackage(5);
+        TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
 
-        handler.handleAsync(givenRequest, givenContext);
+        handler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
         assertDoesNotThrow(givenChannel::checkException);
@@ -44,19 +44,19 @@ public final class PackageHandlerTest {
     }
 
     @Test
-    public void requestShouldBeHandledWithoutResponse() {
+    public void packageShouldBeHandledWithoutResponse() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
-        TestPackage givenRequest = new TestPackage(5);
+        TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
         PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
 
             @Override
-            protected CompletableFuture<?> handleAsyncInternal(TestPackage request, ChannelHandlerContext context) {
+            protected CompletableFuture<?> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
                 return completedFuture(null);
             }
         };
 
-        givenHandler.handleAsync(givenRequest, givenContext);
+        givenHandler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
         assertDoesNotThrow(givenChannel::checkException);
@@ -65,29 +65,29 @@ public final class PackageHandlerTest {
     }
 
     @Test
-    public void requestShouldNotBeHandledBecauseOfNotSuitableRequestType() {
-        Object givenRequest = new Object();
+    public void packageShouldNotBeHandledBecauseOfNotSuitablePackageType() {
+        Object givenPackage = new Object();
         ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        assertThrows(ClassCastException.class, () -> handler.handleAsync(givenRequest, givenContext));
+        assertThrows(ClassCastException.class, () -> handler.handleAsync(givenPackage, givenContext));
         verifyNoInteractions(givenContext);
     }
 
     @Test
-    public void requestShouldNotBeHandledBecauseOfHandlingException() {
+    public void packageShouldNotBeHandledBecauseOfHandlingException() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
-        TestPackage givenRequest = new TestPackage(5);
+        TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
         RuntimeException givenException = new RuntimeException();
         PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
 
             @Override
-            protected CompletableFuture<?> handleAsyncInternal(TestPackage request, ChannelHandlerContext context) {
+            protected CompletableFuture<?> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
                 return failedFuture(givenException);
             }
         };
 
-        givenHandler.handleAsync(givenRequest, givenContext);
+        givenHandler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
         RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
@@ -108,10 +108,10 @@ public final class PackageHandlerTest {
                 },
                 new ChannelInboundHandlerAdapter()
         );
-        TestPackage givenRequest = new TestPackage(5);
+        TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = givenChannel.pipeline().lastContext();
 
-        handler.handleAsync(givenRequest, givenContext);
+        handler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
         RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
@@ -120,7 +120,7 @@ public final class PackageHandlerTest {
 
     @Test
     public void responseCallbackShouldBeHandledByEventLoopThread() {
-        TestPackage givenRequest = new TestPackage(5);
+        TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
         Channel givenChannel = mock(Channel.class);
@@ -129,7 +129,7 @@ public final class PackageHandlerTest {
         EventLoop givenEventLoop = mock(EventLoop.class);
         when(givenChannel.eventLoop()).thenReturn(givenEventLoop);
 
-        handler.handleAsync(givenRequest, givenContext);
+        handler.handleAsync(givenPackage, givenContext);
 
         verify(givenEventLoop).execute(any());
     }
@@ -144,8 +144,8 @@ public final class PackageHandlerTest {
         }
 
         @Override
-        protected CompletableFuture<TestPackage> handleAsyncInternal(TestPackage request, ChannelHandlerContext context) {
-            return completedFuture(new TestPackage(request.value() + 1));
+        protected CompletableFuture<TestPackage> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
+            return completedFuture(new TestPackage(pkg.value() + 1));
         }
     }
 }
