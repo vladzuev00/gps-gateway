@@ -1,11 +1,16 @@
 package com.zuev.gpsgateway.handler.base;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.concurrent.CompletableFuture.failedFuture;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -14,7 +19,7 @@ public final class PackageHandlerTest {
 
     @Test
     public void handlerShouldBeAbleToHandleRequest() {
-        TestPackage givenRequest = new TestPackage(Integer.MAX_VALUE);
+        TestPackage givenRequest = new TestPackage(5);
 
         assertTrue(handler.isAbleHandle(givenRequest));
     }
@@ -27,23 +32,93 @@ public final class PackageHandlerTest {
     }
 
     @Test
-    public void requestShouldBeHandled() {
+    public void requestShouldBeHandledWithResponse() {
+        EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
         TestPackage givenRequest = new TestPackage(5);
-        ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+        ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
 
-        handler.handle(givenRequest, givenContext);
+        handler.handleAsync(givenRequest, givenContext);
+        givenChannel.runPendingTasks();
 
-        verify(givenContext).writeAndFlush(new TestPackage(6));
+        assertDoesNotThrow(givenChannel::checkException);
+        TestPackage actual = givenChannel.readOutbound();
+        TestPackage expected = new TestPackage(6);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void requestShouldNotBeHandled() {
+    public void requestShouldBeHandledWithoutResponse() {
+        EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
+        TestPackage givenRequest = new TestPackage(5);
+        ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
+        PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
+
+            @Override
+            protected CompletableFuture<?> handleAsyncInternal(TestPackage request, ChannelHandlerContext context) {
+                return completedFuture(null);
+            }
+        };
+
+        givenHandler.handleAsync(givenRequest, givenContext);
+        givenChannel.runPendingTasks();
+
+        assertDoesNotThrow(givenChannel::checkException);
+        assertNull(givenChannel.readOutbound());
+        verify(givenContext, never()).writeAndFlush(any());
+    }
+
+    @Test
+    public void requestShouldNotBeHandledBecauseOfNotSuitableRequestType() {
         Object givenRequest = new Object();
         ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
 
-        assertThrows(ClassCastException.class, () -> handler.handle(givenRequest, givenContext));
-
+        assertThrows(ClassCastException.class, () -> handler.handleAsync(givenRequest, givenContext));
         verifyNoInteractions(givenContext);
+    }
+
+    @Test
+    public void requestShouldNotBeHandledBecauseOfHandlingException() {
+        EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
+        TestPackage givenRequest = new TestPackage(5);
+        ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
+        RuntimeException givenException = new RuntimeException();
+        PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
+
+            @Override
+            protected CompletableFuture<?> handleAsyncInternal(TestPackage request, ChannelHandlerContext context) {
+                return failedFuture(givenException);
+            }
+        };
+
+        givenHandler.handleAsync(givenRequest, givenContext);
+        givenChannel.runPendingTasks();
+
+        RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
+        assertSame(givenException, actual);
+        verify(givenContext, never()).writeAndFlush(any());
+    }
+
+    @Test
+    public void writingResponseExceptionShouldBeFiredToPipeline() {
+        RuntimeException givenException = new RuntimeException();
+        EmbeddedChannel givenChannel = new EmbeddedChannel(
+                new ChannelOutboundHandlerAdapter() {
+
+                    @Override
+                    public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) {
+                        throw givenException;
+                    }
+                },
+                new ChannelInboundHandlerAdapter()
+        );
+        TestPackage givenRequest = new TestPackage(5);
+        ChannelHandlerContext givenContext = givenChannel.pipeline().lastContext();
+
+        handler.handleAsync(givenRequest, givenContext);
+        givenChannel.runPendingTasks();
+
+        RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
+        assertSame(givenException, actual);
     }
 
     private record TestPackage(int value) {
@@ -56,7 +131,7 @@ public final class PackageHandlerTest {
         }
 
         @Override
-        protected CompletableFuture<TestPackage> handleInternal(TestPackage request, ChannelHandlerContext context) {
+        protected CompletableFuture<TestPackage> handleAsyncInternal(TestPackage request, ChannelHandlerContext context) {
             return completedFuture(new TestPackage(request.value() + 1));
         }
     }

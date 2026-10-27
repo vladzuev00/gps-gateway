@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.CompletableFuture;
 
+import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
+
 @RequiredArgsConstructor
 public abstract class PackageHandler<REQUEST> {
     private final Class<REQUEST> requestType;
@@ -13,19 +15,20 @@ public abstract class PackageHandler<REQUEST> {
         return requestType.isInstance(request);
     }
 
-    public final void handle(Object request, ChannelHandlerContext context) {
+    public final void handleAsync(Object request, ChannelHandlerContext context) {
         REQUEST castedRequest = requestType.cast(request);
-        handleInternal(castedRequest, context)
-                .whenComplete(
+        handleAsyncInternal(castedRequest, context)
+                .whenCompleteAsync(
                         (response, exception) -> {
                             if (exception != null) {
                                 context.fireExceptionCaught(exception);
-                            } else {
-                                context.writeAndFlush(response);
+                            } else if (response != null) {
+                                context.writeAndFlush(response).addListener(FIRE_EXCEPTION_ON_FAILURE);
                             }
-                        }
+                        },
+                        context.channel().eventLoop()
                 );
     }
 
-    protected abstract CompletableFuture<?> handleInternal(REQUEST request, ChannelHandlerContext context);
+    protected abstract CompletableFuture<?> handleAsyncInternal(REQUEST request, ChannelHandlerContext context);
 }
