@@ -15,6 +15,10 @@ import static lombok.AccessLevel.PRIVATE;
 public final class ChannelAttributeUtil {
     private static final AttributeKey<Tracker> TRACKER_KEY = AttributeKey.valueOf("tracker");
 
+    public static void setImei(ChannelHandlerContext context, String imei) {
+
+    }
+
     public static void setTracker(ChannelHandlerContext context, Tracker tracker) {
         context.channel().attr(TRACKER_KEY).set(tracker);
     }
