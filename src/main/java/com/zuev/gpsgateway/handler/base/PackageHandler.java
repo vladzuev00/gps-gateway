@@ -44,6 +44,8 @@ public abstract class PackageHandler<PKG> {
             }
         }
 
+        //TODO add record Close()
+
         record ReplyAndClose(Object response) implements HandlingResult {
 
             @Override
@@ -52,6 +54,7 @@ public abstract class PackageHandler<PKG> {
             }
         }
 
+        //TODO rename DoNothing
         record NoReply() implements HandlingResult {
 
             @Override

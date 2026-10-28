@@ -1,8 +1,8 @@
 package com.zuev.gpsgateway.handler.base;
 
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.NoReply;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
 import io.netty.channel.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public final class PackageHandlerTest {
     }
 
     @Test
-    public void packageShouldBeHandledWithResponse() {
+    public void packageShouldBeHandledWithReply() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
         TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
@@ -40,12 +40,37 @@ public final class PackageHandlerTest {
         handler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
+        assertTrue(givenChannel.isOpen());
         assertDoesNotThrow(givenChannel::checkException);
         TestPackage actual = givenChannel.readOutbound();
         TestPackage expected = new TestPackage(6);
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void packageShouldBeHandledWithReplyAndClose() {
+        EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
+        TestPackage givenPackage = new TestPackage(5);
+        ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
+        PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
+
+            @Override
+            protected CompletableFuture<HandlingResult> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
+                return completedFuture(new ReplyAndClose(new TestPackage(pkg.value() + 1)));
+            }
+        };
+
+        givenHandler.handleAsync(givenPackage, givenContext);
+        givenChannel.runPendingTasks();
+
+        assertFalse(givenChannel.isOpen());
+        assertDoesNotThrow(givenChannel::checkException);
+        TestPackage actual = givenChannel.readOutbound();
+        TestPackage expected = new TestPackage(6);
+        assertEquals(expected, actual);
+    }
+
+    //TODO stop refactor
     @Test
     public void packageShouldBeHandledWithoutResponse() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
