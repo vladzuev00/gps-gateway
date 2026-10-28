@@ -32,7 +32,7 @@ public final class PrefixedPackageDecoderTest {
         ByteBuf givenSource = wrappedBuffer(decodeHexDump("090000000574657374206d657373616765"));
 
         Object actual = decoder.decode(givenSource);
-        TestPackage expected = new TestPackage(5, "test message");
+        TestPackage expected = new TestPackage(5, "test response");
         assertEquals(expected, actual);
     }
 

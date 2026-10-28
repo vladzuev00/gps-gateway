@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.CompletableFuture;
 
+import static io.netty.channel.ChannelFutureListener.CLOSE;
 import static io.netty.channel.ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE;
 
 @RequiredArgsConstructor
@@ -19,16 +20,43 @@ public abstract class PackageHandler<PKG> {
         PKG castedPackage = packageType.cast(pkg);
         handleAsyncInternal(castedPackage, context)
                 .whenCompleteAsync(
-                        (response, exception) -> {
+                        (result, exception) -> {
                             if (exception != null) {
                                 context.fireExceptionCaught(exception);
-                            } else if (response != null) {
-                                context.writeAndFlush(response).addListener(FIRE_EXCEPTION_ON_FAILURE);
+                            } else if (result != null) {
+                                result.applyTo(context);
                             }
                         },
                         context.channel().eventLoop()
                 );
     }
 
-    protected abstract CompletableFuture<?> handleAsyncInternal(PKG pkg, ChannelHandlerContext context);
+    protected abstract CompletableFuture<HandlingResult> handleAsyncInternal(PKG pkg, ChannelHandlerContext context);
+
+    protected sealed interface HandlingResult {
+        void applyTo(ChannelHandlerContext context);
+
+        record Reply(Object response) implements HandlingResult {
+
+            @Override
+            public void applyTo(ChannelHandlerContext context) {
+                context.writeAndFlush(response).addListener(FIRE_EXCEPTION_ON_FAILURE);
+            }
+        }
+
+        record ReplyAndClose(Object response) implements HandlingResult {
+
+            @Override
+            public void applyTo(ChannelHandlerContext context) {
+                context.writeAndFlush(response).addListener(FIRE_EXCEPTION_ON_FAILURE).addListener(CLOSE);
+            }
+        }
+
+        record NoReply() implements HandlingResult {
+
+            @Override
+            public void applyTo(ChannelHandlerContext context) {
+            }
+        }
+    }
 }

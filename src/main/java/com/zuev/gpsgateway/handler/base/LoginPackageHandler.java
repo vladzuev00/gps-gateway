@@ -1,5 +1,7 @@
 package com.zuev.gpsgateway.handler.base;
 
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
 import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.model.TrackerLoginResult.Success;
 import com.zuev.gpsgateway.model.TrackerLoginResult.UnknownImei;
@@ -21,7 +23,7 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
     }
 
     @Override
-    protected final CompletableFuture<?> handleAsyncInternal(PKG pkg, ChannelHandlerContext context) {
+    protected final CompletableFuture<HandlingResult> handleAsyncInternal(PKG pkg, ChannelHandlerContext context) {
         String normalizedImei = normalizeImei(getImei(pkg));
         setImei(context, normalizedImei);
         String password = getPassword(pkg);
@@ -30,11 +32,10 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
                         result -> switch (result) {
                             case Success(Tracker tracker) -> {
                                 onSuccess(context, tracker);
-                                yield createSuccessResponse(pkg);
+                                yield new Reply(createSuccessResponse(pkg));
                             }
-                            //TODO После UnknownImei или WrongPassword канал остаётся открытым.
-                            case UnknownImei() -> createUnknownImeiResponse(pkg);
-                            case WrongPassword() -> createWrongPasswordResponse(pkg);
+                            case UnknownImei() -> new ReplyAndClose(createUnknownImeiResponse(pkg));
+                            case WrongPassword() -> new ReplyAndClose(createWrongPasswordResponse(pkg));
                         },
                         context.channel().eventLoop()
                 );
@@ -44,13 +45,13 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
 
     protected abstract String getPassword(PKG pkg);
 
-    //TODO подумать нужен ли pkg, TrackerLoginResult
+    //TODO подумать нужен ли response, TrackerLoginResult
     protected abstract Object createSuccessResponse(PKG pkg);
 
-    //TODO подумать нужен ли pkg, TrackerLoginResult
+    //TODO подумать нужен ли response, TrackerLoginResult
     protected abstract Object createUnknownImeiResponse(PKG pkg);
 
-    //TODO подумать нужен ли pkg, TrackerLoginResult
+    //TODO подумать нужен ли response, TrackerLoginResult
     protected abstract Object createWrongPasswordResponse(PKG pkg);
 
     private void onSuccess(ChannelHandlerContext context, Tracker tracker) {

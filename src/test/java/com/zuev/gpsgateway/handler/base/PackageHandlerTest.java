@@ -1,5 +1,8 @@
 package com.zuev.gpsgateway.handler.base;
 
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult;
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.NoReply;
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import io.netty.channel.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
@@ -51,8 +54,8 @@ public final class PackageHandlerTest {
         PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
 
             @Override
-            protected CompletableFuture<?> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
-                return completedFuture(null);
+            protected CompletableFuture<HandlingResult> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
+                return completedFuture(new NoReply());
             }
         };
 
@@ -82,7 +85,7 @@ public final class PackageHandlerTest {
         PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
 
             @Override
-            protected CompletableFuture<?> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
+            protected CompletableFuture<HandlingResult> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
                 return failedFuture(givenException);
             }
         };
@@ -144,8 +147,8 @@ public final class PackageHandlerTest {
         }
 
         @Override
-        protected CompletableFuture<TestPackage> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
-            return completedFuture(new TestPackage(pkg.value() + 1));
+        protected CompletableFuture<HandlingResult> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
+            return completedFuture(new Reply(new TestPackage(pkg.value() + 1)));
         }
     }
 }
