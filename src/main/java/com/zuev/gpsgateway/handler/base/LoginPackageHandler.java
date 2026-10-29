@@ -32,10 +32,17 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
                         result -> switch (result) {
                             case Success(Tracker tracker) -> {
                                 onSuccess(context, tracker);
-                                yield new Reply(createSuccessResponse(pkg));
+                                Object response = createSuccessResponse(pkg, tracker);
+                                yield new Reply(response);
                             }
-                            case UnknownImei() -> new ReplyAndClose(createUnknownImeiResponse(pkg));
-                            case WrongPassword() -> new ReplyAndClose(createWrongPasswordResponse(pkg));
+                            case UnknownImei() -> {
+                                Object response = createUnknownImeiResponse(pkg);
+                                yield new ReplyAndClose(response);
+                            }
+                            case WrongPassword() -> {
+                                Object response = createWrongPasswordResponse(pkg);
+                                yield new ReplyAndClose(response);
+                            }
                         },
                         context.channel().eventLoop()
                 );
@@ -45,13 +52,10 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
 
     protected abstract String getPassword(PKG pkg);
 
-    //TODO подумать нужен ли response, TrackerLoginResult
-    protected abstract Object createSuccessResponse(PKG pkg);
+    protected abstract Object createSuccessResponse(PKG pkg, Tracker tracker);
 
-    //TODO подумать нужен ли response, TrackerLoginResult
     protected abstract Object createUnknownImeiResponse(PKG pkg);
 
-    //TODO подумать нужен ли response, TrackerLoginResult
     protected abstract Object createWrongPasswordResponse(PKG pkg);
 
     private void onSuccess(ChannelHandlerContext context, Tracker tracker) {
