@@ -1,6 +1,7 @@
 package com.zuev.gpsgateway.handler.base;
 
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.NoReply;
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Close;
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.DoNothing;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
 import io.netty.channel.*;
@@ -40,11 +41,33 @@ public final class PackageHandlerTest {
         handler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
-        assertTrue(givenChannel.isOpen());
-        assertDoesNotThrow(givenChannel::checkException);
         TestPackage actual = givenChannel.readOutbound();
         TestPackage expected = new TestPackage(6);
         assertEquals(expected, actual);
+        assertTrue(givenChannel.isOpen());
+        assertDoesNotThrow(givenChannel::checkException);
+    }
+
+    @Test
+    public void packageShouldBeHandledWithClose() {
+        EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
+        TestPackage givenPackage = new TestPackage(5);
+        ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
+        PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
+
+            @Override
+            protected CompletableFuture<HandlingResult> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
+                return completedFuture(new Close());
+            }
+        };
+
+        givenHandler.handleAsync(givenPackage, givenContext);
+        givenChannel.runPendingTasks();
+
+        assertNull(givenChannel.readOutbound());
+        assertFalse(givenChannel.isOpen());
+        assertDoesNotThrow(givenChannel::checkException);
+        verify(givenContext, never()).writeAndFlush(any());
     }
 
     @Test
@@ -63,16 +86,15 @@ public final class PackageHandlerTest {
         givenHandler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
-        assertFalse(givenChannel.isOpen());
-        assertDoesNotThrow(givenChannel::checkException);
         TestPackage actual = givenChannel.readOutbound();
         TestPackage expected = new TestPackage(6);
         assertEquals(expected, actual);
+        assertFalse(givenChannel.isOpen());
+        assertDoesNotThrow(givenChannel::checkException);
     }
 
-    //TODO stop refactor
     @Test
-    public void packageShouldBeHandledWithoutResponse() {
+    public void packageShouldBeHandledWithDoNothing() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
         TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
@@ -80,15 +102,16 @@ public final class PackageHandlerTest {
 
             @Override
             protected CompletableFuture<HandlingResult> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
-                return completedFuture(new NoReply());
+                return completedFuture(new DoNothing());
             }
         };
 
         givenHandler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
-        assertDoesNotThrow(givenChannel::checkException);
         assertNull(givenChannel.readOutbound());
+        assertTrue(givenChannel.isOpen());
+        assertDoesNotThrow(givenChannel::checkException);
         verify(givenContext, never()).writeAndFlush(any());
     }
 
@@ -120,9 +143,12 @@ public final class PackageHandlerTest {
 
         RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
         assertSame(givenException, actual);
+        assertNull(givenChannel.readOutbound());
+        assertTrue(givenChannel.isOpen());
         verify(givenContext, never()).writeAndFlush(any());
     }
 
+    //TODO refactor
     @Test
     public void writingResponseExceptionShouldBeFiredToPipeline() {
         RuntimeException givenException = new RuntimeException();

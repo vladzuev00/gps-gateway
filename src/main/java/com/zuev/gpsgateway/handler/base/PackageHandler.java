@@ -44,7 +44,13 @@ public abstract class PackageHandler<PKG> {
             }
         }
 
-        //TODO add record Close()
+        record Close() implements HandlingResult {
+
+            @Override
+            public void applyTo(ChannelHandlerContext context) {
+                context.close();
+            }
+        }
 
         record ReplyAndClose(Object response) implements HandlingResult {
 
@@ -54,8 +60,7 @@ public abstract class PackageHandler<PKG> {
             }
         }
 
-        //TODO rename DoNothing
-        record NoReply() implements HandlingResult {
+        record DoNothing() implements HandlingResult {
 
             @Override
             public void applyTo(ChannelHandlerContext context) {
