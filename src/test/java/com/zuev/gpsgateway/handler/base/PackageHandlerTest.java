@@ -32,7 +32,6 @@ public final class PackageHandlerTest {
         assertFalse(handler.isAbleHandle(givenPackage));
     }
 
-    //TODO refactor
     @Test
     public void packageShouldBeHandledWithReply() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
@@ -42,19 +41,19 @@ public final class PackageHandlerTest {
         handler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
+        assertDoesNotThrow(givenChannel::checkException);
         TestPackage actual = givenChannel.readOutbound();
         TestPackage expected = new TestPackage(6);
         assertEquals(expected, actual);
+        assertNull(givenChannel.readOutbound());
         assertTrue(givenChannel.isOpen());
-        assertDoesNotThrow(givenChannel::checkException);
     }
 
-    //TODO refactor
     @Test
     public void packageShouldBeHandledWithClose() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
         TestPackage givenPackage = new TestPackage(5);
-        ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
+        ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
         PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
 
             @Override
@@ -66,10 +65,9 @@ public final class PackageHandlerTest {
         givenHandler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
+        assertDoesNotThrow(givenChannel::checkException);
         assertNull(givenChannel.readOutbound());
         assertFalse(givenChannel.isOpen());
-        assertDoesNotThrow(givenChannel::checkException);
-        verify(givenContext, never()).writeAndFlush(any());
     }
 
     //TODO refactor
