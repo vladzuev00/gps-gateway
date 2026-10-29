@@ -32,6 +32,7 @@ public final class PackageHandlerTest {
         assertFalse(handler.isAbleHandle(givenPackage));
     }
 
+    //TODO refactor
     @Test
     public void packageShouldBeHandledWithReply() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
@@ -48,6 +49,7 @@ public final class PackageHandlerTest {
         assertDoesNotThrow(givenChannel::checkException);
     }
 
+    //TODO refactor
     @Test
     public void packageShouldBeHandledWithClose() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
@@ -70,6 +72,7 @@ public final class PackageHandlerTest {
         verify(givenContext, never()).writeAndFlush(any());
     }
 
+    //TODO refactor
     @Test
     public void packageShouldBeHandledWithReplyAndClose() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
@@ -93,6 +96,7 @@ public final class PackageHandlerTest {
         assertDoesNotThrow(givenChannel::checkException);
     }
 
+    //TODO refactor
     @Test
     public void packageShouldBeHandledWithDoNothing() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
@@ -115,6 +119,7 @@ public final class PackageHandlerTest {
         verify(givenContext, never()).writeAndFlush(any());
     }
 
+    //TODO refactor
     @Test
     public void packageShouldNotBeHandledBecauseOfNotSuitablePackageType() {
         Object givenPackage = new Object();
@@ -124,6 +129,7 @@ public final class PackageHandlerTest {
         verifyNoInteractions(givenContext);
     }
 
+    //TODO refactor
     @Test
     public void packageShouldNotBeHandledBecauseOfHandlingException() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
@@ -172,6 +178,7 @@ public final class PackageHandlerTest {
         assertSame(givenException, actual);
     }
 
+    //TODO refactor
     @Test
     public void responseCallbackShouldBeHandledByEventLoopThread() {
         TestPackage givenPackage = new TestPackage(5);
