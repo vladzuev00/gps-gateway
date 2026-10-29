@@ -173,6 +173,38 @@ public final class PackageHandlerTest {
     }
 
     @Test
+    public void replyAndCloseWritingExceptionShouldBeFiredToPipeline() {
+        RuntimeException givenException = new RuntimeException();
+        EmbeddedChannel givenChannel = new EmbeddedChannel(
+                new ChannelOutboundHandlerAdapter() {
+
+                    @Override
+                    public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) {
+                        throw givenException;
+                    }
+                },
+                new ChannelInboundHandlerAdapter()
+        );
+        TestPackage givenPackage = new TestPackage(5);
+        ChannelHandlerContext givenContext = givenChannel.pipeline().lastContext();
+        PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
+
+            @Override
+            protected CompletableFuture<HandlingResult> handleAsyncInternal(TestPackage pkg, ChannelHandlerContext context) {
+                return completedFuture(new ReplyAndClose(new TestPackage(pkg.value() + 1)));
+            }
+        };
+
+        givenHandler.handleAsync(givenPackage, givenContext);
+        givenChannel.runPendingTasks();
+
+        RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
+        assertSame(givenException, actual);
+        assertNull(givenChannel.readOutbound());
+        assertFalse(givenChannel.isOpen());
+    }
+
+    @Test
     public void responseCallbackShouldBeHandledByEventLoopThread() {
         TestPackage givenPackage = new TestPackage(5);
         ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
