@@ -70,7 +70,6 @@ public final class PackageHandlerTest {
         assertFalse(givenChannel.isOpen());
     }
 
-    //TODO refactor
     @Test
     public void packageShouldBeHandledWithReplyAndClose() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
@@ -87,19 +86,19 @@ public final class PackageHandlerTest {
         givenHandler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
+        assertDoesNotThrow(givenChannel::checkException);
         TestPackage actual = givenChannel.readOutbound();
         TestPackage expected = new TestPackage(6);
         assertEquals(expected, actual);
+        assertNull(givenChannel.readOutbound());
         assertFalse(givenChannel.isOpen());
-        assertDoesNotThrow(givenChannel::checkException);
     }
 
-    //TODO refactor
     @Test
     public void packageShouldBeHandledWithDoNothing() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
         TestPackage givenPackage = new TestPackage(5);
-        ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
+        ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
         PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
 
             @Override
@@ -111,13 +110,11 @@ public final class PackageHandlerTest {
         givenHandler.handleAsync(givenPackage, givenContext);
         givenChannel.runPendingTasks();
 
+        assertDoesNotThrow(givenChannel::checkException);
         assertNull(givenChannel.readOutbound());
         assertTrue(givenChannel.isOpen());
-        assertDoesNotThrow(givenChannel::checkException);
-        verify(givenContext, never()).writeAndFlush(any());
     }
 
-    //TODO refactor
     @Test
     public void packageShouldNotBeHandledBecauseOfNotSuitablePackageType() {
         Object givenPackage = new Object();
@@ -127,12 +124,11 @@ public final class PackageHandlerTest {
         verifyNoInteractions(givenContext);
     }
 
-    //TODO refactor
     @Test
     public void packageShouldNotBeHandledBecauseOfHandlingException() {
         EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
         TestPackage givenPackage = new TestPackage(5);
-        ChannelHandlerContext givenContext = spy(givenChannel.pipeline().firstContext());
+        ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
         RuntimeException givenException = new RuntimeException();
         PackageHandler<?> givenHandler = new PackageHandler<>(TestPackage.class) {
 
@@ -149,7 +145,6 @@ public final class PackageHandlerTest {
         assertSame(givenException, actual);
         assertNull(givenChannel.readOutbound());
         assertTrue(givenChannel.isOpen());
-        verify(givenContext, never()).writeAndFlush(any());
     }
 
     //TODO refactor
@@ -176,7 +171,6 @@ public final class PackageHandlerTest {
         assertSame(givenException, actual);
     }
 
-    //TODO refactor
     @Test
     public void responseCallbackShouldBeHandledByEventLoopThread() {
         TestPackage givenPackage = new TestPackage(5);
