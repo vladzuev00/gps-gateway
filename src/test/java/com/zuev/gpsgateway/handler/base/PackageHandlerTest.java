@@ -147,9 +147,8 @@ public final class PackageHandlerTest {
         assertTrue(givenChannel.isOpen());
     }
 
-    //TODO refactor
     @Test
-    public void writingResponseExceptionShouldBeFiredToPipeline() {
+    public void replyWritingExceptionShouldBeFiredToPipeline() {
         RuntimeException givenException = new RuntimeException();
         EmbeddedChannel givenChannel = new EmbeddedChannel(
                 new ChannelOutboundHandlerAdapter() {
@@ -169,6 +168,8 @@ public final class PackageHandlerTest {
 
         RuntimeException actual = assertThrows(RuntimeException.class, givenChannel::checkException);
         assertSame(givenException, actual);
+        assertNull(givenChannel.readOutbound());
+        assertTrue(givenChannel.isOpen());
     }
 
     @Test
