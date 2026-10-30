@@ -1,10 +1,12 @@
 package com.zuev.gpsgateway.handler.base;
 
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult;
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.DoNothing;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
 import com.zuev.gpsgateway.model.Message;
 import com.zuev.gpsgateway.model.Tracker;
+import com.zuev.gpsgateway.model.TrackerLoginResult;
 import com.zuev.gpsgateway.model.TrackerLoginResult.Success;
 import com.zuev.gpsgateway.model.TrackerLoginResult.UnknownImei;
 import com.zuev.gpsgateway.model.TrackerLoginResult.WrongPassword;
@@ -135,6 +137,45 @@ public final class LoginPackageHandlerTest {
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
             verifyNoInteractions(mockedMessageService, mockedTrackerChannelRegistry);
+        }
+    }
+
+    @Test
+    public void loginPackageShouldNotBeHandledBecauseOfChannelClosedDuringLogin() {
+        try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
+            EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
+            ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
+            TestLoginPackage givenPackage = new TestLoginPackage("356307042441013", "pass");
+
+            CompletableFuture<TrackerLoginResult> givenLoginFuture = new CompletableFuture<>();
+            when(mockedTrackerLoginService.loginAsync("356307042441013", "pass")).thenReturn(givenLoginFuture);
+
+            Message givenLastMessage = new Message(
+                    37.6173,
+                    55.7558,
+                    1730289600000L,
+                    60.,
+                    90.,
+                    150.,
+                    10,
+                    1.2,
+                    Map.of("fuel", "45"),
+                    255
+            );
+            when(mockedMessageService.findLastMessageAsync(255))
+                    .thenReturn(completedFuture(Optional.of(givenLastMessage)));
+
+            CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
+            givenChannel.close();
+            givenLoginFuture.complete(new Success(new Tracker(255, "356307042441013")));
+            givenChannel.runPendingTasks();
+
+            HandlingResult actual = future.join();
+            HandlingResult expected = new DoNothing();
+            assertEquals(expected, actual);
+
+            mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
+            verifyNoInteractions(mockedTrackerChannelRegistry);
         }
     }
 
