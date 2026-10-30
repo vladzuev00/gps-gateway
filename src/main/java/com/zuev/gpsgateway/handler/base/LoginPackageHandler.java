@@ -41,7 +41,7 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
         return trackerLoginService.loginAsync(normalizedImei, password)
                 .thenComposeAsync(
                         result -> switch (result) {
-                            case Success(Tracker tracker) -> handleSuccessAsync(pkg, context, tracker);
+                            case Success(Tracker tracker) -> handleSuccessAsync(pkg, tracker, context);
                             case UnknownImei() -> completedFuture(handleUnknownImei(pkg));
                             case WrongPassword() -> completedFuture(handleWrongPassword(pkg));
                         },
@@ -59,7 +59,9 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
 
     protected abstract Object createWrongPasswordResponse(PKG pkg);
 
-    private CompletableFuture<HandlingResult> handleSuccessAsync(PKG pkg, ChannelHandlerContext context, Tracker tracker) {
+    private CompletableFuture<HandlingResult> handleSuccessAsync(PKG pkg,
+                                                                 Tracker tracker,
+                                                                 ChannelHandlerContext context) {
         return messageService.findLastMessageAsync(tracker.id())
                 .thenApplyAsync(
                         optionalMessage -> {
