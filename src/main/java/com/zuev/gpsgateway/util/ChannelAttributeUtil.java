@@ -1,5 +1,6 @@
 package com.zuev.gpsgateway.util;
 
+import com.zuev.gpsgateway.model.Message;
 import com.zuev.gpsgateway.model.Tracker;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -25,5 +26,9 @@ public final class ChannelAttributeUtil {
 
     public static Optional<Tracker> findTracker(ChannelHandlerContext context) {
         return ofNullable(context.channel().attr(TRACKER_KEY).get());
+    }
+
+    public static void setLastMessage(ChannelHandlerContext context, Message message) {
+
     }
 }
