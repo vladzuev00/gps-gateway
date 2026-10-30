@@ -97,6 +97,33 @@ public final class LoginPackageHandlerTest {
     }
 
     @Test
+    public void loginPackageShouldBeHandledSuccessfullyWithoutLastMessage() {
+        try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
+            EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
+            ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
+            TestLoginPackage givenPackage = new TestLoginPackage("356307042441013", "pass");
+
+            Tracker givenTracker = new Tracker(255, "356307042441013");
+            when(mockedTrackerLoginService.loginAsync("356307042441013", "pass"))
+                    .thenReturn(completedFuture(new Success(givenTracker)));
+
+            when(mockedMessageService.findLastMessageAsync(255)).thenReturn(completedFuture(Optional.empty()));
+
+            CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
+            givenChannel.runPendingTasks();
+
+            HandlingResult actual = future.join();
+            HandlingResult expected = new Reply(new SuccessResponse(255, "356307042441013"));
+            assertEquals(expected, actual);
+
+            mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
+            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setTracker(givenContext, givenTracker));
+            verify(mockedTrackerChannelRegistry).register(255, givenChannel);
+        }
+    }
+
+    @Test
     public void loginPackageShouldNotBeHandledBecauseOfUnknownImei() {
         try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
             EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
