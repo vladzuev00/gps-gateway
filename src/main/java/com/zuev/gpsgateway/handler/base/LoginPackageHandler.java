@@ -15,7 +15,6 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.concurrent.CompletableFuture;
 
 import static com.zuev.gpsgateway.util.ChannelAttributeUtil.*;
-import static com.zuev.gpsgateway.util.TrackerImeiUtil.normalizeImei;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
@@ -35,10 +34,10 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
 
     @Override
     protected final CompletableFuture<HandlingResult> handleAsyncInternal(PKG pkg, ChannelHandlerContext context) {
-        String normalizedImei = normalizeImei(getImei(pkg));
-        setImei(context, normalizedImei);
+        String imei = getImei(pkg);
+        setImei(context, imei);
         String password = getPassword(pkg);
-        return trackerLoginService.loginAsync(normalizedImei, password)
+        return trackerLoginService.loginAsync(imei, password)
                 .thenComposeAsync(
                         result -> switch (result) {
                             case Success(Tracker tracker) -> handleSuccessAsync(pkg, tracker, context);
@@ -59,9 +58,7 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
 
     protected abstract Object createWrongPasswordResponse(PKG pkg);
 
-    private CompletableFuture<HandlingResult> handleSuccessAsync(PKG pkg,
-                                                                 Tracker tracker,
-                                                                 ChannelHandlerContext context) {
+    private CompletableFuture<HandlingResult> handleSuccessAsync(PKG pkg, Tracker tracker, ChannelHandlerContext context) {
         return messageService.findLastMessageAsync(tracker.id())
                 .thenApplyAsync(
                         optionalMessage -> {
