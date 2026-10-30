@@ -7,6 +7,7 @@ import com.zuev.gpsgateway.model.Message;
 import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.model.TrackerLoginResult.Success;
 import com.zuev.gpsgateway.model.TrackerLoginResult.UnknownImei;
+import com.zuev.gpsgateway.model.TrackerLoginResult.WrongPassword;
 import com.zuev.gpsgateway.service.MessageService;
 import com.zuev.gpsgateway.service.TrackerChannelRegistry;
 import com.zuev.gpsgateway.service.TrackerLoginService;
@@ -108,6 +109,28 @@ public final class LoginPackageHandlerTest {
 
             HandlingResult actual = future.join();
             HandlingResult expected = new ReplyAndClose(new UnknownImeiResponse("356307042441013"));
+            assertEquals(expected, actual);
+
+            mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
+            verifyNoInteractions(mockedMessageService, mockedTrackerChannelRegistry);
+        }
+    }
+
+    @Test
+    public void loginPackageShouldNotBeHandledBecauseOfWrongPassword() {
+        try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
+            EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
+            ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
+            TestLoginPackage givenPackage = new TestLoginPackage("356307042441013", "pass");
+
+            when(mockedTrackerLoginService.loginAsync("356307042441013", "pass"))
+                    .thenReturn(completedFuture(new WrongPassword()));
+
+            CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
+            givenChannel.runPendingTasks();
+
+            HandlingResult actual = future.join();
+            HandlingResult expected = new ReplyAndClose(new WrongPasswordResponse("356307042441013"));
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
