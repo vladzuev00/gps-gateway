@@ -141,6 +141,8 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
+            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setTracker(any(), any()), never());
             verifyNoInteractions(mockedMessageService, mockedTrackerChannelRegistry);
         }
     }
@@ -163,6 +165,8 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
+            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setTracker(any(), any()), never());
             verifyNoInteractions(mockedMessageService, mockedTrackerChannelRegistry);
         }
     }
@@ -202,6 +206,8 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
+            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setTracker(any(), any()), never());
             verifyNoInteractions(mockedTrackerChannelRegistry);
         }
     }
