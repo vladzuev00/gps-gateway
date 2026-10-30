@@ -1,5 +1,6 @@
 package com.zuev.gpsgateway.handler.base;
 
+import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.DoNothing;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
 import com.zuev.gpsgateway.model.Tracker;
@@ -62,6 +63,9 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
         return messageService.findLastMessageAsync(tracker.id())
                 .thenApplyAsync(
                         optionalMessage -> {
+                            if (!context.channel().isActive()) {
+                                return new DoNothing();
+                            }
                             optionalMessage.ifPresent(m -> setLastMessage(context, m));
                             setTracker(context, tracker);
                             trackerChannelRegistry.register(tracker.id(), context.channel());
