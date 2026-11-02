@@ -61,11 +61,11 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
     private CompletableFuture<HandlingResult> handleSuccessAsync(PKG pkg, Tracker tracker, ChannelHandlerContext context) {
         return messageService.findLatestMessageAsync(tracker.id())
                 .thenApplyAsync(
-                        optionalMessage -> {
+                        optionalLatestMessage -> {
                             if (!context.channel().isActive()) {
                                 return new DoNothing();
                             }
-                            optionalMessage.ifPresent(message -> setLatestMessage(context, message));
+                            optionalLatestMessage.ifPresent(latestMessage -> setLatestMessage(context, latestMessage));
                             setTracker(context, tracker);
                             trackerChannelRegistry.register(tracker.id(), context.channel());
                             Object response = createSuccessResponse(pkg, tracker);
