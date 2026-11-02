@@ -65,7 +65,7 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
                             if (!context.channel().isActive()) {
                                 return new DoNothing();
                             }
-                            optionalMessage.ifPresent(m -> setLastMessage(context, m));
+                            optionalMessage.ifPresent(message -> setLastMessage(context, message));
                             setTracker(context, tracker);
                             trackerChannelRegistry.register(tracker.id(), context.channel());
                             Object response = createSuccessResponse(pkg, tracker);
