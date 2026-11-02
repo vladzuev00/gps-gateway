@@ -15,6 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public final class ChannelAttributeUtil {
     private static final AttributeKey<Tracker> TRACKER_KEY = AttributeKey.valueOf("tracker");
+    private static final AttributeKey<Message> LAST_MESSAGE_KEY = AttributeKey.valueOf("lastMessage");
 
     public static void setImei(ChannelHandlerContext context, String imei) {
 
@@ -29,6 +30,10 @@ public final class ChannelAttributeUtil {
     }
 
     public static void setLastMessage(ChannelHandlerContext context, Message message) {
+        context.channel().attr(LAST_MESSAGE_KEY).set(message);
+    }
 
+    public static Optional<Message> findLastMessage(ChannelHandlerContext context) {
+        return ofNullable(context.channel().attr(LAST_MESSAGE_KEY).get());
     }
 }

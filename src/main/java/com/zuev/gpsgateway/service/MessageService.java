@@ -3,6 +3,7 @@ package com.zuev.gpsgateway.service;
 import com.zuev.gpsgateway.model.Message;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -13,5 +14,9 @@ public class MessageService {
 
     public CompletableFuture<Optional<Message>> findLastMessageAsync(long trackerId) {
         return CompletableFuture.completedFuture(Optional.empty());
+    }
+
+    public CompletableFuture<Void> saveAsync(List<Message> messages) {
+        return CompletableFuture.completedFuture(null);
     }
 }
