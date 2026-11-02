@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import static com.zuev.gpsgateway.util.ChannelAttributeUtil.*;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
-public abstract class MessagePackageHandler<PKG> extends PackageHandler<PKG> {
+public abstract class MessagePackageHandler<PKG, MESSAGE_SRC> extends PackageHandler<PKG> {
     private final MessageService messageService;
 
     public MessagePackageHandler(Class<PKG> packageType, MessageService messageService) {
@@ -43,13 +43,16 @@ public abstract class MessagePackageHandler<PKG> extends PackageHandler<PKG> {
                 );
     }
 
-    protected abstract List<Message> getMessages(PKG pkg, Tracker tracker);
+    protected abstract List<MESSAGE_SRC> getMessageSources(PKG pkg);
+
+    protected abstract Message mapToMessage(MESSAGE_SRC source, Tracker tracker);
 
     protected abstract Object createResponse(PKG pkg);
 
     private List<Message> findNewMessages(PKG pkg, Tracker tracker, ChannelHandlerContext context) {
         long lastEpochMillis = findLastEpochMillis(context);
-        return getMessages(pkg, tracker).stream()
+        return getMessageSources(pkg).stream()
+                .map(source -> mapToMessage(source, tracker))
                 .filter(message -> message.epochMillis() > lastEpochMillis)
                 .toList();
     }
