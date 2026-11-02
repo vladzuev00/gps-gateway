@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class MessageService {
 
-    public CompletableFuture<Optional<Message>> findLastMessageAsync(long trackerId) {
+    public CompletableFuture<Optional<Message>> findLatestMessageAsync(long trackerId) {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 

@@ -5,18 +5,15 @@ import com.zuev.gpsgateway.exception.NotLoggedInTrackerException;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.DoNothing;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.model.Message;
-import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.service.MessageService;
 import com.zuev.gpsgateway.validator.MessageValidator;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static com.zuev.gpsgateway.util.ChannelAttributeUtil.*;
+import static java.util.Comparator.comparingLong;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler<PKG> {
@@ -36,26 +33,15 @@ public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler
 
     @Override
     protected final CompletableFuture<HandlingResult> handleAsyncInternal(PKG pkg, ChannelHandlerContext context) {
-        Tracker tracker = findTracker(context).orElseThrow(NotLoggedInTrackerException::new);
-        List<Message> validMessages = getMessageSources(pkg)
-                .stream()
-                .map(source -> toMessage(source, tracker))
-                .filter(messageValidator::isValid)
-                .sorted(Comparator.comparingLong(Message::epochMillis))
-                .toList();
-        if (validMessages.isEmpty()) {
-            Object response = createResponse(pkg);
-            return completedFuture(new Reply(response));
+        long trackerId = findTracker(context).orElseThrow(NotLoggedInTrackerException::new).id();
+        List<Message> sortedValidMessages = getSortedValidMessages(pkg, trackerId);
+        if (sortedValidMessages.isEmpty()) {
+            return reply(pkg);
         }
-        List<Message> enrichedMessages = new ArrayList<>(validMessages.size());
-        Optional<Message> optionalPreviousMessage = findLastMessage(context);
-        for (Message message : validMessages) {
-            Message enrichedMessage = optionalPreviousMessage
-                    .map(previousMessage -> messageEnricher.enrich(message, previousMessage))
-                    .orElse(message);
-            enrichedMessages.add(enrichedMessage);
-            optionalPreviousMessage = Optional.of(enrichedMessage);
-        }
+
+        List<Message> enrichedMessages = findLatestMessage(context)
+                .map(latestMessage -> messageEnricher.enrichAll(sortedValidMessages, latestMessage))
+                .orElseGet(() -> messageEnricher.enrichAll(sortedValidMessages));
         return messageService.saveAllAsync(enrichedMessages)
                 .thenApplyAsync(
                         ignored -> {
@@ -64,11 +50,11 @@ public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler
                             }
                             Message newestMessage = enrichedMessages.getLast();
                             if (
-                                    newestMessage.epochMillis() > findLastMessage(context)
+                                    newestMessage.epochMillis() > findLatestMessage(context)
                                             .map(Message::epochMillis)
                                             .orElse(Long.MIN_VALUE)
                             ) {
-                                setLastMessage(context, newestMessage);
+                                setLatestMessage(context, newestMessage);
                             }
                             Object response = createResponse(pkg);
                             return new Reply(response);
@@ -79,7 +65,21 @@ public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler
 
     protected abstract List<MSG_SRC> getMessageSources(PKG pkg);
 
-    protected abstract Message toMessage(MSG_SRC source, Tracker tracker);
+    protected abstract Message toMessage(MSG_SRC source, long trackerId);
 
     protected abstract Object createResponse(PKG pkg);
+
+    private List<Message> getSortedValidMessages(PKG pkg, long trackerId) {
+        return getMessageSources(pkg)
+                .stream()
+                .map(source -> toMessage(source, trackerId))
+                .filter(messageValidator::isValid)
+                .sorted(comparingLong(Message::epochMillis))
+                .toList();
+    }
+
+    private CompletableFuture<HandlingResult> reply(PKG pkg) {
+        Object response = createResponse(pkg);
+        return completedFuture(new Reply(response));
+    }
 }
