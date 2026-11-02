@@ -86,7 +86,7 @@ public final class LoginPackageHandlerTest {
             givenChannel.runPendingTasks();
 
             HandlingResult actual = future.join();
-            HandlingResult expected = new Reply(new SuccessResponse(255, "356307042441013"));
+            HandlingResult expected = new Reply(new TestSuccessResponse(255, "356307042441013"));
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
@@ -113,7 +113,7 @@ public final class LoginPackageHandlerTest {
             givenChannel.runPendingTasks();
 
             HandlingResult actual = future.join();
-            HandlingResult expected = new Reply(new SuccessResponse(255, "356307042441013"));
+            HandlingResult expected = new Reply(new TestSuccessResponse(255, "356307042441013"));
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
@@ -137,7 +137,7 @@ public final class LoginPackageHandlerTest {
             givenChannel.runPendingTasks();
 
             HandlingResult actual = future.join();
-            HandlingResult expected = new ReplyAndClose(new UnknownImeiResponse("356307042441013"));
+            HandlingResult expected = new ReplyAndClose(new TestUnknownImeiResponse("356307042441013"));
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
@@ -161,7 +161,7 @@ public final class LoginPackageHandlerTest {
             givenChannel.runPendingTasks();
 
             HandlingResult actual = future.join();
-            HandlingResult expected = new ReplyAndClose(new WrongPasswordResponse("356307042441013"));
+            HandlingResult expected = new ReplyAndClose(new TestWrongPasswordResponse("356307042441013"));
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
@@ -215,13 +215,13 @@ public final class LoginPackageHandlerTest {
     private record TestLoginPackage(String imei, String password) {
     }
 
-    private record SuccessResponse(long trackerId, String imei) {
+    private record TestSuccessResponse(long trackerId, String imei) {
     }
 
-    private record UnknownImeiResponse(String imei) {
+    private record TestUnknownImeiResponse(String imei) {
     }
 
-    private record WrongPasswordResponse(String imei) {
+    private record TestWrongPasswordResponse(String imei) {
     }
 
     private static final class TestLoginPackageHandler extends LoginPackageHandler<TestLoginPackage> {
@@ -243,18 +243,18 @@ public final class LoginPackageHandlerTest {
         }
 
         @Override
-        protected SuccessResponse createSuccessResponse(TestLoginPackage pkg, Tracker tracker) {
-            return new SuccessResponse(tracker.id(), pkg.imei());
+        protected TestSuccessResponse createSuccessResponse(TestLoginPackage pkg, Tracker tracker) {
+            return new TestSuccessResponse(tracker.id(), pkg.imei());
         }
 
         @Override
-        protected UnknownImeiResponse createUnknownImeiResponse(TestLoginPackage pkg) {
-            return new UnknownImeiResponse(pkg.imei());
+        protected TestUnknownImeiResponse createUnknownImeiResponse(TestLoginPackage pkg) {
+            return new TestUnknownImeiResponse(pkg.imei());
         }
 
         @Override
-        protected WrongPasswordResponse createWrongPasswordResponse(TestLoginPackage pkg) {
-            return new WrongPasswordResponse(pkg.imei());
+        protected TestWrongPasswordResponse createWrongPasswordResponse(TestLoginPackage pkg) {
+            return new TestWrongPasswordResponse(pkg.imei());
         }
     }
 }
