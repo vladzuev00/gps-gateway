@@ -1,6 +1,5 @@
 package com.zuev.gpsgateway.util;
 
-import com.zuev.gpsgateway.model.Message;
 import com.zuev.gpsgateway.model.Tracker;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -15,7 +14,6 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public final class ChannelAttributeUtil {
     private static final AttributeKey<Tracker> TRACKER_KEY = AttributeKey.valueOf("tracker");
-    private static final AttributeKey<Message> LATEST_MESSAGE_KEY = AttributeKey.valueOf("latestMessage");
 
     public static void setImei(ChannelHandlerContext context, String imei) {
 
@@ -27,13 +25,5 @@ public final class ChannelAttributeUtil {
 
     public static Optional<Tracker> findTracker(ChannelHandlerContext context) {
         return ofNullable(context.channel().attr(TRACKER_KEY).get());
-    }
-
-    public static void setLatestMessage(ChannelHandlerContext context, Message message) {
-        context.channel().attr(LATEST_MESSAGE_KEY).set(message);
-    }
-
-    public static Optional<Message> findLatestMessage(ChannelHandlerContext context) {
-        return ofNullable(context.channel().attr(LATEST_MESSAGE_KEY).get());
     }
 }
