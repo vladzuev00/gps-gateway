@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import static com.zuev.gpsgateway.util.ChannelAttributeUtil.*;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
-public abstract class MessagePackageHandler<PKG, MESSAGE_SRC> extends PackageHandler<PKG> {
+public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler<PKG> {
     private final MessageService messageService;
 
     public MessagePackageHandler(Class<PKG> packageType, MessageService messageService) {
@@ -43,9 +43,9 @@ public abstract class MessagePackageHandler<PKG, MESSAGE_SRC> extends PackageHan
                 );
     }
 
-    protected abstract List<MESSAGE_SRC> getMessageSources(PKG pkg);
+    protected abstract List<MSG_SRC> getMessageSources(PKG pkg);
 
-    protected abstract Message mapToMessage(MESSAGE_SRC source, Tracker tracker);
+    protected abstract Message mapToMessage(MSG_SRC source, Tracker tracker);
 
     protected abstract Object createResponse(PKG pkg);
 
