@@ -6,6 +6,7 @@ import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.model.Message;
 import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.service.MessageService;
+import com.zuev.gpsgateway.validator.MessageValidator;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Comparator;
@@ -16,28 +17,51 @@ import static com.zuev.gpsgateway.util.ChannelAttributeUtil.*;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler<PKG> {
+    private final MessageValidator messageValidator;
     private final MessageService messageService;
 
-    public MessagePackageHandler(Class<PKG> packageType, MessageService messageService) {
+    public MessagePackageHandler(Class<PKG> packageType,
+                                 MessageValidator messageValidator,
+                                 MessageService messageService) {
         super(packageType);
+        this.messageValidator = messageValidator;
         this.messageService = messageService;
     }
 
     @Override
     protected final CompletableFuture<HandlingResult> handleAsyncInternal(PKG pkg, ChannelHandlerContext context) {
         Tracker tracker = findTracker(context).orElseThrow(NotLoggedInTrackerException::new);
-        List<Message> newMessages = findNewMessages(pkg, tracker, context);
+        long lastEpochMillis = findLastMessage(context)
+                .map(Message::epochMillis)
+                .orElse(Long.MIN_VALUE);
+        List<Message> newMessages = getMessageSources(pkg)
+                .stream()
+                .map(source -> toMessage(source, tracker))
+                .filter(messageValidator::isValid)
+                .filter(message -> message.epochMillis() > lastEpochMillis)
+                .toList();
         if (newMessages.isEmpty()) {
-            return completedFuture(createReply(pkg));
+            Object response = createResponse(pkg);
+            return completedFuture(new Reply(response));
         }
-        return messageService.saveAsync(newMessages)
+        return messageService.saveAllAsync(newMessages)
                 .thenApplyAsync(
                         ignored -> {
                             if (!context.channel().isActive()) {
                                 return new DoNothing();
                             }
-                            updateLastMessage(context, newMessages);
-                            return createReply(pkg);
+                            Message newestMessage = newMessages.stream()
+                                    .max(Comparator.comparingLong(Message::epochMillis))
+                                    .orElseThrow();
+                            if (
+                                    newestMessage.epochMillis() > findLastMessage(context)
+                                            .map(Message::epochMillis)
+                                            .orElse(Long.MIN_VALUE)
+                            ) {
+                                setLastMessage(context, newestMessage);
+                            }
+                            Object response = createResponse(pkg);
+                            return new Reply(response);
                         },
                         context.channel().eventLoop()
                 );
@@ -45,35 +69,7 @@ public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler
 
     protected abstract List<MSG_SRC> getMessageSources(PKG pkg);
 
-    protected abstract Message mapToMessage(MSG_SRC source, Tracker tracker);
+    protected abstract Message toMessage(MSG_SRC source, Tracker tracker);
 
     protected abstract Object createResponse(PKG pkg);
-
-    private List<Message> findNewMessages(PKG pkg, Tracker tracker, ChannelHandlerContext context) {
-        long lastEpochMillis = findLastEpochMillis(context);
-        return getMessageSources(pkg).stream()
-                .map(source -> mapToMessage(source, tracker))
-                .filter(message -> message.epochMillis() > lastEpochMillis)
-                .toList();
-    }
-
-    private void updateLastMessage(ChannelHandlerContext context, List<Message> savedMessages) {
-        Message newestMessage = savedMessages.stream()
-                .max(Comparator.comparingLong(Message::epochMillis))
-                .orElseThrow();
-        if (newestMessage.epochMillis() > findLastEpochMillis(context)) {
-            setLastMessage(context, newestMessage);
-        }
-    }
-
-    private static long findLastEpochMillis(ChannelHandlerContext context) {
-        return findLastMessage(context)
-                .map(Message::epochMillis)
-                .orElse(Long.MIN_VALUE);
-    }
-
-    private HandlingResult createReply(PKG pkg) {
-        Object response = createResponse(pkg);
-        return new Reply(response);
-    }
 }

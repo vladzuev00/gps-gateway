@@ -16,7 +16,7 @@ public class MessageService {
         return CompletableFuture.completedFuture(Optional.empty());
     }
 
-    public CompletableFuture<Void> saveAsync(List<Message> messages) {
+    public CompletableFuture<Void> saveAllAsync(List<Message> messages) {
         return CompletableFuture.completedFuture(null);
     }
 }
