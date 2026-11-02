@@ -38,22 +38,16 @@ public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler
         if (sortedValidMessages.isEmpty()) {
             return reply(pkg);
         }
-
-        List<Message> enrichedMessages = findLatestMessage(context)
-                .map(latestMessage -> messageEnricher.enrichAll(sortedValidMessages, latestMessage))
-                .orElseGet(() -> messageEnricher.enrichAll(sortedValidMessages));
-        return messageService.saveAllAsync(enrichedMessages)
+        List<Message> sortedValidEnrichedMessages = enrichSortedMessages(sortedValidMessages, context);
+        return messageService.saveAllAsync(sortedValidEnrichedMessages)
                 .thenApplyAsync(
                         ignored -> {
                             if (!context.channel().isActive()) {
                                 return new DoNothing();
                             }
-                            Message newestMessage = enrichedMessages.getLast();
-                            if (
-                                    newestMessage.epochMillis() > findLatestMessage(context)
-                                            .map(Message::epochMillis)
-                                            .orElse(Long.MIN_VALUE)
-                            ) {
+                            Message newestMessage = sortedValidEnrichedMessages.getLast();
+
+                            if (newestMessage.epochMillis() > findLatestMessage(context).map(Message::epochMillis).orElse(Long.MIN_VALUE)) {
                                 setLatestMessage(context, newestMessage);
                             }
                             Object response = createResponse(pkg);
@@ -81,5 +75,11 @@ public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler
     private CompletableFuture<HandlingResult> reply(PKG pkg) {
         Object response = createResponse(pkg);
         return completedFuture(new Reply(response));
+    }
+
+    private List<Message> enrichSortedMessages(List<Message> messages, ChannelHandlerContext context) {
+        return findLatestMessage(context)
+                .map(latestMessage -> messageEnricher.enrichAll(messages, latestMessage))
+                .orElseGet(() -> messageEnricher.enrichAll(messages));
     }
 }
