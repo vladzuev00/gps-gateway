@@ -59,13 +59,13 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
     protected abstract Object createWrongPasswordResponse(PKG pkg);
 
     private CompletableFuture<HandlingResult> handleSuccessAsync(PKG pkg, Tracker tracker, ChannelHandlerContext context) {
-        return messageService.findLastMessageAsync(tracker.id())
+        return messageService.findLatestMessageAsync(tracker.id())
                 .thenApplyAsync(
                         optionalMessage -> {
                             if (!context.channel().isActive()) {
                                 return new DoNothing();
                             }
-                            optionalMessage.ifPresent(message -> setLastMessage(context, message));
+                            optionalMessage.ifPresent(message -> setLatestMessage(context, message));
                             setTracker(context, tracker);
                             trackerChannelRegistry.register(tracker.id(), context.channel());
                             Object response = createSuccessResponse(pkg, tracker);

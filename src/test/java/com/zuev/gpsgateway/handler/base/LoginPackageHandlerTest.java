@@ -67,7 +67,7 @@ public final class LoginPackageHandlerTest {
             when(mockedTrackerLoginService.loginAsync("356307042441013", "pass"))
                     .thenReturn(completedFuture(new Success(givenTracker)));
 
-            Message givenLastMessage = new Message(
+            Message givenLatestMessage = new Message(
                     37.6173,
                     55.7558,
                     1730289600000L,
@@ -79,8 +79,8 @@ public final class LoginPackageHandlerTest {
                     Map.of("fuel", "45"),
                     255
             );
-            when(mockedMessageService.findLastMessageAsync(255))
-                    .thenReturn(completedFuture(Optional.of(givenLastMessage)));
+            when(mockedMessageService.findLatestMessageAsync(255))
+                    .thenReturn(completedFuture(Optional.of(givenLatestMessage)));
 
             CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
             givenChannel.runPendingTasks();
@@ -90,14 +90,14 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
-            mockedChannelAttributeUtil.verify(() -> setLastMessage(givenContext, givenLastMessage));
+            mockedChannelAttributeUtil.verify(() -> setLatestMessage(givenContext, givenLatestMessage));
             mockedChannelAttributeUtil.verify(() -> setTracker(givenContext, givenTracker));
             verify(mockedTrackerChannelRegistry).register(255, givenChannel);
         }
     }
 
     @Test
-    public void loginPackageShouldBeHandledSuccessfullyWithoutLastMessage() {
+    public void loginPackageShouldBeHandledSuccessfullyWithoutLatestMessage() {
         try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
             EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
             ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
@@ -107,7 +107,7 @@ public final class LoginPackageHandlerTest {
             when(mockedTrackerLoginService.loginAsync("356307042441013", "pass"))
                     .thenReturn(completedFuture(new Success(givenTracker)));
 
-            when(mockedMessageService.findLastMessageAsync(255)).thenReturn(completedFuture(Optional.empty()));
+            when(mockedMessageService.findLatestMessageAsync(255)).thenReturn(completedFuture(Optional.empty()));
 
             CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
             givenChannel.runPendingTasks();
@@ -117,7 +117,7 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
-            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setLatestMessage(any(), any()), never());
             mockedChannelAttributeUtil.verify(() -> setTracker(givenContext, givenTracker));
             verify(mockedTrackerChannelRegistry).register(255, givenChannel);
         }
@@ -141,7 +141,7 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
-            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setLatestMessage(any(), any()), never());
             mockedChannelAttributeUtil.verify(() -> setTracker(any(), any()), never());
             verifyNoInteractions(mockedMessageService, mockedTrackerChannelRegistry);
         }
@@ -165,7 +165,7 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
-            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setLatestMessage(any(), any()), never());
             mockedChannelAttributeUtil.verify(() -> setTracker(any(), any()), never());
             verifyNoInteractions(mockedMessageService, mockedTrackerChannelRegistry);
         }
@@ -181,7 +181,7 @@ public final class LoginPackageHandlerTest {
             CompletableFuture<TrackerLoginResult> givenLoginFuture = new CompletableFuture<>();
             when(mockedTrackerLoginService.loginAsync("356307042441013", "pass")).thenReturn(givenLoginFuture);
 
-            Message givenLastMessage = new Message(
+            Message givenLatestMessage = new Message(
                     37.6173,
                     55.7558,
                     1730289600000L,
@@ -193,8 +193,8 @@ public final class LoginPackageHandlerTest {
                     Map.of("fuel", "45"),
                     255
             );
-            when(mockedMessageService.findLastMessageAsync(255))
-                    .thenReturn(completedFuture(Optional.of(givenLastMessage)));
+            when(mockedMessageService.findLatestMessageAsync(255))
+                    .thenReturn(completedFuture(Optional.of(givenLatestMessage)));
 
             CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
             givenChannel.close();
@@ -206,7 +206,7 @@ public final class LoginPackageHandlerTest {
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
-            mockedChannelAttributeUtil.verify(() -> setLastMessage(any(), any()), never());
+            mockedChannelAttributeUtil.verify(() -> setLatestMessage(any(), any()), never());
             mockedChannelAttributeUtil.verify(() -> setTracker(any(), any()), never());
             verifyNoInteractions(mockedTrackerChannelRegistry);
         }
