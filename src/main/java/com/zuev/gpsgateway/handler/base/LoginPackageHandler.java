@@ -35,10 +35,15 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
         String password = getPassword(pkg);
         return trackerLoginService.loginAsync(imei, password)
                 .thenApplyAsync(
-                        result -> switch (result) {
-                            case Success(Tracker tracker) -> handleSuccess(pkg, tracker, context);
-                            case UnknownImei() -> handleUnknownImei(pkg);
-                            case WrongPassword() -> handleWrongPassword(pkg);
+                        result -> {
+                            if (!context.channel().isActive()) {
+                                return new DoNothing();
+                            }
+                            return switch (result) {
+                                case Success(Tracker tracker) -> handleSuccess(pkg, tracker, context);
+                                case UnknownImei() -> handleUnknownImei(pkg);
+                                case WrongPassword() -> handleWrongPassword(pkg);
+                            };
                         },
                         context.channel().eventLoop()
                 );
@@ -55,9 +60,6 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
     protected abstract Object createWrongPasswordResponse(PKG pkg);
 
     private HandlingResult handleSuccess(PKG pkg, Tracker tracker, ChannelHandlerContext context) {
-        if (!context.channel().isActive()) {
-            return new DoNothing();
-        }
         setTracker(context, tracker);
         trackerChannelRegistry.register(tracker.id(), context.channel());
         Object response = createSuccessResponse(pkg, tracker);
