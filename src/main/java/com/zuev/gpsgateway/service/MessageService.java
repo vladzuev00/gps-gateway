@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class MessageService {
 
+    //TODO учесть пустой messages
     public CompletableFuture<Void> saveAllAsync(List<Message> messages) {
         return CompletableFuture.completedFuture(null);
     }
