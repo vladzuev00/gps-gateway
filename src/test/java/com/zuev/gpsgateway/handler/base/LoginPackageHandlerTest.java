@@ -1,11 +1,9 @@
 package com.zuev.gpsgateway.handler.base;
 
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult;
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.DoNothing;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
 import com.zuev.gpsgateway.model.Tracker;
-import com.zuev.gpsgateway.model.TrackerLoginResult;
 import com.zuev.gpsgateway.model.TrackerLoginResult.Success;
 import com.zuev.gpsgateway.model.TrackerLoginResult.UnknownImei;
 import com.zuev.gpsgateway.model.TrackerLoginResult.WrongPassword;
@@ -24,7 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.zuev.gpsgateway.util.ChannelAttributeUtil.*;
+import static com.zuev.gpsgateway.util.ChannelAttributeUtil.setImei;
+import static com.zuev.gpsgateway.util.ChannelAttributeUtil.setTracker;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -46,7 +45,7 @@ public final class LoginPackageHandlerTest {
     }
 
     @Test
-    public void loginPackageShouldBeHandledSuccessfully() {
+    public void loginShouldBeSuccessful() {
         try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
             EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
             ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
@@ -70,7 +69,7 @@ public final class LoginPackageHandlerTest {
     }
 
     @Test
-    public void loginPackageShouldNotBeHandledBecauseOfUnknownImei() {
+    public void loginShouldBeRejectedBecauseOfUnknownImei() {
         try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
             EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
             ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
@@ -93,7 +92,7 @@ public final class LoginPackageHandlerTest {
     }
 
     @Test
-    public void loginPackageShouldNotBeHandledBecauseOfWrongPassword() {
+    public void loginShouldBeRejectedBecauseOfWrongPassword() {
         try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
             EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
             ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
@@ -107,31 +106,6 @@ public final class LoginPackageHandlerTest {
 
             HandlingResult actual = future.join();
             HandlingResult expected = new ReplyAndClose(new TestWrongPasswordResponse("356307042441013"));
-            assertEquals(expected, actual);
-
-            mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));
-            mockedChannelAttributeUtil.verify(() -> setTracker(any(), any()), never());
-            verifyNoInteractions(mockedTrackerChannelRegistry);
-        }
-    }
-
-    @Test
-    public void loginPackageShouldNotBeHandledBecauseOfChannelClosedDuringLogin() {
-        try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
-            EmbeddedChannel givenChannel = new EmbeddedChannel(new ChannelInboundHandlerAdapter());
-            ChannelHandlerContext givenContext = givenChannel.pipeline().firstContext();
-            TestLoginPackage givenPackage = new TestLoginPackage("356307042441013", "pass");
-
-            CompletableFuture<TrackerLoginResult> givenLoginFuture = new CompletableFuture<>();
-            when(mockedTrackerLoginService.loginAsync("356307042441013", "pass")).thenReturn(givenLoginFuture);
-
-            CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
-            givenChannel.close();
-            givenLoginFuture.complete(new Success(new Tracker(255, "356307042441013")));
-            givenChannel.runPendingTasks();
-
-            HandlingResult actual = future.join();
-            HandlingResult expected = new DoNothing();
             assertEquals(expected, actual);
 
             mockedChannelAttributeUtil.verify(() -> setImei(givenContext, "356307042441013"));

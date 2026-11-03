@@ -1,6 +1,5 @@
 package com.zuev.gpsgateway.handler.base;
 
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.DoNothing;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
 import com.zuev.gpsgateway.model.Tracker;
@@ -35,15 +34,10 @@ public abstract class LoginPackageHandler<PKG> extends PackageHandler<PKG> {
         String password = getPassword(pkg);
         return trackerLoginService.loginAsync(imei, password)
                 .thenApplyAsync(
-                        result -> {
-                            if (!context.channel().isActive()) {
-                                return new DoNothing();
-                            }
-                            return switch (result) {
-                                case Success(Tracker tracker) -> handleSuccess(pkg, tracker, context);
-                                case UnknownImei() -> handleUnknownImei(pkg);
-                                case WrongPassword() -> handleWrongPassword(pkg);
-                            };
+                        result -> switch (result) {
+                            case Success(Tracker tracker) -> handleSuccess(pkg, tracker, context);
+                            case UnknownImei() -> handleUnknownImei(pkg);
+                            case WrongPassword() -> handleWrongPassword(pkg);
                         },
                         context.channel().eventLoop()
                 );
