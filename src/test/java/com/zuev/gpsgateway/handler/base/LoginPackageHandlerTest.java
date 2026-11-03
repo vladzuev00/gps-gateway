@@ -57,7 +57,6 @@ public final class LoginPackageHandlerTest {
 
             CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
             givenChannel.runPendingTasks();
-
             HandlingResult actual = future.join();
             HandlingResult expected = new Reply(new TestSuccessResponse(255, "356307042441013"));
             assertEquals(expected, actual);
@@ -80,7 +79,6 @@ public final class LoginPackageHandlerTest {
 
             CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
             givenChannel.runPendingTasks();
-
             HandlingResult actual = future.join();
             HandlingResult expected = new ReplyAndClose(new TestUnknownImeiResponse("356307042441013"));
             assertEquals(expected, actual);
@@ -103,7 +101,6 @@ public final class LoginPackageHandlerTest {
 
             CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
             givenChannel.runPendingTasks();
-
             HandlingResult actual = future.join();
             HandlingResult expected = new ReplyAndClose(new TestWrongPasswordResponse("356307042441013"));
             assertEquals(expected, actual);
