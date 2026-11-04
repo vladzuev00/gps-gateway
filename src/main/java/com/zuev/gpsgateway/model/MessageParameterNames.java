@@ -9,4 +9,5 @@ import static lombok.AccessLevel.PRIVATE;
 public final class MessageParameterNames {
     public static final String IGNITION = "ignition";
     public static final String BATTERY = "battery";
+    public static final String ODOMETER = "odometer";
 }
