@@ -27,7 +27,7 @@ public final class CherryMessageDecoderTest {
     private static Stream<Arguments> messageShouldBeDecodedMethodSource() {
         return Stream.of(
                 Arguments.of(
-                        List.of("141123", "221320", "55.75", "37.62", "60", "180", "150.5", "8", "1.2", "1", "95").iterator(),
+                        List.of("141123", "221320", "55.75", "37.62", "60", "180", "150.5", "8", "1.2", "1", "125430").iterator(),
                         new CherryMessage(
                                 parse("2023-11-14T22:13:20Z"),
                                 55.75,
@@ -38,7 +38,7 @@ public final class CherryMessageDecoderTest {
                                 (byte) 8,
                                 1.2F,
                                 (byte) 1,
-                                (byte) 95
+                                125430
                         )
                 ),
                 Arguments.of(

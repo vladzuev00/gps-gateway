@@ -28,8 +28,19 @@ public final class CherryMessageDecoder {
         Byte satelliteCount = decodeSatelliteCount(iterator.next());
         Float hdop = decodeHdop(iterator.next());
         Byte ignition = decodeIgnition(iterator.next());
-        Byte battery = decodeBattery(iterator.next());
-        return new CherryMessage(dateTime, latitude, longitude, speed, course, altitude, satelliteCount, hdop, ignition, battery);
+        Integer odometer = decodeOdometer(iterator.next());
+        return new CherryMessage(
+                dateTime,
+                latitude,
+                longitude,
+                speed,
+                course,
+                altitude,
+                satelliteCount,
+                hdop,
+                ignition,
+                odometer
+        );
     }
 
     private Instant decodeDateTime(String dateField, String timeField) {
@@ -70,7 +81,7 @@ public final class CherryMessageDecoder {
         return !field.isEmpty() ? Byte.valueOf(field) : null;
     }
 
-    private Byte decodeBattery(String field) {
-        return !field.isEmpty() ? Byte.valueOf(field) : null;
+    private Integer decodeOdometer(String field) {
+        return !field.isEmpty() ? Integer.valueOf(field) : null;
     }
 }
