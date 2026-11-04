@@ -40,7 +40,7 @@ public final class MangoMessagePackageHandlerTest {
                                 (byte) 1,
                                 (byte) 95
                         ),
-                        255L,
+                        255,
                         new Message(
                                 37.62,
                                 55.75,
@@ -67,7 +67,7 @@ public final class MangoMessagePackageHandlerTest {
                                 null,
                                 null
                         ),
-                        255L,
+                        255,
                         new Message(
                                 37.62,
                                 55.75,
