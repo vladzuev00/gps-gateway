@@ -1,4 +1,4 @@
-package com.zuev.gpsgateway.handler.base;
+package com.zuev.gpsgateway.handler.base.pkg;
 
 import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;

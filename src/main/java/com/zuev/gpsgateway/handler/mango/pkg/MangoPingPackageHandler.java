@@ -1,6 +1,6 @@
-package com.zuev.gpsgateway.handler.mango;
+package com.zuev.gpsgateway.handler.mango.pkg;
 
-import com.zuev.gpsgateway.handler.base.PingPackageHandler;
+import com.zuev.gpsgateway.handler.base.pkg.PingPackageHandler;
 import com.zuev.gpsgateway.model.mango.MangoPingPackage;
 import com.zuev.gpsgateway.model.mango.MangoPingResponse;
 import org.springframework.stereotype.Component;

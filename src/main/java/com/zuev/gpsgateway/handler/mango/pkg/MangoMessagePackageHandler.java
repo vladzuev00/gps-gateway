@@ -1,6 +1,6 @@
-package com.zuev.gpsgateway.handler.mango;
+package com.zuev.gpsgateway.handler.mango.pkg;
 
-import com.zuev.gpsgateway.handler.base.MessagePackageHandler;
+import com.zuev.gpsgateway.handler.base.pkg.MessagePackageHandler;
 import com.zuev.gpsgateway.model.Message;
 import com.zuev.gpsgateway.model.mango.MangoMessage;
 import com.zuev.gpsgateway.service.MessageService;

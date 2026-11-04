@@ -1,7 +1,7 @@
-package com.zuev.gpsgateway.handler.base;
+package com.zuev.gpsgateway.handler.base.pkg;
 
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult.Reply;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult.ReplyAndClose;
 import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.model.TrackerLoginResult.Success;
 import com.zuev.gpsgateway.model.TrackerLoginResult.UnknownImei;

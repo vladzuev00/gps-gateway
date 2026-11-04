@@ -1,4 +1,4 @@
-package com.zuev.gpsgateway.handler.mango;
+package com.zuev.gpsgateway.handler.mango.pkg;
 
 import com.zuev.gpsgateway.model.mango.MangoBlackBoxPackage;
 import com.zuev.gpsgateway.model.mango.MangoBlackBoxResponse;

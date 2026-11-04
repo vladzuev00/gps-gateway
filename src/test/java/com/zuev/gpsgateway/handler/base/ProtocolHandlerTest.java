@@ -1,6 +1,7 @@
 package com.zuev.gpsgateway.handler.base;
 
 import com.zuev.gpsgateway.exception.NoSuitablePackageHandlerException;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler;
 import com.zuev.gpsgateway.util.ChannelAttributeUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

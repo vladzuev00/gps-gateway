@@ -1,4 +1,4 @@
-package com.zuev.gpsgateway.handler.mango;
+package com.zuev.gpsgateway.handler.mango.pkg;
 
 import com.zuev.gpsgateway.model.mango.MangoDataPackage;
 import com.zuev.gpsgateway.model.mango.MangoDataResponse;

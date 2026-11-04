@@ -1,8 +1,8 @@
-package com.zuev.gpsgateway.handler.base;
+package com.zuev.gpsgateway.handler.base.pkg;
 
 import com.zuev.gpsgateway.exception.NotLoggedInTrackerException;
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult;
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult.Reply;
 import com.zuev.gpsgateway.model.Message;
 import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.service.MessageService;

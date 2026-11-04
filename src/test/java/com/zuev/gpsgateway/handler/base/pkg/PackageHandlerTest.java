@@ -1,9 +1,9 @@
-package com.zuev.gpsgateway.handler.base;
+package com.zuev.gpsgateway.handler.base.pkg;
 
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Close;
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.DoNothing;
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.Reply;
-import com.zuev.gpsgateway.handler.base.PackageHandler.HandlingResult.ReplyAndClose;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult.Close;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult.DoNothing;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult.Reply;
+import com.zuev.gpsgateway.handler.base.pkg.PackageHandler.HandlingResult.ReplyAndClose;
 import io.netty.channel.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
