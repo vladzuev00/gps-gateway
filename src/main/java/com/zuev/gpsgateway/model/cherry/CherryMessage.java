@@ -11,5 +11,5 @@ public record CherryMessage(Instant dateTime,
                             Byte satelliteCount,
                             Float hdop,
                             Byte ignition,
-                            Byte battery) {
+                            Integer odometer) {
 }
