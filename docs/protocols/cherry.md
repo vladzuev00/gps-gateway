@@ -62,11 +62,11 @@ Fields are a single message (see [Message](#message) below).
 
 Example:
 ```
-@DATA@141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;3037\0
+@DATA@141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;125430;3230\0
 
 type      @DATA@
-message   141123;221320;...;95;
-checksum  3037
+message   141123;221320;...;125430;
+checksum  3230
 ```
 
 ### `@BLACKBOX@` — black box
@@ -83,13 +83,13 @@ is `1 + 11 × count`.
 
 Example (2 messages):
 ```
-@BLACKBOX@2;141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;141123;221325;55.76;37.63;;;;;;;;5216\0
+@BLACKBOX@2;141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;125430;141123;221325;55.76;37.63;;;;;;;;5409\0
 
 type       @BLACKBOX@
 count      2
-message 1  141123;221320;...;95;
+message 1  141123;221320;...;125430;
 message 2  141123;221325;...;;
-checksum   5216
+checksum   5409
 ```
 
 ## Message
@@ -106,14 +106,14 @@ checksum   5216
 | `satellites` | byte   | count   | yes      | —               |
 | `hdop`       | float  | —       | yes      | —               |
 | `ignition`   | byte   | —       | yes      | 0 = off, 1 = on |
-| `battery`    | byte   | percent | yes      | 0 – 100         |
+| `odometer`   | int    | meters  | yes      | total mileage   |
 
 An absent optional field is encoded as an empty string rather than omitted, so a message
 always has the same number of fields.
 
 Example:
 ```
-141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;95;
+141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;125430;
 
 date        141123
 time        221320
@@ -125,7 +125,7 @@ altitude    150.5
 satellites  8
 hdop        1.2
 ignition    1
-battery     95
+odometer    125430
 ```
 
 ## Responses
