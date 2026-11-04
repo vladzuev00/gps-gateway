@@ -10,8 +10,9 @@ import java.util.Map;
 
 import static com.zuev.gpsgateway.model.MessageParameterNames.BATTERY;
 import static com.zuev.gpsgateway.model.MessageParameterNames.IGNITION;
+import static java.lang.Double.parseDouble;
+import static java.util.Map.copyOf;
 
-//TODO refactor
 public abstract class MangoMessagePackageHandler<PKG> extends MessagePackageHandler<PKG, MangoMessage> {
 
     public MangoMessagePackageHandler(Class<PKG> packageType, MessageService messageService) {
@@ -24,34 +25,32 @@ public abstract class MangoMessagePackageHandler<PKG> extends MessagePackageHand
                 source.longitude(),
                 source.latitude(),
                 source.epochMillis(),
-                toDouble(source.speed()),
-                toDouble(source.course()),
-                toDouble(source.altitude()),
-                toUnsignedInteger(source.satelliteCount()),
-                toDouble(source.hdop()),
+                toNullableDouble(source.speed()),
+                toNullableDouble(source.course()),
+                toNullableDouble(source.altitude()),
+                toNullableInteger(source.satelliteCount()),
+                toNullableDouble(source.hdop()),
                 getAdditionalParametersByNames(source),
                 trackerId
         );
     }
 
-    private static Map<String, String> getAdditionalParametersByNames(MangoMessage source) {
+    private Double toNullableDouble(Number value) {
+        return value != null ? parseDouble(value.toString()) : null;
+    }
+
+    private Integer toNullableInteger(Byte value) {
+        return value != null ? value.intValue() : null;
+    }
+
+    private Map<String, String> getAdditionalParametersByNames(MangoMessage source) {
         Map<String, String> parametersByNames = new HashMap<>();
-        putIfNotNull(parametersByNames, IGNITION, toUnsignedInteger(source.ignition()));
-        putIfNotNull(parametersByNames, BATTERY, toUnsignedInteger(source.battery()));
-        return Map.copyOf(parametersByNames);
-    }
-
-    private static void putIfNotNull(Map<String, String> parametersByNames, String name, Object value) {
-        if (value != null) {
-            parametersByNames.put(name, value.toString());
+        if (source.ignition() != null) {
+            parametersByNames.put(IGNITION, source.ignition().toString());
         }
-    }
-
-    private static Double toDouble(Number value) {
-        return value != null ? value.doubleValue() : null;
-    }
-
-    private static Integer toUnsignedInteger(Byte value) {
-        return value != null ? Byte.toUnsignedInt(value) : null;
+        if (source.battery() != null) {
+            parametersByNames.put(BATTERY, source.battery().toString());
+        }
+        return copyOf(parametersByNames);
     }
 }
