@@ -7,7 +7,7 @@ import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.model.TrackerLoginResult.Success;
 import com.zuev.gpsgateway.model.TrackerLoginResult.UnknownImei;
 import com.zuev.gpsgateway.model.TrackerLoginResult.WrongPassword;
-import com.zuev.gpsgateway.service.TrackerChannelRegistry;
+import com.zuev.gpsgateway.registry.TrackerChannelRegistry;
 import com.zuev.gpsgateway.service.TrackerLoginService;
 import com.zuev.gpsgateway.util.ChannelAttributeUtil;
 import io.netty.channel.ChannelHandlerContext;

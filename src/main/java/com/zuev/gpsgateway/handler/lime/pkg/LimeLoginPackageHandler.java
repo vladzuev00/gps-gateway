@@ -4,7 +4,7 @@ import com.zuev.gpsgateway.handler.base.pkg.LoginPackageHandler;
 import com.zuev.gpsgateway.model.Tracker;
 import com.zuev.gpsgateway.model.lime.LimeLoginPackage;
 import com.zuev.gpsgateway.model.lime.LimeLoginResponse;
-import com.zuev.gpsgateway.service.TrackerChannelRegistry;
+import com.zuev.gpsgateway.registry.TrackerChannelRegistry;
 import com.zuev.gpsgateway.service.TrackerLoginService;
 import org.springframework.stereotype.Component;
 
