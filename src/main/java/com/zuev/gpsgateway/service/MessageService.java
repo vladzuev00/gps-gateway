@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
-//TODO implement publishing to Kafka(topic tracker.messages.raw, key = trackerId)
+//TODO implement publishing to Kafka(topic tracker.messages.raw, key = trackerId) and test
 @Service
 public final class MessageService {
 
