@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-//TODO refactor and test
-//TODO replace stub with request to tracker login service
-@Service
-public class MessageService {
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
-    //TODO учесть пустой messages
-    public CompletableFuture<Void> publishAllAsync(List<Message> messages) {
-        return CompletableFuture.completedFuture(null);
+//TODO implement publishing to Kafka(topic tracker.messages.raw, key = trackerId)
+@Service
+public final class MessageService {
+
+    public CompletableFuture<Void> publishAllAsync(@SuppressWarnings("unused") List<Message> messages) {
+        return completedFuture(null);
     }
 }
