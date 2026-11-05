@@ -144,12 +144,12 @@ battery           5f                → 95
 The server responds to every package, using the `[prefix][type][payload length][payload]`
 structure.
 
-| Request type     | Response type | Response payload                          |
-|------------------|---------------|-------------------------------------------|
-| `01` (login)     | `81`          | 1-byte status code (see below)            |
-| `02` (ping)      | `82`          | empty                                     |
-| `03` (data)      | `83`          | empty                                     |
-| `04` (black box) | `84`          | 2-byte accepted message count (see below) |
+| Request type     | Response type | Response payload                   |
+|------------------|---------------|------------------------------------|
+| `01` (login)     | `81`          | status (see below)                 |
+| `02` (ping)      | `82`          | empty                              |
+| `03` (data)      | `83`          | empty                              |
+| `04` (black box) | `84`          | accepted message count (see below) |
 
 ### `81` payload
 
