@@ -151,13 +151,17 @@ structure.
 | `03` (data)      | `83`          | empty                                     |
 | `04` (black box) | `84`          | 2-byte accepted message count (see below) |
 
-### `81` status codes
+### `81` payload
 
-| Code | Meaning          |
-|------|------------------|
-| `00` | success          |
-| `01` | unknown `imei`   |
-| `02` | wrong `password` |
+| Payload field | Type          | Length |
+|---------------|---------------|--------|
+| `status`      | unsigned byte | 1      |
+
+`status` values:
+
+- `00` — success
+- `01` — unknown `imei`
+- `02` — wrong `password`
 
 Example:
 ```
