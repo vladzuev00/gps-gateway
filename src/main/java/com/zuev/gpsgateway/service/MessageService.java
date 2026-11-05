@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 public class MessageService {
 
     //TODO учесть пустой messages
-    public CompletableFuture<Void> saveAllAsync(List<Message> messages) {
+    public CompletableFuture<Void> publishAllAsync(List<Message> messages) {
         return CompletableFuture.completedFuture(null);
     }
 }

@@ -65,7 +65,7 @@ public final class MessagePackageHandlerTest {
                     new Message(27.6, 54.0, 2000, null, null, null, null, null, emptyMap(), 255),
                     new Message(27.7, 54.1, 3000, null, null, null, null, null, emptyMap(), 255)
             );
-            when(mockedMessageService.saveAllAsync(givenMessages)).thenReturn(completedFuture(null));
+            when(mockedMessageService.publishAllAsync(givenMessages)).thenReturn(completedFuture(null));
 
             CompletableFuture<HandlingResult> future = handler.handleAsyncInternal(givenPackage, givenContext);
             givenChannel.runPendingTasks();

@@ -24,7 +24,7 @@ public abstract class MessagePackageHandler<PKG, MSG_SRC> extends PackageHandler
     protected final CompletableFuture<HandlingResult> handleAsyncInternal(PKG pkg, ChannelHandlerContext context) {
         long trackerId = getLoggedInTracker(context).id();
         List<Message> messages = getMessages(pkg, trackerId);
-        return messageService.saveAllAsync(messages)
+        return messageService.publishAllAsync(messages)
                 .thenApplyAsync(
                         ignored -> {
                             Object response = createResponse(pkg);
