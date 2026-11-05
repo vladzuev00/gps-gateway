@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.zuev.gpsgateway.model.MessageParameterNames.BATTERY;
-import static com.zuev.gpsgateway.model.MessageParameterNames.IGNITION;
+import static com.zuev.gpsgateway.model.MessageAdditionalParameterNames.BATTERY;
+import static com.zuev.gpsgateway.model.MessageAdditionalParameterNames.IGNITION;
 import static java.util.Collections.emptyMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static com.zuev.gpsgateway.model.MessageParameterNames.BATTERY;
+import static com.zuev.gpsgateway.model.MessageAdditionalParameterNames.BATTERY;
 import static java.lang.Double.parseDouble;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.emptyMap;

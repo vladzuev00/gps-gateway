@@ -4,9 +4,8 @@ import lombok.NoArgsConstructor;
 
 import static lombok.AccessLevel.PRIVATE;
 
-//TODO refactor
 @NoArgsConstructor(access = PRIVATE)
-public final class MessageParameterNames {
+public final class MessageAdditionalParameterNames {
     public static final String IGNITION = "ignition";
     public static final String BATTERY = "battery";
     public static final String ODOMETER = "odometer";

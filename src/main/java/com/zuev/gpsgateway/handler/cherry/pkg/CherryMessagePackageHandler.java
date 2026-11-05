@@ -8,8 +8,8 @@ import com.zuev.gpsgateway.service.MessageService;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.zuev.gpsgateway.model.MessageParameterNames.IGNITION;
-import static com.zuev.gpsgateway.model.MessageParameterNames.ODOMETER;
+import static com.zuev.gpsgateway.model.MessageAdditionalParameterNames.IGNITION;
+import static com.zuev.gpsgateway.model.MessageAdditionalParameterNames.ODOMETER;
 import static java.lang.Double.parseDouble;
 import static java.util.Map.copyOf;
 
