@@ -1,6 +1,6 @@
 package com.zuev.gpsgateway.handler.base;
 
-import com.zuev.gpsgateway.exception.NoSuitablePackageHandlerException;
+import com.zuev.gpsgateway.exception.NoSuitableHandlerException;
 import com.zuev.gpsgateway.handler.base.pkg.PackageHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -48,6 +48,6 @@ public final class ProtocolHandler extends ChannelInboundHandlerAdapter {
         return packageHandlers.stream()
                 .filter(handler -> handler.isAbleHandle(pkg))
                 .findFirst()
-                .orElseThrow(() -> new NoSuitablePackageHandlerException("No package handler for: " + pkg));
+                .orElseThrow(() -> new NoSuitableHandlerException("No package handler for: " + pkg));
     }
 }

@@ -1,6 +1,6 @@
 package com.zuev.gpsgateway.handler.base;
 
-import com.zuev.gpsgateway.exception.NoSuitablePackageHandlerException;
+import com.zuev.gpsgateway.exception.NoSuitableHandlerException;
 import com.zuev.gpsgateway.handler.base.pkg.PackageHandler;
 import com.zuev.gpsgateway.util.ChannelAttributeUtil;
 import io.netty.channel.Channel;
@@ -191,7 +191,7 @@ public final class ProtocolHandlerTest {
             when(mockedSecondPackageHandler.isAbleHandle(same(givenPackage))).thenReturn(false);
             when(mockedThirdPackageHandler.isAbleHandle(same(givenPackage))).thenReturn(false);
 
-            assertThrows(NoSuitablePackageHandlerException.class, () -> handler.channelRead(givenContext, givenPackage));
+            assertThrows(NoSuitableHandlerException.class, () -> handler.channelRead(givenContext, givenPackage));
 
             List<String> actualLogs = givenLogCaptor.getDebugLogs();
             List<String> expectedLogs = List.of("Handling package TestPackage[value=5] on channel test channel");
