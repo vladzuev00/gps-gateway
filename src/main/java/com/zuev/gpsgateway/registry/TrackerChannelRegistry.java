@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Optional.ofNullable;
+
 @Component
 public final class TrackerChannelRegistry {
     private final Map<Long, Channel> channelsByTrackerIds = new ConcurrentHashMap<>();
@@ -17,6 +19,6 @@ public final class TrackerChannelRegistry {
     }
 
     public Optional<Channel> findChannel(long trackerId) {
-        return Optional.ofNullable(channelsByTrackerIds.get(trackerId));
+        return ofNullable(channelsByTrackerIds.get(trackerId));
     }
 }
