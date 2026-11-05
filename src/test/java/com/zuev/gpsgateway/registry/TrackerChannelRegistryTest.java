@@ -37,9 +37,10 @@ public final class TrackerChannelRegistryTest {
         Channel givenChannel = mock(Channel.class);
         getChannelsByTrackerIds().put(givenTrackerId, givenChannel);
 
-        Optional<Channel> actual = registry.findChannel(givenTrackerId);
-        Optional<Channel> expected = Optional.of(givenChannel);
-        assertEquals(expected, actual);
+        Optional<Channel> optionalActual = registry.findChannel(givenTrackerId);
+        assertTrue(optionalActual.isPresent());
+        Channel actual = optionalActual.get();
+        assertEquals(givenChannel, actual);
     }
 
     @Test
