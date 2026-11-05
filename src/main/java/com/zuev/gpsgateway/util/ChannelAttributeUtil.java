@@ -10,25 +10,32 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static lombok.AccessLevel.PRIVATE;
 
-//TODO refactor and test
 @NoArgsConstructor(access = PRIVATE)
 public final class ChannelAttributeUtil {
-    private static final AttributeKey<String> IMEI_KEY = AttributeKey.valueOf("imei");
-    private static final AttributeKey<Tracker> TRACKER_KEY = AttributeKey.valueOf("tracker");
+    static final AttributeKey<String> IMEI_KEY = AttributeKey.valueOf("imei");
+    static final AttributeKey<Tracker> TRACKER_KEY = AttributeKey.valueOf("tracker");
 
     public static void setImei(ChannelHandlerContext context, String imei) {
-        context.channel().attr(IMEI_KEY).set(imei);
+        set(context, IMEI_KEY, imei);
     }
 
     public static Optional<String> findImei(ChannelHandlerContext context) {
-        return ofNullable(context.channel().attr(IMEI_KEY).get());
+        return find(context, IMEI_KEY);
     }
 
     public static void setTracker(ChannelHandlerContext context, Tracker tracker) {
-        context.channel().attr(TRACKER_KEY).set(tracker);
+        set(context, TRACKER_KEY, tracker);
     }
 
     public static Optional<Tracker> findTracker(ChannelHandlerContext context) {
-        return ofNullable(context.channel().attr(TRACKER_KEY).get());
+        return find(context, TRACKER_KEY);
+    }
+
+    private static <T> void set(ChannelHandlerContext context, AttributeKey<T> key, T value) {
+        context.channel().attr(key).set(value);
+    }
+
+    private static <T> Optional<T> find(ChannelHandlerContext context, AttributeKey<T> key) {
+        return ofNullable(context.channel().attr(key).get());
     }
 }
