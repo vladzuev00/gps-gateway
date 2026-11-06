@@ -29,8 +29,7 @@ Mango is a binary GPS tracker protocol.
 
 ### `01` — login
 
-Sent by the device first after connecting, to authenticate. Until login succeeds, the server
-does not accept data and black box packages from the device.
+Sent by the device first after connecting, to identify itself with its IMEI and password.
 
 | Payload field    | Type          | Length           |
 |------------------|---------------|------------------|
