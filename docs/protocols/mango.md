@@ -23,11 +23,14 @@ Mango is a binary GPS tracker protocol.
   byte of `payload`. The `prefix` and the `checksum` field itself are excluded.
 - **Representation:** 2 bytes, big-endian, unsigned.
 - **Presence:** required for every package type sent by the device (login, ping, data, black box).
-  Server responses (see [Responses](#responses)) do not carry a `checksum` field.
+  [Responses](#responses) do not carry a `checksum` field.
 
 ## Package types
 
 ### `01` — login
+
+Sent by the device first after connecting, to authenticate. Until login succeeds, the server
+does not accept data and black box packages from the device.
 
 | Payload field    | Type          | Length           |
 |------------------|---------------|------------------|
@@ -50,6 +53,9 @@ checksum        04eb                            → 1259
 
 ### `02` — ping
 
+Sent by the device periodically to keep the connection alive when there is no data to send.
+Does not require login.
+
 Empty payload.
 
 Example:
@@ -63,6 +69,8 @@ checksum        0002  → 2
 ```
 
 ### `03` — data
+
+Sent by the device to report its current position in real time.
 
 Payload is a single message (see [Message](#message) below).
 
@@ -78,6 +86,9 @@ checksum        0d14             → 3348
 ```
 
 ### `04` — black box
+
+Sent by the device to upload messages recorded while it had no connection to the server
+(e.g. no mobile network coverage). Messages are sent in bulk, several per package.
 
 | Payload field | Type                          | Length   |
 |---------------|-------------------------------|----------|
@@ -102,6 +113,8 @@ checksum        17c9             → 6089
 ```
 
 ## Message
+
+A single position report of the device with optional telemetry. Used in data and black box packages.
 
 | Field              | Type   | Length | Unit    | Presence bit   | Notes           |
 |--------------------|--------|--------|---------|----------------|-----------------|
