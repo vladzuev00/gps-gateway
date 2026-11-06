@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class MangoDataPackageDecoder extends MangoPackageDecoder {
-    private static final byte[] PREFIX = {0x56, 0x5A, 0x03};
+    private static final byte TYPE = 0x03;
 
     private final MangoMessageDecoder messageDecoder;
 
     public MangoDataPackageDecoder(MangoMessageDecoder messageDecoder) {
-        super(PREFIX);
+        super(TYPE);
         this.messageDecoder = messageDecoder;
     }
 
