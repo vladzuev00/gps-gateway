@@ -25,10 +25,10 @@ public final class MangoPackageDecoderTest {
     }
 
     private static final class TestMangoPackageDecoder extends MangoPackageDecoder {
-        private static final byte[] PREFIX = {0x56, 0x5A, 0x09};
+        private static final byte TYPE = 0x09;
 
         public TestMangoPackageDecoder() {
-            super(PREFIX);
+            super(TYPE);
         }
 
         @Override
