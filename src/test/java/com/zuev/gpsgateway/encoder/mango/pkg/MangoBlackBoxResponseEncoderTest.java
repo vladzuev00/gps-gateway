@@ -10,10 +10,10 @@ public final class MangoBlackBoxResponseEncoderTest {
 
     @Test
     public void payloadShouldBeEncoded() {
-        MangoBlackBoxResponse givenPackage = new MangoBlackBoxResponse(65535);
+        MangoBlackBoxResponse givenPackage = new MangoBlackBoxResponse(65534);
 
         byte[] actual = encoder.encodePayload(givenPackage);
-        byte[] expected = {(byte) 0xFF, (byte) 0xFF};
+        byte[] expected = {(byte) 0xFF, (byte) 0xFE};
         assertArrayEquals(expected, actual);
     }
 }
