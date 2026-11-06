@@ -68,7 +68,7 @@ checksum        0002  → 2
 
 ### `03` — data
 
-Sent by the device to report its current position in real time.
+Sent by the device to report its current position and state in real time.
 
 Payload is a single message (see [Message](#message) below).
 
@@ -112,7 +112,7 @@ checksum        17c9             → 6089
 
 ## Message
 
-A single position report of the device with optional telemetry. Used in data and black box packages.
+A snapshot of the device's position and state at a point in time. Used in data and black box packages.
 
 | Field              | Type   | Length | Unit    | Presence bit   | Notes           |
 |--------------------|--------|--------|---------|----------------|-----------------|
