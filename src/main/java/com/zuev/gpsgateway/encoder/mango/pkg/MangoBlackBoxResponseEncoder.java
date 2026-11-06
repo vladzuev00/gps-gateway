@@ -7,10 +7,10 @@ import java.nio.ByteBuffer;
 
 @Component
 public final class MangoBlackBoxResponseEncoder extends MangoResponseEncoder<MangoBlackBoxResponse> {
-    private static final byte[] PREFIX = {0x56, 0x5A, (byte) 0x84};
+    private static final byte TYPE = (byte) 0x84;
 
     public MangoBlackBoxResponseEncoder() {
-        super(MangoBlackBoxResponse.class, PREFIX);
+        super(MangoBlackBoxResponse.class, TYPE);
     }
 
     @Override
