@@ -155,7 +155,9 @@ battery           5f                → 95
 ## Responses
 
 The server responds to every package, using the `[prefix][type][payload length][payload]`
-structure.
+structure. A response confirms that the package was received and processed: after receiving
+`83` or `84` the device may delete the acknowledged messages from its memory; without a response
+it resends them.
 
 | Request type     | Response type | Response payload                   |
 |------------------|---------------|------------------------------------|
