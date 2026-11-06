@@ -103,3 +103,24 @@ Example:
 length        0200   → 2
 login_status  03 00  → success
 ```
+
+## Commands
+
+Commands are sent by the server to an authenticated device at any time, using the same
+`[length][tag][value]...` structure. The device does not respond to commands.
+
+### set_interval
+
+Sets how often the device sends data packages.
+
+| Tag  | Field      | Type           | Length | Unit    | Optional | Notes     |
+|------|------------|----------------|--------|---------|----------|-----------|
+| `0c` | `interval` | unsigned short | 2      | seconds | no       | 1 – 65535 |
+
+Example:
+```
+0300 0c 3c00
+
+length    0300     → 3
+interval  0c 3c00  → 60
+```
