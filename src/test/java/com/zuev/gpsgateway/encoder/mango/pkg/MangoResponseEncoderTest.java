@@ -21,10 +21,10 @@ public final class MangoResponseEncoderTest {
     }
 
     private static final class TestMangoResponseEncoder extends MangoResponseEncoder<TestPackage> {
-        private static final byte[] PREFIX = {0x56, 0x5A, 0x09};
+        private static final byte TYPE = 0x09;
 
         public TestMangoResponseEncoder() {
-            super(TestPackage.class, PREFIX);
+            super(TestPackage.class, TYPE);
         }
 
         @Override
