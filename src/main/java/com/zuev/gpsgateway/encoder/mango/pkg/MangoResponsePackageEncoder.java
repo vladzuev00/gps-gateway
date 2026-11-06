@@ -2,7 +2,7 @@ package com.zuev.gpsgateway.encoder.mango.pkg;
 
 import com.zuev.gpsgateway.encoder.base.pkg.PackageEncoder;
 
-import static java.nio.ByteBuffer.allocate;
+import java.nio.ByteBuffer;
 
 public abstract class MangoResponsePackageEncoder<PKG> extends PackageEncoder<PKG> {
     private static final int PAYLOAD_LENGTH_LENGTH = 2;
@@ -17,7 +17,7 @@ public abstract class MangoResponsePackageEncoder<PKG> extends PackageEncoder<PK
     @Override
     protected final byte[] encodeInternal(PKG pkg) {
         byte[] payload = encodePayload(pkg);
-        return allocate(prefix.length + PAYLOAD_LENGTH_LENGTH + payload.length)
+        return ByteBuffer.allocate(prefix.length + PAYLOAD_LENGTH_LENGTH + payload.length)
                 .put(prefix)
                 .putShort((short) payload.length)
                 .put(payload)
