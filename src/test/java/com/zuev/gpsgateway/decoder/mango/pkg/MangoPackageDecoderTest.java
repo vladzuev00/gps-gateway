@@ -6,10 +6,18 @@ import org.junit.jupiter.api.Test;
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.util.ReflectionTestUtils.getField;
 
 public final class MangoPackageDecoderTest {
     private final MangoPackageDecoder decoder = new TestMangoPackageDecoder();
+
+    @Test
+    public void decoderShouldBeCreated() {
+        byte[] actual = getDecoderPrefix();
+        byte[] expected = {0x56, 0x5A, 0x09};
+        assertArrayEquals(expected, actual);
+    }
 
     @Test
     public void bodyShouldBeDecoded() {
@@ -18,7 +26,11 @@ public final class MangoPackageDecoderTest {
         Object actual = decoder.decodeBody(givenBody);
         TestPackage expected = new TestPackage(42, "hello");
         assertEquals(expected, actual);
-        assertEquals(0, givenBody.readableBytes());
+        assertFalse(givenBody.isReadable());
+    }
+
+    private byte[] getDecoderPrefix() {
+        return (byte[]) getField(decoder, "prefix");
     }
 
     private record TestPackage(int number, String message) {
