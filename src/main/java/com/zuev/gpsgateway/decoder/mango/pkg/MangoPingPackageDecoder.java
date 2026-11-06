@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class MangoPingPackageDecoder extends MangoPackageDecoder {
-    private static final byte[] PREFIX = {0x56, 0x5A, 0x02};
+    private static final byte TYPE = 0x02;
 
     public MangoPingPackageDecoder() {
-        super(PREFIX);
+        super(TYPE);
     }
 
     @Override
