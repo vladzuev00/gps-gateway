@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public final class MangoLoginPackageDecoderTest {
     private final MangoLoginPackageDecoder decoder = new MangoLoginPackageDecoder();
@@ -18,6 +19,6 @@ public final class MangoLoginPackageDecoderTest {
         MangoLoginPackage actual = decoder.decodePayload(givenPayload);
         MangoLoginPackage expected = new MangoLoginPackage("555555555555555", "test");
         assertEquals(expected, actual);
-        assertEquals(0, givenPayload.readableBytes());
+        assertFalse(givenPayload.isReadable());
     }
 }

@@ -8,11 +8,11 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 @Component
 public final class MangoLoginPackageDecoder extends MangoPackageDecoder {
-    private static final byte[] PREFIX = {0x56, 0x5A, 0x01};
+    private static final byte TYPE = 0x01;
     private static final int IMEI_LENGTH = 15;
 
     public MangoLoginPackageDecoder() {
-        super(PREFIX);
+        super(TYPE);
     }
 
     @Override
