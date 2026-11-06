@@ -53,7 +53,6 @@ checksum        04eb                            → 1259
 ### `02` — ping
 
 Sent by the device periodically to keep the connection alive when there is no data to send.
-Does not require login.
 
 Empty payload.
 
