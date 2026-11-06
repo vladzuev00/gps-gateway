@@ -15,9 +15,9 @@ public final class MangoBlackBoxResponseEncoder extends MangoResponsePackageEnco
     }
 
     @Override
-    protected byte[] encodePayload(MangoBlackBoxResponse response) {
+    protected byte[] encodePayload(MangoBlackBoxResponse pkg) {
         return ByteBuffer.allocate(MESSAGE_COUNT_LENGTH)
-                .putShort((short) response.messageCount())
+                .putShort((short) pkg.messageCount())
                 .array();
     }
 }
