@@ -10,12 +10,12 @@ import static java.util.stream.IntStream.range;
 
 @Component
 public final class MangoBlackBoxPackageDecoder extends MangoPackageDecoder {
-    private static final byte[] PREFIX = {0x56, 0x5A, 0x04};
+    private static final byte TYPE = 0x04;
 
     private final MangoMessageDecoder messageDecoder;
 
     public MangoBlackBoxPackageDecoder(MangoMessageDecoder messageDecoder) {
-        super(PREFIX);
+        super(TYPE);
         this.messageDecoder = messageDecoder;
     }
 

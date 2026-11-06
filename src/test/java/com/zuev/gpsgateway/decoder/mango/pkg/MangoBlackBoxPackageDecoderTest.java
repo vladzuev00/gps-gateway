@@ -14,6 +14,7 @@ import java.util.List;
 import static io.netty.buffer.ByteBufUtil.decodeHexDump;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,5 +45,6 @@ public final class MangoBlackBoxPackageDecoderTest {
         MangoBlackBoxPackage actual = decoder.decodePayload(givenPayload);
         MangoBlackBoxPackage expected = new MangoBlackBoxPackage(List.of(givenFirstMessage, givenSecondMessage));
         assertEquals(expected, actual);
+        assertFalse(givenPayload.isReadable());
     }
 }
