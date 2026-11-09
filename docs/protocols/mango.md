@@ -127,8 +127,9 @@ A snapshot of the device's position and state at a point in time. Used in data a
 | `battery`          | byte   | 1      | percent | `0x40`         | 0 – 100         |
 
 All multibyte numeric fields are big-endian. `timestamp` is milliseconds since
-January 1, 1970, 00:00:00 UTC. An optional field is present in the payload only if its bit is set in the
-`presence bitmask`; absent fields are omitted entirely rather than zero-filled. Bit `0x80` of the `presence bitmask` is unused and ignored.
+January 1, 1970, 00:00:00 UTC. An optional field is present in the message only if its bit is set in the
+`presence bitmask`; absent fields are omitted entirely rather than zero-filled. Bit `0x80` of the
+`presence bitmask` is unused and ignored.
 
 Example:
 ```
