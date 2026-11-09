@@ -86,7 +86,7 @@ checksum        0d14             → 3348
 ### `04` — black box
 
 Sent by the device to upload messages recorded while it had no connection to the server
-(e.g. no mobile network coverage). Messages are sent in bulk, several per package.
+(e.g. no mobile network coverage).
 
 | Payload field | Type                          | Length   |
 |---------------|-------------------------------|----------|
@@ -94,10 +94,8 @@ Sent by the device to upload messages recorded while it had no connection to the
 | `messages`    | [message](#message) × `count` | variable |
 
 There is no delimiter between messages; each message is simply appended after the previous one.
-The length of each message is determined by its `presence bitmask`, which in turn determines where
-the next message starts.
 
-Example (2 messages):
+Example:
 ```
 565a 04 0043 0002 0000018bcfe56800404be000000000004042cf5c28f5c28f7f003c00b443168000083f99999a015f 0000018bcfe57b88404be147ae147ae14042d0a3d70a3d7100 17c9
 
