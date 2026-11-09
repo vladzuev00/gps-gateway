@@ -163,11 +163,7 @@ it resends them.
 
 ### `81` payload
 
-| Payload field | Type          | Length |
-|---------------|---------------|--------|
-| `status`      | unsigned byte | 1      |
-
-`status` values:
+Payload is a single unsigned byte, the login `status`:
 
 - `00` — success
 - `01` — unknown `imei`
@@ -185,11 +181,8 @@ status          00    → success
 
 ### `84` payload
 
-| Payload field | Type                       | Length |
-|---------------|----------------------------|--------|
-| `count`       | unsigned short, big-endian | 2      |
-
-`count` is the number of messages accepted from the black box package.
+Payload is an unsigned 2-byte big-endian `count`, the number of messages accepted from the black
+box package.
 
 Example:
 ```
