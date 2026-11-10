@@ -34,7 +34,7 @@ Sent by the device first after connecting, to identify itself with its IMEI and 
 | Payload field    | Type          | Length           |
 |------------------|---------------|------------------|
 | `imei`           | ASCII string  | 15               |
-| `passwordLength` | unsigned byte | 1                |
+| `passwordLength` | uint8         | 1                |
 | `password`       | ASCII string  | `passwordLength` |
 
 Example:
@@ -90,7 +90,7 @@ Sent by the device to upload messages recorded while it had no connection to the
 
 | Payload field | Type                          | Length   |
 |---------------|-------------------------------|----------|
-| `count`       | unsigned short, big-endian    | 2        |
+| `count`       | uint16, big-endian            | 2        |
 | `messages`    | [message](#message) × `count` | variable |
 
 There is no delimiter between messages; each message is simply appended after the previous one.
@@ -112,19 +112,19 @@ checksum        17c9             → 6089
 
 A snapshot of the device's position and state at a point in time. Used in data and black box packages.
 
-| Field              | Type   | Length | Unit    | Presence bit   | Notes           |
-|--------------------|--------|--------|---------|----------------|-----------------|
-| `timestamp`        | long   | 8      | ms      | — (required)   | UTC             |
-| `latitude`         | double | 8      | degrees | — (required)   | −90 – 90        |
-| `longitude`        | double | 8      | degrees | — (required)   | −180 – 180      |
-| `presence bitmask` | byte   | 1      | —       | — (required)   | —               |
-| `speed`            | short  | 2      | km/h    | `0x01`         | —               |
-| `course`           | short  | 2      | degrees | `0x02`         | 0 – 359         |
-| `altitude`         | float  | 4      | meters  | `0x04`         | —               |
-| `satellites`       | byte   | 1      | count   | `0x08`         | —               |
-| `hdop`             | float  | 4      | —       | `0x10`         | —               |
-| `ignition`         | byte   | 1      | —       | `0x20`         | 0 = off, 1 = on |
-| `battery`          | byte   | 1      | percent | `0x40`         | 0 – 100         |
+| Field              | Type    | Unit    | Presence bit   | Notes           |
+|--------------------|---------|---------|----------------|-----------------|
+| `timestamp`        | int64   | ms      | — (required)   | UTC             |
+| `latitude`         | float64 | degrees | — (required)   | −90 – 90        |
+| `longitude`        | float64 | degrees | — (required)   | −180 – 180      |
+| `presence bitmask` | int8    | —       | — (required)   | —               |
+| `speed`            | int16   | km/h    | `0x01`         | —               |
+| `course`           | int16   | degrees | `0x02`         | 0 – 359         |
+| `altitude`         | float32 | meters  | `0x04`         | —               |
+| `satellites`       | int8    | count   | `0x08`         | —               |
+| `hdop`             | float32 | —       | `0x10`         | —               |
+| `ignition`         | int8    | —       | `0x20`         | 0 = off, 1 = on |
+| `battery`          | int8    | percent | `0x40`         | 0 – 100         |
 
 All multibyte numeric fields are big-endian. `timestamp` is milliseconds since
 January 1, 1970, 00:00:00 UTC. An optional field is present in the message only if its bit is set in the
