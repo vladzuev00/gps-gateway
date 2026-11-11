@@ -162,5 +162,5 @@ Example:
 @ALOGIN@0\0
 
 type    login response
-status  0         → success
+status  0
 ```
