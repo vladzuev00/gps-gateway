@@ -115,18 +115,17 @@ A snapshot of the device's position and state at a point in time. Used in data a
 | `satellites` | int8    | count   | yes      | —               |
 | `hdop`       | float32 | —       | yes      | —               |
 | `ignition`   | int8    | —       | yes      | 0 = off, 1 = on |
-| `odometer`   | int32   | meters  | yes      | total mileage   |
+| `odometer`   | int32   | meters  | yes      | —               |
 
 All numeric fields are written in decimal; fractional values use `.` as the decimal
-separator. An absent optional field is encoded as an empty string rather than omitted, so a message
-always has exactly 11 fields.
+separator. An absent optional field is encoded as an empty string rather than omitted.
 
 Example:
 ```
 141123;221320;55.75;37.62;60;180;150.5;8;1.2;1;125430;
 
-date        141123  → 14.11.2023
-time        221320  → 22:13:20
+date        141123
+time        221320
 latitude    55.75
 longitude   37.62
 speed       60
