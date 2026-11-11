@@ -29,18 +29,7 @@ public final class CherryMessageDecoder {
         Float hdop = decodeHdop(iterator.next());
         Byte ignition = decodeIgnition(iterator.next());
         Integer odometer = decodeOdometer(iterator.next());
-        return new CherryMessage(
-                dateTime,
-                latitude,
-                longitude,
-                speed,
-                course,
-                altitude,
-                satelliteCount,
-                hdop,
-                ignition,
-                odometer
-        );
+        return new CherryMessage(dateTime, latitude, longitude, speed, course, altitude, satelliteCount, hdop, ignition, odometer);
     }
 
     private Instant decodeDateTime(String dateField, String timeField) {
