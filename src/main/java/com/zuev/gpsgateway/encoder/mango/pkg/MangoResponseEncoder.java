@@ -8,22 +8,23 @@ public abstract class MangoResponseEncoder<PKG> extends PackageEncoder<PKG> {
     private static final byte[] PREFIX = {0x56, 0x5A};
 
     private final byte type;
+    private final int payloadLength;
 
-    public MangoResponseEncoder(Class<PKG> packageType, byte type) {
+    public MangoResponseEncoder(Class<PKG> packageType, byte type, int payloadLength) {
         super(packageType);
         this.type = type;
+        this.payloadLength = payloadLength;
     }
 
     @Override
     protected final byte[] encodeInternal(PKG pkg) {
-        byte[] encodedPayload = encodePayload(pkg);
-        return ByteBuffer.allocate(PREFIX.length + Byte.BYTES + Short.BYTES + encodedPayload.length)
-                .put(PREFIX)
-                .put(type)
-                .putShort((short) encodedPayload.length)
-                .put(encodedPayload)
-                .array();
+        ByteBuffer buffer = ByteBuffer.allocate(PREFIX.length + Byte.BYTES + Short.BYTES + payloadLength);
+        buffer.put(PREFIX);
+        buffer.put(type);
+        buffer.putShort((short) payloadLength);
+        putPayload(buffer, pkg);
+        return buffer.array();
     }
 
-    protected abstract byte[] encodePayload(PKG pkg);
+    protected abstract void putPayload(ByteBuffer buffer, PKG pkg);
 }

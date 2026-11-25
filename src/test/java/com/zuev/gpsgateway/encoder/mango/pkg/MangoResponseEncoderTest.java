@@ -2,7 +2,8 @@ package com.zuev.gpsgateway.encoder.mango.pkg;
 
 import org.junit.jupiter.api.Test;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import java.nio.ByteBuffer;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public final class MangoResponseEncoderTest {
@@ -10,26 +11,26 @@ public final class MangoResponseEncoderTest {
 
     @Test
     public void packageShouldBeEncodedInternally() {
-        TestPackage givenPackage = new TestPackage("test message");
+        TestPackage givenPackage = new TestPackage(0x01020304);
 
         byte[] actual = encoder.encodeInternal(givenPackage);
-        byte[] expected = {0x56, 0x5A, 0x09, 0x00, 0x0C, 't', 'e', 's', 't', ' ', 'm', 'e', 's', 's', 'a', 'g', 'e'};
+        byte[] expected = {0x56, 0x5A, 0x09, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
         assertArrayEquals(expected, actual);
     }
 
-    private record TestPackage(String message) {
+    private record TestPackage(int value) {
     }
 
     private static final class TestMangoResponseEncoder extends MangoResponseEncoder<TestPackage> {
         private static final byte TYPE = 0x09;
 
         public TestMangoResponseEncoder() {
-            super(TestPackage.class, TYPE);
+            super(TestPackage.class, TYPE, Integer.BYTES);
         }
 
         @Override
-        protected byte[] encodePayload(TestPackage pkg) {
-            return pkg.message().getBytes(US_ASCII);
+        protected void putPayload(ByteBuffer buffer, TestPackage pkg) {
+            buffer.putInt(pkg.value());
         }
     }
 }
