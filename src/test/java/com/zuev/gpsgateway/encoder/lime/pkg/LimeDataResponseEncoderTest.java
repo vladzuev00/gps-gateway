@@ -9,11 +9,11 @@ public final class LimeDataResponseEncoderTest {
     private final LimeDataResponseEncoder encoder = new LimeDataResponseEncoder();
 
     @Test
-    public void tagValuePairsShouldBeEncoded() {
+    public void packageShouldBeEncoded() {
         LimeDataResponse givenPackage = new LimeDataResponse();
 
-        byte[] actual = encoder.encodeTagValuePairs(givenPackage);
-        byte[] expected = {};
+        byte[] actual = encoder.encode(givenPackage);
+        byte[] expected = {0x00, 0x00};
         assertArrayEquals(expected, actual);
     }
 }

@@ -9,11 +9,11 @@ public final class LimeLoginResponseEncoderTest {
     private final LimeLoginResponseEncoder encoder = new LimeLoginResponseEncoder();
 
     @Test
-    public void tagValuePairsShouldBeEncoded() {
+    public void packageShouldBeEncoded() {
         LimeLoginResponse givenPackage = new LimeLoginResponse((byte) 0x02);
 
-        byte[] actual = encoder.encodeTagValuePairs(givenPackage);
-        byte[] expected = {0x03, 0x02};
+        byte[] actual = encoder.encode(givenPackage);
+        byte[] expected = {0x02, 0x00, 0x03, 0x02};
         assertArrayEquals(expected, actual);
     }
 }
