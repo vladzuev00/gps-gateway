@@ -3,16 +3,21 @@ package com.zuev.gpsgateway.encoder.mango.pkg;
 import com.zuev.gpsgateway.model.mango.MangoBlackBoxResponse;
 import org.junit.jupiter.api.Test;
 
+import java.nio.ByteBuffer;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public final class MangoBlackBoxResponseEncoderTest {
     private final MangoBlackBoxResponseEncoder encoder = new MangoBlackBoxResponseEncoder();
 
     @Test
-    public void payloadShouldBeEncoded() {
+    public void payloadShouldBePut() {
+        ByteBuffer givenBuffer = ByteBuffer.allocate(Short.BYTES);
         MangoBlackBoxResponse givenPackage = new MangoBlackBoxResponse(65534);
 
-        byte[] actual = encoder.encodePayload(givenPackage);
+        encoder.putPayload(givenBuffer, givenPackage);
+
+        byte[] actual = givenBuffer.array();
         byte[] expected = {(byte) 0xFF, (byte) 0xFE};
         assertArrayEquals(expected, actual);
     }

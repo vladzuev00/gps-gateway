@@ -8,15 +8,14 @@ import java.nio.ByteBuffer;
 @Component
 public final class MangoBlackBoxResponseEncoder extends MangoResponseEncoder<MangoBlackBoxResponse> {
     private static final byte TYPE = (byte) 0x84;
+    private static final int PAYLOAD_LENGTH = Short.BYTES;
 
     public MangoBlackBoxResponseEncoder() {
-        super(MangoBlackBoxResponse.class, TYPE);
+        super(MangoBlackBoxResponse.class, TYPE, PAYLOAD_LENGTH);
     }
 
     @Override
-    protected byte[] encodePayload(MangoBlackBoxResponse pkg) {
-        return ByteBuffer.allocate(Short.BYTES)
-                .putShort((short) pkg.messageCount())
-                .array();
+    protected void putPayload(ByteBuffer buffer, MangoBlackBoxResponse pkg) {
+        buffer.putShort((short) pkg.messageCount());
     }
 }
