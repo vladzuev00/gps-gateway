@@ -20,10 +20,10 @@ public final class CherryResponseEncoderTest {
     }
 
     private static final class TestCherryResponseEncoder extends CherryResponseEncoder<TestPackage> {
-        private static final String TYPE = "ATEST";
+        private static final String PREFIX = "@ATEST@";
 
         public TestCherryResponseEncoder() {
-            super(TestPackage.class, TYPE);
+            super(TestPackage.class, PREFIX);
         }
 
         @Override
