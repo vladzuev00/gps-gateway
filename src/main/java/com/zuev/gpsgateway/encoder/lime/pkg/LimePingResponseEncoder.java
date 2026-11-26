@@ -7,14 +7,10 @@ import java.nio.ByteBuffer;
 
 @Component
 public final class LimePingResponseEncoder extends LimePackageEncoder<LimePingResponse> {
+    private static final int TAG_VALUE_PAIRS_LENGTH = 0;
 
     public LimePingResponseEncoder() {
-        super(LimePingResponse.class);
-    }
-
-    @Override
-    protected int getTagValuePairsLength(LimePingResponse pkg) {
-        return 0;
+        super(LimePingResponse.class, TAG_VALUE_PAIRS_LENGTH);
     }
 
     @Override

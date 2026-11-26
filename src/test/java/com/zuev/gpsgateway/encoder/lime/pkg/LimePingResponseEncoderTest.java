@@ -3,17 +3,23 @@ package com.zuev.gpsgateway.encoder.lime.pkg;
 import com.zuev.gpsgateway.model.lime.LimePingResponse;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import java.nio.ByteBuffer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 public final class LimePingResponseEncoderTest {
     private final LimePingResponseEncoder encoder = new LimePingResponseEncoder();
 
     @Test
-    public void packageShouldBeEncoded() {
-        LimePingResponse givenPackage = new LimePingResponse();
+    public void tagValuePairsShouldBePut() {
+        ByteBuffer givenBuffer = ByteBuffer.allocate(0);
+        LimePingResponse givenPackage = mock(LimePingResponse.class);
 
-        byte[] actual = encoder.encode(givenPackage);
-        byte[] expected = {0x00, 0x00};
-        assertArrayEquals(expected, actual);
+        encoder.putTagValuePairs(givenBuffer, givenPackage);
+
+        assertEquals(0, givenBuffer.position());
+        verifyNoInteractions(givenPackage);
     }
 }
