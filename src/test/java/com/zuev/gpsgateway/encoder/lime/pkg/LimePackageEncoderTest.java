@@ -22,8 +22,8 @@ public final class LimePackageEncoderTest {
     }
 
     private static final class TestLimePackageEncoder extends LimePackageEncoder<TestPackage> {
-        private static final byte NUMBER_TAG = 0x0C;
         private static final int TAG_VALUE_PAIRS_LENGTH = 1 + Integer.BYTES;
+        private static final byte NUMBER_TAG = 0x0C;
 
         public TestLimePackageEncoder() {
             super(TestPackage.class, TAG_VALUE_PAIRS_LENGTH);
