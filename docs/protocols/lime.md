@@ -104,6 +104,25 @@ length        0200   → 2
 login_status  03 00  → success
 ```
 
+### `error_code`
+
+If a package cannot be processed, the server responds with tag `0d`, containing a single-byte
+error code. The connection remains open unless the device has not logged in.
+
+| Value | Meaning                    | Connection |
+|-------|----------------------------|------------|
+| `01`  | unknown tag                | remains open |
+| `02`  | missing required tag       | remains open |
+| `03`  | tracker is not logged in   | closed after response |
+
+Example:
+```
+0200 0d 01
+
+length      0200   → 2
+error_code  0d 01  → unknown tag
+```
+
 ## Commands
 
 Commands are sent by the server to an authenticated device at any time, using the same
