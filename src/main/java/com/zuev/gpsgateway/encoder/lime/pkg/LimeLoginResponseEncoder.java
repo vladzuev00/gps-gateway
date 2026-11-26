@@ -7,15 +7,11 @@ import java.nio.ByteBuffer;
 
 @Component
 public final class LimeLoginResponseEncoder extends LimePackageEncoder<LimeLoginResponse> {
+    private static final int TAG_VALUE_PAIRS_LENGTH = Byte.BYTES + Byte.BYTES;
     private static final byte STATUS_TAG = 0x03;
 
     public LimeLoginResponseEncoder() {
-        super(LimeLoginResponse.class);
-    }
-
-    @Override
-    protected int getTagValuePairsLength(LimeLoginResponse pkg) {
-        return Byte.BYTES + Byte.BYTES;
+        super(LimeLoginResponse.class, TAG_VALUE_PAIRS_LENGTH);
     }
 
     @Override
