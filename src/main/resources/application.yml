@@ -1,0 +1,11 @@
+gps-gateway:
+  protocols:
+    cherry:
+      port: 5001
+      read-timeout: 2m
+    lime:
+      port: 5002
+      read-timeout: 2m
+    mango:
+      port: 5003
+      read-timeout: 2m
