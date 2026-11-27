@@ -37,10 +37,9 @@ public final class ExceptionHandlerTest {
             handler.exceptionCaught(givenContext, givenException);
 
             List<String> actualLogs = givenLogCaptor.getErrorLogs();
-            List<String> expectedLogs = List.of(
-                    "Exception caught on channel test channel, imei: 00000355234055650192"
-            );
+            List<String> expectedLogs = List.of("Exception caught on channel test channel, imei: 00000355234055650192");
             assertEquals(expectedLogs, actualLogs);
+
             assertSame(givenContext, handler.context);
             assertSame(givenException, handler.exception);
         }
@@ -64,13 +63,14 @@ public final class ExceptionHandlerTest {
             List<String> actualLogs = givenLogCaptor.getErrorLogs();
             List<String> expectedLogs = List.of("Exception caught on channel test channel");
             assertEquals(expectedLogs, actualLogs);
+
             assertSame(givenContext, handler.context);
             assertSame(givenException, handler.exception);
         }
     }
 
     @Test
-    public void decoderExceptionShouldBeUnwrapped() {
+    public void decoderExceptionWithCauseShouldBeCaught() {
         try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
             ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
             RuntimeException givenCause = new RuntimeException("test cause");
@@ -81,6 +81,20 @@ public final class ExceptionHandlerTest {
             handler.exceptionCaught(givenContext, givenException);
 
             assertSame(givenCause, handler.exception);
+        }
+    }
+
+    @Test
+    public void decoderExceptionWithoutCauseShouldBeCaught() {
+        try (MockedStatic<ChannelAttributeUtil> mockedChannelAttributeUtil = mockStatic(ChannelAttributeUtil.class)) {
+            ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
+            DecoderException givenException = new DecoderException();
+
+            mockedChannelAttributeUtil.when(() -> findImei(same(givenContext))).thenReturn(Optional.empty());
+
+            handler.exceptionCaught(givenContext, givenException);
+
+            assertSame(givenException, handler.exception);
         }
     }
 
