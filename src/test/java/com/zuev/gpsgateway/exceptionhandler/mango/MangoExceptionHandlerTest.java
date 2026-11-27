@@ -14,7 +14,7 @@ public final class MangoExceptionHandlerTest {
         ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         RuntimeException givenException = new RuntimeException("test exception");
 
-        handler.handleException(givenContext, givenException);
+        handler.handle(givenContext, givenException);
 
         verify(givenContext).close();
     }

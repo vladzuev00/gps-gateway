@@ -23,7 +23,7 @@ public final class LimeExceptionHandlerTest {
         when(givenContext.writeAndFlush(new LimeErrorResponse((byte) 0x01))).thenReturn(givenWriteFuture);
         LimeUnknownTagException givenException = new LimeUnknownTagException("unknown tag");
 
-        handler.handleException(givenContext, givenException);
+        handler.handle(givenContext, givenException);
 
         verify(givenWriteFuture).addListener(FIRE_EXCEPTION_ON_FAILURE);
         verify(givenContext, never()).close();
@@ -36,7 +36,7 @@ public final class LimeExceptionHandlerTest {
         when(givenContext.writeAndFlush(new LimeErrorResponse((byte) 0x01))).thenReturn(givenWriteFuture);
         NoSuitableDecoderException givenException = new NoSuitableDecoderException("no suitable decoder");
 
-        handler.handleException(givenContext, givenException);
+        handler.handle(givenContext, givenException);
 
         verify(givenWriteFuture).addListener(FIRE_EXCEPTION_ON_FAILURE);
         verify(givenContext, never()).close();
@@ -49,7 +49,7 @@ public final class LimeExceptionHandlerTest {
         when(givenContext.writeAndFlush(new LimeErrorResponse((byte) 0x02))).thenReturn(givenWriteFuture);
         LimeMissingTagException givenException = new LimeMissingTagException("missing tag");
 
-        handler.handleException(givenContext, givenException);
+        handler.handle(givenContext, givenException);
 
         verify(givenWriteFuture).addListener(FIRE_EXCEPTION_ON_FAILURE);
         verify(givenContext, never()).close();
@@ -62,7 +62,7 @@ public final class LimeExceptionHandlerTest {
         when(givenContext.writeAndFlush(new LimeErrorResponse((byte) 0x03))).thenReturn(givenWriteFuture);
         NotLoggedInTrackerException givenException = new NotLoggedInTrackerException();
 
-        handler.handleException(givenContext, givenException);
+        handler.handle(givenContext, givenException);
 
         verify(givenWriteFuture).addListener(FIRE_EXCEPTION_ON_FAILURE);
         verify(givenWriteFuture).addListener(CLOSE);
@@ -73,7 +73,7 @@ public final class LimeExceptionHandlerTest {
         ChannelHandlerContext givenContext = mock(ChannelHandlerContext.class);
         RuntimeException givenException = new RuntimeException("test exception");
 
-        handler.handleException(givenContext, givenException);
+        handler.handle(givenContext, givenException);
 
         verify(givenContext).close();
         verify(givenContext, never()).writeAndFlush(any());

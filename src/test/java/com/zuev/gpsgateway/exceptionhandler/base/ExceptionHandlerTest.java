@@ -89,7 +89,7 @@ public final class ExceptionHandlerTest {
         private Throwable exception;
 
         @Override
-        protected void handleException(ChannelHandlerContext context, Throwable exception) {
+        protected void handle(ChannelHandlerContext context, Throwable exception) {
             this.context = context;
             this.exception = exception;
         }
